@@ -74,11 +74,14 @@ export default function Onboarding() {
   const [timeline, setTimeline] = useState('');
   const [minInvestment, setMinInvestment] = useState('');
   const [targetInvestor, setTargetInvestor] = useState('');
+  const [pitchDeckLink, setPitchDeckLink] = useState('');
+  const [pitchDeckFile, setPitchDeckFile] = useState<File | null>(null);
 
   // Assets
-  const [hasExistingAds, setHasExistingAds] = useState('');
+  const [budgetMode, setBudgetMode] = useState<'monthly' | 'daily'>('monthly');
+  const [budgetAmount, setBudgetAmount] = useState('');
+  const [investorListFile, setInvestorListFile] = useState<File | null>(null);
   const [brandNotes, setBrandNotes] = useState('');
-  const [existingInvestors, setExistingInvestors] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
 
   // Kickoff booking
@@ -86,10 +89,15 @@ export default function Onboarding() {
   const [selectedKickoffDate, setSelectedKickoffDate] = useState('');
   const [selectedKickoffTime, setSelectedKickoffTime] = useState('');
 
+  // Budget auto-calc
+  const budgetNum = Number(budgetAmount.replace(/,/g, '')) || 0;
+  const monthlyBudget = budgetMode === 'monthly' ? budgetNum : Math.round(budgetNum * 30);
+  const dailyBudget = budgetMode === 'daily' ? budgetNum : Math.round(budgetNum / 30);
+
   const canProceed = () => {
     switch (currentStep) {
       case 0:
-        return companyName.trim() && contactName.trim() && contactEmail.trim() && contactPhone.replace(/\D/g, '').length >= 10 && fundType;
+        return companyName.trim() && contactName.trim() && contactEmail.trim() && contactPhone.replace(/\D/g, '').length >= 10 && fundType && website.trim();
       case 1:
         return exactRaiseAmount.trim() && timeline && minInvestment;
       case 2:
@@ -346,8 +354,9 @@ export default function Onboarding() {
                         <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Acme Capital Fund II" />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Website</label>
+                        <label className="text-sm font-medium text-foreground">Website <span className="text-destructive">*</span></label>
                         <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://acmecapital.com" />
+                        <p className="text-[11px] text-muted-foreground">Used to auto-populate brand colors & fonts</p>
                       </div>
                     </div>
 
@@ -427,6 +436,31 @@ export default function Onboarding() {
                     </div>
 
                     <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" /> Pitch deck
+                      </label>
+                      <p className="text-xs text-muted-foreground">Upload your pitch deck or paste a link (Google Drive, Dropbox, etc.)</p>
+                      <Input
+                        value={pitchDeckLink}
+                        onChange={(e) => setPitchDeckLink(e.target.value)}
+                        placeholder="https://drive.google.com/... or paste any link"
+                      />
+                      <div className="flex items-center gap-3 mt-2">
+                        <span className="text-xs text-muted-foreground">or</span>
+                        <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-dashed border-border hover:border-primary/40 transition-all text-sm font-medium text-foreground">
+                          <Upload className="w-4 h-4 text-primary" />
+                          {pitchDeckFile ? pitchDeckFile.name : 'Upload file'}
+                          <input
+                            type="file"
+                            accept=".pdf,.pptx,.ppt,.doc,.docx"
+                            className="hidden"
+                            onChange={(e) => setPitchDeckFile(e.target.files?.[0] || null)}
+                          />
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
                       <label className="text-sm font-medium text-foreground">Target investor profile</label>
                       <Textarea
                         value={targetInvestor}
@@ -452,23 +486,74 @@ export default function Onboarding() {
                   </div>
 
                   <div className="space-y-6">
+                    {/* Budget */}
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-foreground">Have you run paid ads before?</label>
-                      <ChoiceGrid
-                        options={['Yes — actively running', 'Yes — in the past', 'No — never']}
-                        value={hasExistingAds}
-                        onChange={setHasExistingAds}
-                      />
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <DollarSign className="w-4 h-4 text-primary" /> What budget do you want to start with?
+                      </label>
+                      <div className="flex items-center gap-2 mb-2">
+                        <button
+                          type="button"
+                          onClick={() => setBudgetMode('monthly')}
+                          className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                            budgetMode === 'monthly'
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'border-border text-foreground hover:border-primary/40'
+                          }`}
+                        >
+                          Monthly
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBudgetMode('daily')}
+                          className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                            budgetMode === 'daily'
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'border-border text-foreground hover:border-primary/40'
+                          }`}
+                        >
+                          Daily
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">$</span>
+                        <Input
+                          value={budgetAmount}
+                          onChange={(e) => setBudgetAmount(e.target.value.replace(/[^0-9,]/g, ''))}
+                          placeholder={budgetMode === 'monthly' ? '10,000' : '333'}
+                          className="pl-7"
+                        />
+                      </div>
+                      {budgetNum > 0 && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {budgetMode === 'monthly'
+                            ? `≈ $${dailyBudget.toLocaleString()}/day`
+                            : `≈ $${monthlyBudget.toLocaleString()}/month`}
+                        </p>
+                      )}
                     </div>
 
+                    {/* Investor list upload */}
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-foreground">Existing investor list size</label>
-                      <ChoiceGrid
-                        options={['None', '1 – 50', '50 – 200', '200+']}
-                        value={existingInvestors}
-                        onChange={setExistingInvestors}
-                        columns={3}
-                      />
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <Users className="w-4 h-4 text-primary" /> Existing investor list
+                      </label>
+                      <p className="text-xs text-muted-foreground">
+                        Used for lookalike audience targeting on ads — never shared.
+                      </p>
+                      <label className="cursor-pointer flex flex-col items-center gap-2 px-6 py-6 rounded-xl border border-dashed border-border hover:border-primary/40 transition-all text-center bg-muted/20">
+                        <Upload className="w-6 h-6 text-primary" />
+                        <span className="text-sm font-medium text-foreground">
+                          {investorListFile ? investorListFile.name : 'Upload CSV or Excel'}
+                        </span>
+                        <span className="text-[11px] text-muted-foreground">Name, Email, Phone, Estimated Invested Amount</span>
+                        <input
+                          type="file"
+                          accept=".csv,.xlsx,.xls"
+                          className="hidden"
+                          onChange={(e) => setInvestorListFile(e.target.files?.[0] || null)}
+                        />
+                      </label>
                     </div>
 
                     <div className="space-y-1.5">
@@ -646,8 +731,9 @@ export default function Onboarding() {
                       <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
                         <div><span className="text-muted-foreground">Raise Amount:</span> <span className="text-foreground font-medium">${exactRaiseAmount}</span></div>
                         <div><span className="text-muted-foreground">Timeline:</span> <span className="text-foreground font-medium">{timeline}</span></div>
-                        <div><span className="text-muted-foreground">Min Investment:</span> <span className="text-foreground font-medium">{minInvestment}</span></div>
-                        {targetInvestor && <div className="sm:col-span-2"><span className="text-muted-foreground">Target:</span> <span className="text-foreground font-medium">{targetInvestor}</span></div>}
+                         <div><span className="text-muted-foreground">Min Investment:</span> <span className="text-foreground font-medium">${minInvestment}</span></div>
+                         {targetInvestor && <div className="sm:col-span-2"><span className="text-muted-foreground">Target:</span> <span className="text-foreground font-medium">{targetInvestor}</span></div>}
+                         {(pitchDeckLink || pitchDeckFile) && <div className="sm:col-span-2"><span className="text-muted-foreground">Pitch Deck:</span> <span className="text-foreground font-medium">{pitchDeckFile ? pitchDeckFile.name : pitchDeckLink}</span></div>}
                       </div>
                     </div>
 
@@ -660,11 +746,11 @@ export default function Onboarding() {
                         <button onClick={() => setCurrentStep(2)} className="text-xs text-primary hover:underline font-medium">Edit</button>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                        {hasExistingAds && <div><span className="text-muted-foreground">Ads:</span> <span className="text-foreground font-medium">{hasExistingAds}</span></div>}
-                        {existingInvestors && <div><span className="text-muted-foreground">Investor List:</span> <span className="text-foreground font-medium">{existingInvestors}</span></div>}
+                        {budgetAmount && <div><span className="text-muted-foreground">Budget:</span> <span className="text-foreground font-medium">${budgetAmount}/{budgetMode === 'monthly' ? 'mo' : 'day'} {budgetMode === 'monthly' ? `(≈ $${dailyBudget.toLocaleString()}/day)` : `(≈ $${monthlyBudget.toLocaleString()}/mo)`}</span></div>}
+                        {investorListFile && <div><span className="text-muted-foreground">Investor List:</span> <span className="text-foreground font-medium">{investorListFile.name}</span></div>}
                         {brandNotes && <div className="sm:col-span-2"><span className="text-muted-foreground">Brand Notes:</span> <span className="text-foreground font-medium">{brandNotes}</span></div>}
                         {additionalNotes && <div className="sm:col-span-2"><span className="text-muted-foreground">Notes:</span> <span className="text-foreground font-medium">{additionalNotes}</span></div>}
-                        {!hasExistingAds && !existingInvestors && !brandNotes && !additionalNotes && (
+                        {!budgetAmount && !investorListFile && !brandNotes && !additionalNotes && (
                           <p className="text-muted-foreground text-xs italic">No additional info provided</p>
                         )}
                       </div>
