@@ -8,7 +8,7 @@ const steps = [
     title: 'Initial Investment',
     content: (
       <>
-        <p className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">$15,000 <span className="text-base font-normal text-muted-foreground">one-time setup fee</span></p>
+        <p className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">$18,000 <span className="text-base font-normal text-muted-foreground">one-time setup fee</span></p>
         <p className="text-muted-foreground text-sm leading-relaxed">This covers the initial costs of getting your fundraising system up and running using our proven AI-powered framework. By leveraging our cutting-edge technology and proven strategies, you'll be able to raise $5M to $100M from accredited investors — without relying on your personal network, hosting events, or paying broker fees.</p>
       </>
     ),
