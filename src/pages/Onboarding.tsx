@@ -435,6 +435,31 @@ export default function Onboarding() {
                     </div>
 
                     <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" /> Pitch deck
+                      </label>
+                      <p className="text-xs text-muted-foreground">Upload your pitch deck or paste a link (Google Drive, Dropbox, etc.)</p>
+                      <Input
+                        value={pitchDeckLink}
+                        onChange={(e) => setPitchDeckLink(e.target.value)}
+                        placeholder="https://drive.google.com/... or paste any link"
+                      />
+                      <div className="flex items-center gap-3 mt-2">
+                        <span className="text-xs text-muted-foreground">or</span>
+                        <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-dashed border-border hover:border-primary/40 transition-all text-sm font-medium text-foreground">
+                          <Upload className="w-4 h-4 text-primary" />
+                          {pitchDeckFile ? pitchDeckFile.name : 'Upload file'}
+                          <input
+                            type="file"
+                            accept=".pdf,.pptx,.ppt,.doc,.docx"
+                            className="hidden"
+                            onChange={(e) => setPitchDeckFile(e.target.files?.[0] || null)}
+                          />
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
                       <label className="text-sm font-medium text-foreground">Target investor profile</label>
                       <Textarea
                         value={targetInvestor}
