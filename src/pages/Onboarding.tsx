@@ -74,17 +74,25 @@ export default function Onboarding() {
   const [timeline, setTimeline] = useState('');
   const [minInvestment, setMinInvestment] = useState('');
   const [targetInvestor, setTargetInvestor] = useState('');
+  const [pitchDeckLink, setPitchDeckLink] = useState('');
+  const [pitchDeckFile, setPitchDeckFile] = useState<File | null>(null);
 
   // Assets
-  const [hasExistingAds, setHasExistingAds] = useState('');
+  const [budgetMode, setBudgetMode] = useState<'monthly' | 'daily'>('monthly');
+  const [budgetAmount, setBudgetAmount] = useState('');
+  const [investorListFile, setInvestorListFile] = useState<File | null>(null);
   const [brandNotes, setBrandNotes] = useState('');
-  const [existingInvestors, setExistingInvestors] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
 
   // Kickoff booking
   const [kickoffBooked, setKickoffBooked] = useState(false);
   const [selectedKickoffDate, setSelectedKickoffDate] = useState('');
   const [selectedKickoffTime, setSelectedKickoffTime] = useState('');
+
+  // Budget auto-calc
+  const budgetNum = Number(budgetAmount.replace(/,/g, '')) || 0;
+  const monthlyBudget = budgetMode === 'monthly' ? budgetNum : Math.round(budgetNum * 30);
+  const dailyBudget = budgetMode === 'daily' ? budgetNum : Math.round(budgetNum / 30);
 
   const canProceed = () => {
     switch (currentStep) {
