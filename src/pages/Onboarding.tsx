@@ -47,7 +47,7 @@ const fundTypes = [
 ];
 
 const timelineOptions = ['30 days', '60 days', '90 days', '6 months', '12 months'];
-const minInvestmentOptions = ['$25K – $50K', '$50K – $100K', '$100K – $250K', '$250K – $500K', '$500K+'];
+
 
 export default function Onboarding() {
   const [searchParams] = useSearchParams();
