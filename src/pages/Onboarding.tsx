@@ -731,8 +731,9 @@ export default function Onboarding() {
                       <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
                         <div><span className="text-muted-foreground">Raise Amount:</span> <span className="text-foreground font-medium">${exactRaiseAmount}</span></div>
                         <div><span className="text-muted-foreground">Timeline:</span> <span className="text-foreground font-medium">{timeline}</span></div>
-                        <div><span className="text-muted-foreground">Min Investment:</span> <span className="text-foreground font-medium">{minInvestment}</span></div>
-                        {targetInvestor && <div className="sm:col-span-2"><span className="text-muted-foreground">Target:</span> <span className="text-foreground font-medium">{targetInvestor}</span></div>}
+                         <div><span className="text-muted-foreground">Min Investment:</span> <span className="text-foreground font-medium">${minInvestment}</span></div>
+                         {targetInvestor && <div className="sm:col-span-2"><span className="text-muted-foreground">Target:</span> <span className="text-foreground font-medium">{targetInvestor}</span></div>}
+                         {(pitchDeckLink || pitchDeckFile) && <div className="sm:col-span-2"><span className="text-muted-foreground">Pitch Deck:</span> <span className="text-foreground font-medium">{pitchDeckFile ? pitchDeckFile.name : pitchDeckLink}</span></div>}
                       </div>
                     </div>
 
