@@ -46,7 +46,7 @@ const rows = [
   {
     feature: 'Annual Team Cost',
     bd: 'Retainer + success fees',
-    ai: '$60,000/yr ($5K/mo)',
+    ai: '$78,000/yr ($6.5K/mo)',
     inhouse: '$382,500+ (Marketing Mgr, Copywriter, Funnel Builder, Media Buyer, Sales Setter)',
     overseas: 'Lower rates, lower results',
   },
