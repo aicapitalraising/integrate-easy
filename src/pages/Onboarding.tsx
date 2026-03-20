@@ -47,7 +47,7 @@ const fundTypes = [
 ];
 
 const timelineOptions = ['30 days', '60 days', '90 days', '6 months', '12 months'];
-const minInvestmentOptions = ['$25K – $50K', '$50K – $100K', '$100K – $250K', '$250K – $500K', '$500K+'];
+
 
 export default function Onboarding() {
   const [searchParams] = useSearchParams();
@@ -415,7 +415,15 @@ export default function Onboarding() {
                       <label className="text-sm font-medium text-foreground flex items-center gap-2">
                         <Users className="w-4 h-4 text-primary" /> Minimum investment <span className="text-destructive">*</span>
                       </label>
-                      <ChoiceGrid options={minInvestmentOptions} value={minInvestment} onChange={setMinInvestment} columns={3} />
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">$</span>
+                        <Input
+                          value={minInvestment}
+                          onChange={(e) => setMinInvestment(e.target.value.replace(/[^0-9,]/g, ''))}
+                          placeholder="100,000"
+                          className="pl-7"
+                        />
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">
