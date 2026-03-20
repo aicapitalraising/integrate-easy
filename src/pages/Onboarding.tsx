@@ -486,23 +486,74 @@ export default function Onboarding() {
                   </div>
 
                   <div className="space-y-6">
+                    {/* Budget */}
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-foreground">Have you run paid ads before?</label>
-                      <ChoiceGrid
-                        options={['Yes — actively running', 'Yes — in the past', 'No — never']}
-                        value={hasExistingAds}
-                        onChange={setHasExistingAds}
-                      />
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <DollarSign className="w-4 h-4 text-primary" /> What budget do you want to start with?
+                      </label>
+                      <div className="flex items-center gap-2 mb-2">
+                        <button
+                          type="button"
+                          onClick={() => setBudgetMode('monthly')}
+                          className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                            budgetMode === 'monthly'
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'border-border text-foreground hover:border-primary/40'
+                          }`}
+                        >
+                          Monthly
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBudgetMode('daily')}
+                          className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                            budgetMode === 'daily'
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'border-border text-foreground hover:border-primary/40'
+                          }`}
+                        >
+                          Daily
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">$</span>
+                        <Input
+                          value={budgetAmount}
+                          onChange={(e) => setBudgetAmount(e.target.value.replace(/[^0-9,]/g, ''))}
+                          placeholder={budgetMode === 'monthly' ? '10,000' : '333'}
+                          className="pl-7"
+                        />
+                      </div>
+                      {budgetNum > 0 && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {budgetMode === 'monthly'
+                            ? `≈ $${dailyBudget.toLocaleString()}/day`
+                            : `≈ $${monthlyBudget.toLocaleString()}/month`}
+                        </p>
+                      )}
                     </div>
 
+                    {/* Investor list upload */}
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-foreground">Existing investor list size</label>
-                      <ChoiceGrid
-                        options={['None', '1 – 50', '50 – 200', '200+']}
-                        value={existingInvestors}
-                        onChange={setExistingInvestors}
-                        columns={3}
-                      />
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <Users className="w-4 h-4 text-primary" /> Existing investor list
+                      </label>
+                      <p className="text-xs text-muted-foreground">
+                        Used for lookalike audience targeting on ads — never shared.
+                      </p>
+                      <label className="cursor-pointer flex flex-col items-center gap-2 px-6 py-6 rounded-xl border border-dashed border-border hover:border-primary/40 transition-all text-center bg-muted/20">
+                        <Upload className="w-6 h-6 text-primary" />
+                        <span className="text-sm font-medium text-foreground">
+                          {investorListFile ? investorListFile.name : 'Upload CSV or Excel'}
+                        </span>
+                        <span className="text-[11px] text-muted-foreground">Name, Email, Phone, Estimated Invested Amount</span>
+                        <input
+                          type="file"
+                          accept=".csv,.xlsx,.xls"
+                          className="hidden"
+                          onChange={(e) => setInvestorListFile(e.target.files?.[0] || null)}
+                        />
+                      </label>
                     </div>
 
                     <div className="space-y-1.5">
