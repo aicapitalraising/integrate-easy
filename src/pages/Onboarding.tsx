@@ -97,7 +97,7 @@ export default function Onboarding() {
   const canProceed = () => {
     switch (currentStep) {
       case 0:
-        return companyName.trim() && contactName.trim() && contactEmail.trim() && contactPhone.replace(/\D/g, '').length >= 10 && fundType;
+        return companyName.trim() && contactName.trim() && contactEmail.trim() && contactPhone.replace(/\D/g, '').length >= 10 && fundType && website.trim();
       case 1:
         return exactRaiseAmount.trim() && timeline && minInvestment;
       case 2:
