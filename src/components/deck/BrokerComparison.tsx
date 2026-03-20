@@ -4,7 +4,7 @@ const rows = [
   {
     feature: 'Engagement Fees',
     bd: '$20K–$100K upfront',
-    ai: '$15,000 setup',
+    ai: '$18,000 setup',
     inhouse: '$0 (but $382,500+ in salaries)',
     overseas: '$0 (contractor fees)',
   },
@@ -46,7 +46,7 @@ const rows = [
   {
     feature: 'Annual Team Cost',
     bd: 'Retainer + success fees',
-    ai: '$60,000/yr ($5K/mo)',
+    ai: '$78,000/yr ($6.5K/mo)',
     inhouse: '$382,500+ (Marketing Mgr, Copywriter, Funnel Builder, Media Buyer, Sales Setter)',
     overseas: 'Lower rates, lower results',
   },
@@ -76,7 +76,7 @@ const rows = [
 const totalRow = {
   feature: 'Total 1-Year Cost ($10M Raise)',
   bd: '$520K–$1.1M+',
-  ai: '$75,000',
+  ai: '$96,000',
   inhouse: '$432,500–$582,500+',
   overseas: 'Unknown — results not guaranteed',
 };
