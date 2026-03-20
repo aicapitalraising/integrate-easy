@@ -19,7 +19,7 @@ const steps = [
     title: 'Monthly Management',
     content: (
       <>
-        <p className="text-2xl md:text-3xl font-display font-bold text-foreground mb-1">$5,000<span className="text-base font-normal text-muted-foreground">/month</span> <span className="text-lg md:text-xl font-normal text-muted-foreground">($60,000/year)</span></p>
+        <p className="text-2xl md:text-3xl font-display font-bold text-foreground mb-1">$6,500<span className="text-base font-normal text-muted-foreground">/month</span> <span className="text-lg md:text-xl font-normal text-muted-foreground">($78,000/year)</span></p>
         <p className="text-lg md:text-xl font-display font-semibold text-muted-foreground mb-4">+ 10% of ad-spend above $35K/month</p>
         <div className="grid grid-cols-2 gap-2">
           {['Paid Media Buyer Ads', 'Graphic Designer / Video Edits', 'Funnel A/B Testing', 'SMS Nurture Sequences', 'Email Nurture Sequences', 'AI Setter', 'AI Caller', 'AI Videos', 'AI Sales Review'].map(item => (

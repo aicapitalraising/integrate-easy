@@ -76,7 +76,7 @@ const rows = [
 const totalRow = {
   feature: 'Total 1-Year Cost ($10M Raise)',
   bd: '$520K–$1.1M+',
-  ai: '$75,000',
+  ai: '$96,000',
   inhouse: '$432,500–$582,500+',
   overseas: 'Unknown — results not guaranteed',
 };

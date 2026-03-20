@@ -21,7 +21,7 @@ const presetAmounts = [18000, 25000];
 type PaymentMethod = 'card' | 'ach';
 
 export default function Invest() {
-  const [amount, setAmount] = useState<number>(15000);
+  const [amount, setAmount] = useState<number>(18000);
   const [customAmount, setCustomAmount] = useState('');
   const [isCustom, setIsCustom] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
