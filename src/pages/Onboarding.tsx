@@ -745,11 +745,11 @@ export default function Onboarding() {
                         <button onClick={() => setCurrentStep(2)} className="text-xs text-primary hover:underline font-medium">Edit</button>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                        {hasExistingAds && <div><span className="text-muted-foreground">Ads:</span> <span className="text-foreground font-medium">{hasExistingAds}</span></div>}
-                        {existingInvestors && <div><span className="text-muted-foreground">Investor List:</span> <span className="text-foreground font-medium">{existingInvestors}</span></div>}
+                        {budgetAmount && <div><span className="text-muted-foreground">Budget:</span> <span className="text-foreground font-medium">${budgetAmount}/{budgetMode === 'monthly' ? 'mo' : 'day'} {budgetMode === 'monthly' ? `(≈ $${dailyBudget.toLocaleString()}/day)` : `(≈ $${monthlyBudget.toLocaleString()}/mo)`}</span></div>}
+                        {investorListFile && <div><span className="text-muted-foreground">Investor List:</span> <span className="text-foreground font-medium">{investorListFile.name}</span></div>}
                         {brandNotes && <div className="sm:col-span-2"><span className="text-muted-foreground">Brand Notes:</span> <span className="text-foreground font-medium">{brandNotes}</span></div>}
                         {additionalNotes && <div className="sm:col-span-2"><span className="text-muted-foreground">Notes:</span> <span className="text-foreground font-medium">{additionalNotes}</span></div>}
-                        {!hasExistingAds && !existingInvestors && !brandNotes && !additionalNotes && (
+                        {!budgetAmount && !investorListFile && !brandNotes && !additionalNotes && (
                           <p className="text-muted-foreground text-xs italic">No additional info provided</p>
                         )}
                       </div>
