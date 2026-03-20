@@ -415,7 +415,15 @@ export default function Onboarding() {
                       <label className="text-sm font-medium text-foreground flex items-center gap-2">
                         <Users className="w-4 h-4 text-primary" /> Minimum investment <span className="text-destructive">*</span>
                       </label>
-                      <ChoiceGrid options={minInvestmentOptions} value={minInvestment} onChange={setMinInvestment} columns={3} />
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">$</span>
+                        <Input
+                          value={minInvestment}
+                          onChange={(e) => setMinInvestment(e.target.value.replace(/[^0-9,]/g, ''))}
+                          placeholder="100,000"
+                          className="pl-7"
+                        />
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">
