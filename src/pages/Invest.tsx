@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const presetAmounts = [15000, 25000];
+const presetAmounts = [18000, 25000];
 
 type PaymentMethod = 'card' | 'ach';
 
