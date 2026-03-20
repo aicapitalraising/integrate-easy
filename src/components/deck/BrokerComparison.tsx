@@ -4,7 +4,7 @@ const rows = [
   {
     feature: 'Engagement Fees',
     bd: '$20K–$100K upfront',
-    ai: '$15,000 setup',
+    ai: '$18,000 setup',
     inhouse: '$0 (but $382,500+ in salaries)',
     overseas: '$0 (contractor fees)',
   },
