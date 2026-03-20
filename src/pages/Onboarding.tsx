@@ -354,8 +354,9 @@ export default function Onboarding() {
                         <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Acme Capital Fund II" />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Website</label>
+                        <label className="text-sm font-medium text-foreground">Website <span className="text-destructive">*</span></label>
                         <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://acmecapital.com" />
+                        <p className="text-[11px] text-muted-foreground">Used to auto-populate brand colors & fonts</p>
                       </div>
                     </div>
 
