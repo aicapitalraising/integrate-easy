@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Capital Raising — Raise $5M–$100M with Accredited Investors</title>
+  <meta name="description" content="AI-powered capital raising for alternative investment funds. Over $600M+ raised. Attract accredited investors at scale with proven digital systems." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --fg: hsl(220 20% 14%);
+      --card: hsl(220 20% 97%);
+      --muted: hsl(220 14% 96%);
+      --muted-fg: hsl(220 10% 46%);
+      --border: hsl(220 13% 90%);
+      --primary: hsl(142 52% 36%);
+      --primary-light: hsl(142 52% 36% / 0.1);
+      --primary-15: hsl(142 52% 36% / 0.15);
+      --primary-5: hsl(142 52% 36% / 0.05);
+      --primary-20: hsl(142 52% 36% / 0.2);
+      --destructive: hsl(0 84% 60%);
+      --destructive-light: hsl(0 84% 60% / 0.1);
+      --destructive-20: hsl(0 84% 60% / 0.2);
+      --radius: 1rem;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
+
+    .container { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+    .container-sm { max-width: 48rem; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ========== NAVBAR ========== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center;
+      transition: all 0.5s ease;
+    }
+    .navbar-inner {
+      width: 100%;
+      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      background: transparent;
+    }
+    .navbar-inner.scrolled {
+      margin-top: 1rem;
+      max-width: calc(100% - 2rem);
+      width: min(calc(100% - 2rem), 72rem);
+      border-radius: 1rem;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px -8px rgb(0 0 0 / 0.08), 0 2px 8px -2px rgb(0 0 0 / 0.04);
+    }
+    .navbar-content {
+      padding: 0 1.5rem; height: 3.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.125rem; font-weight: 700; color: var(--fg);
+      text-decoration: none; cursor: pointer; background: none; border: none;
+    }
+    .navbar-logo span { color: var(--primary); }
+    .navbar-links { display: flex; align-items: center; gap: 2rem; }
+    .navbar-links a {
+      font-size: 0.875rem; color: var(--muted-fg); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .navbar-links a:hover { color: var(--fg); }
+    .mobile-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--fg); }
+    .mobile-menu { display: none; }
+
+    @media (max-width: 768px) {
+      .navbar-links { display: none; }
+      .mobile-toggle { display: block; }
+      .mobile-menu.open {
+        display: flex; flex-direction: column; gap: 1rem;
+        padding: 1rem 1.5rem 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+      .mobile-menu a {
+        font-size: 0.875rem; color: var(--muted-fg); text-decoration: none; padding: 0.5rem 0;
+      }
+    }
+
+    /* ========== BUTTONS ========== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 600;
+      font-size: 1rem; cursor: pointer; border: none; transition: all 0.3s;
+      text-decoration: none; font-family: 'Inter', sans-serif;
+    }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 4px 14px -4px hsl(142 52% 36% / 0.35);
+    }
+    .btn-primary:hover { opacity: 0.9; box-shadow: 0 6px 20px -4px hsl(142 52% 36% / 0.4); }
+    .btn-outline {
+      background: transparent; color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--primary-20); background: var(--primary-5); }
+    .btn-lg { padding: 1rem 2.5rem; font-size: 1.05rem; }
+    .btn-full { width: 100%; }
+
+    /* ========== HERO ========== */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; text-align: center;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, var(--muted) 0%, var(--bg) 100%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: 0.03;
+      background-image: linear-gradient(hsl(220 13% 70%) 1px, transparent 1px), linear-gradient(90deg, hsl(220 13% 70%) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-content { position: relative; z-index: 10; max-width: 60rem; padding: 0 1.5rem; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1rem; border-radius: 9999px;
+      border: 1px solid var(--primary-20); background: var(--primary-5); margin-bottom: 2rem;
+    }
+    .hero-badge-dot {
+      width: 0.5rem; height: 0.5rem; border-radius: 50%;
+      background: var(--primary); animation: pulse 2s infinite;
+    }
+    .hero-badge span { font-size: 0.875rem; color: var(--primary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .hero h1 {
+      font-size: clamp(2.25rem, 5vw, 4.5rem);
+      font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.5rem;
+    }
+    .hero h1 .highlight { color: var(--primary); }
+    .hero p { font-size: 1.15rem; color: var(--muted-fg); max-width: 48rem; margin: 0 auto 2.5rem; line-height: 1.7; }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+      margin-top: 3.5rem; max-width: 52rem; margin-left: auto; margin-right: auto;
+    }
+    @media (min-width: 1024px) { .hero-stats { grid-template-columns: repeat(4, 1fr); } }
+    .hero-stat { text-align: center; padding: 1rem; }
+    .hero-stat .value { font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 700; }
+    .hero-stat .label { font-size: 0.75rem; color: var(--muted-fg); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+    /* ========== SECTIONS ========== */
+    .section { padding: 6rem 0; border-top: 1px solid var(--border); }
+    .section-muted { background: hsl(220 14% 96% / 0.2); }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-header h2 { font-size: clamp(1.75rem, 3.5vw, 3rem); font-weight: 700; margin-bottom: 1rem; }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), hsl(152 56% 42%));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-header p { font-size: 1.125rem; color: var(--muted-fg); max-width: 40rem; margin: 0 auto; }
+    .section-label { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--primary); margin-bottom: 1.5rem; }
+
+    /* ========== LOGO TICKER ========== */
+    .logo-ticker { padding: 4rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: hsl(220 14% 96% / 0.3); overflow: hidden; }
+    .logo-ticker p { text-align: center; font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 2.5rem; }
+    .ticker-track { display: flex; animation: marquee 30s linear infinite; white-space: nowrap; }
+    .ticker-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1.5rem; margin: 0 0.75rem;
+      border-radius: 0.5rem; border: 1px solid var(--border); background: var(--bg);
+    }
+    .ticker-icon {
+      width: 2rem; height: 2rem; border-radius: 0.375rem;
+      background: var(--primary-light); display: flex; align-items: center; justify-content: center;
+      color: var(--primary); font-weight: 700; font-size: 0.75rem;
+    }
+    .ticker-item span { font-size: 0.875rem; color: var(--muted-fg); font-weight: 500; }
+
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes enrichmentGlow {
+      0%, 100% { box-shadow: 0 0 15px 2px hsl(142 52% 36% / 0.15), 0 0 30px 4px hsl(142 52% 36% / 0.05); }
+      50% { box-shadow: 0 0 25px 6px hsl(142 52% 36% / 0.25), 0 0 50px 10px hsl(142 52% 36% / 0.1); }
+    }
+
+    /* ========== LEAD ENRICHMENT CARD ========== */
+    .enrichment-card {
+      max-width: 24rem; border-radius: 1rem; overflow: hidden;
+      background: var(--card); border: 1px solid var(--border);
+      animation: enrichmentGlow 3s ease-in-out infinite;
+    }
+    .enrichment-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border);
+    }
+    .enrichment-header .title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .enrichment-badges { margin-left: auto; display: flex; gap: 0.375rem; }
+    .enrichment-badges span {
+      font-size: 0.625rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 0.125rem 0.5rem; border-radius: 9999px;
+    }
+    .enrichment-badges .enriched { background: var(--primary-light); color: var(--primary); }
+    .enrichment-badges .contact { background: hsl(220 20% 14% / 0.1); color: var(--fg); }
+    .enrichment-body { padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .enrichment-section {
+      border-radius: 0.5rem; background: hsl(220 14% 94% / 0.6);
+      padding: 0.75rem 1rem;
+    }
+    .enrichment-section-header {
+      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.375rem;
+    }
+    .enrichment-section-header svg { width: 0.875rem; height: 0.875rem; color: var(--muted-fg); }
+    .enrichment-section-header span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-fg);
+    }
+    .enrichment-field { font-size: 0.75rem; line-height: 1.5; }
+    .enrichment-field .label { color: var(--muted-fg); }
+    .enrichment-field .value { color: var(--fg); }
+    .enrichment-field.bold { font-weight: 600; color: var(--fg); }
+    .enrichment-field.blurred { filter: blur(5px); user-select: none; font-weight: 600; }
+    .enrichment-tags { display: flex; gap: 0.375rem; margin-top: 0.5rem; }
+    .enrichment-tags span {
+      font-size: 0.625rem; font-weight: 500;
+      padding: 0.125rem 0.5rem; border-radius: 9999px;
+      background: var(--primary-light); color: var(--primary);
+    }
+
+    /* ========== GRID CARDS ========== */
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem 2.5rem;
+      transition: all 0.4s ease;
+    }
+    .card:hover { border-color: var(--primary-20); transform: translateY(-2px); }
+    .card-icon {
+      width: 3rem; height: 3rem; border-radius: 0.75rem;
+      background: var(--primary-light); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .card-icon svg { width: 1.5rem; height: 1.5rem; color: var(--primary); }
+    .card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .card p { font-size: 0.875rem; color: var(--muted-fg); line-height: 1.7; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (min-width: 768px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+    .grid-2x3 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    @media (min-width: 640px) { .grid-2x3 { grid-template-columns: repeat(3, 1fr); } }
+
+    /* ========== WHO WE WORK WITH ========== */
+    .who-section { display: grid; grid-template-columns: 1fr; gap: 4rem; align-items: center; }
+    @media (min-width: 1024px) { .who-section { grid-template-columns: 1fr 1fr; } }
+    .who-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 0.75rem; padding: 1.5rem; text-align: center;
+      transition: all 0.3s;
+    }
+    .who-card:hover { border-color: var(--primary-20); transform: translateY(-2px); }
+    .who-card svg { width: 2rem; height: 2rem; color: var(--primary); margin: 0 auto 0.75rem; }
+    .who-card span { font-size: 0.875rem; font-weight: 500; }
+
+    /* ========== COMPARISON ========== */
+    .comparison-card {
+      border-radius: var(--radius); padding: 2rem 2.5rem; position: relative; overflow: hidden;
+    }
+    .comparison-card.traditional { border: 1px solid var(--destructive-20); background: hsl(0 84% 60% / 0.02); }
+    .comparison-card.ai { border: 1px solid var(--primary-20); background: var(--primary-5); box-shadow: 0 4px 24px -4px rgb(0 0 0 / 0.04); }
+    .comparison-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; }
+    .comparison-icon {
+      width: 3rem; height: 3rem; border-radius: 0.75rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .comparison-icon.red { background: var(--destructive-light); }
+    .comparison-icon.green { background: var(--primary-light); }
+    .comparison-icon svg { width: 1.5rem; height: 1.5rem; }
+    .comparison-icon.red svg { color: var(--destructive); }
+    .comparison-icon.green svg { color: var(--primary); }
+    .comparison-header h3 { font-size: 1.25rem; font-weight: 700; }
+    .comparison-header p { font-size: 0.875rem; color: var(--muted-fg); }
+    .comparison-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+    .comparison-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.875rem; }
+    .comparison-list .dot {
+      width: 1.25rem; height: 1.25rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.125rem;
+    }
+    .dot.red { background: var(--destructive-light); }
+    .dot.red svg { color: var(--destructive); }
+    .dot.green { background: var(--primary-15); }
+    .dot.green svg { color: var(--primary); }
+    .dot svg { width: 0.75rem; height: 0.75rem; }
+    .comparison-list .traditional-text { color: var(--muted-fg); }
+    .comparison-list .ai-text { color: var(--fg); font-weight: 500; }
+
+    /* ========== STEP CARDS ========== */
+    .step-card { display: flex; align-items: flex-start; gap: 1.25rem; }
+    .step-num {
+      width: 3rem; height: 3rem; border-radius: 0.75rem; flex-shrink: 0;
+      background: var(--primary-light); display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.125rem; font-weight: 700; color: var(--primary);
+    }
+
+    /* ========== TRANSACTIONS ========== */
+    .tx-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem 2.5rem;
+      display: flex; flex-direction: column; gap: 1.5rem;
+      transition: all 0.4s;
+    }
+    @media (min-width: 768px) { .tx-card { flex-direction: row; align-items: center; justify-content: space-between; } }
+    .tx-card:hover { border-color: var(--primary-20); }
+    .tx-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .tx-meta span { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-fg); }
+    .tx-badge { font-size: 0.75rem; font-weight: 600; color: var(--primary); background: var(--primary-light); padding: 0.125rem 0.5rem; border-radius: 9999px; }
+    .tx-stats { display: flex; gap: 3rem; flex-shrink: 0; }
+    .tx-stat { text-align: center; }
+    .tx-stat .value { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; }
+    .tx-stat .value.primary { color: var(--primary); }
+    .tx-stat .label { font-size: 0.75rem; color: var(--muted-fg); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+    /* ========== TESTIMONIALS ========== */
+    .testimonial-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem;
+      transition: all 0.4s;
+    }
+    .testimonial-card:hover { border-color: var(--primary-20); }
+    .testimonial-card blockquote { color: hsl(220 20% 14% / 0.8); line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+    .testimonial-footer { border-top: 1px solid var(--border); padding-top: 1rem; }
+    .testimonial-footer .name { font-size: 0.875rem; font-weight: 600; }
+    .testimonial-footer .fund { font-size: 0.75rem; color: var(--muted-fg); }
+
+    /* ========== CONTACT FORM ========== */
+    .form-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2.5rem 3rem;
+    }
+    @media (max-width: 640px) { .form-card { padding: 1.5rem; } }
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 640px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-size: 0.875rem; color: var(--muted-fg); margin-bottom: 0.5rem; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border);
+      border-radius: 0.5rem; background: var(--bg); font-family: 'Inter', sans-serif;
+      font-size: 0.95rem; color: var(--fg); transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--primary);
+    }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-disclaimer { font-size: 0.75rem; color: var(--muted-fg); text-align: center; margin-top: 1rem; }
+
+    /* ========== FOOTER ========== */
+    footer { border-top: 1px solid var(--border); padding: 3rem 0; background: hsl(220 14% 96% / 0.3); }
+    .footer-top { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    @media (min-width: 768px) { .footer-top { flex-direction: row; justify-content: space-between; } }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; }
+    .footer-links a { font-size: 0.875rem; color: var(--muted-fg); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--primary); }
+    .footer-bottom { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; }
+    .footer-bottom p { font-size: 0.75rem; color: var(--muted-fg); line-height: 1.7; max-width: 48rem; margin: 0 auto; }
+
+    /* ========== SVG ICONS (inline) ========== */
+    .icon { display: inline-block; vertical-align: middle; }
+
+    /* ========== PLATFORM CHANNELS ========== */
+    .channels { margin-top: 3rem; max-width: 48rem; margin-left: auto; margin-right: auto; text-align: center; }
+    .channels-label { font-size: 0.6875rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 1.25rem; font-weight: 500; }
+    .channels-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem; }
+    .channel-item { display: flex; flex-direction: column; align-items: center; gap: 0.375rem; }
+    .channel-icon {
+      width: 2.5rem; height: 2.5rem; border-radius: 0.5rem;
+      background: var(--muted); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.875rem; font-weight: 700; color: hsl(220 20% 14% / 0.5);
+      transition: all 0.3s;
+    }
+    .channel-item:hover .channel-icon { border-color: var(--primary-20); background: var(--primary-5); }
+    .channel-name { font-size: 0.6875rem; font-weight: 600; color: hsl(220 20% 14% / 0.7); }
+    .channel-desc { font-size: 0.5625rem; color: var(--muted-fg); }
+  </style>
+</head>
+<body>
+
+
+<!-- ==================== NAVBAR ==================== -->
+<div class="navbar">
+  <div class="navbar-inner" id="navbarInner">
+    <div class="navbar-content">
+      <button class="navbar-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">AI <span>Capital Raising</span></button>
+      <div class="navbar-links">
+        <a href="#track-record">Track Record</a>
+        <a href="#services">Services</a>
+        <a href="#transactions">Transactions</a>
+        <a href="#about">About</a>
+        <a href="#contact" class="btn btn-primary" style="padding:0.5rem 1.25rem;font-size:0.875rem;">Get Started</a>
+      </div>
+      <button class="mobile-toggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#track-record" onclick="document.getElementById('mobileMenu').classList.remove('open')">Track Record</a>
+      <a href="#services" onclick="document.getElementById('mobileMenu').classList.remove('open')">Services</a>
+      <a href="#transactions" onclick="document.getElementById('mobileMenu').classList.remove('open')">Transactions</a>
+      <a href="#about" onclick="document.getElementById('mobileMenu').classList.remove('open')">About</a>
+      <a href="#contact" class="btn btn-primary" style="text-align:center;" onclick="document.getElementById('mobileMenu').classList.remove('open')">Get Started</a>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      <span>Paid Ads → Accredited Investors → Capital Raised</span>
+    </div>
+    <h1>Raise $5M–$100M<br>With <span class="highlight" id="typewriter">Accredited Investors</span></h1>
+    <p>We use <strong style="color:var(--fg)">paid advertising</strong> to put your fund in front of <strong style="color:var(--fg)">qualified, accredited investors</strong> who are actively looking to deploy capital—so you stop chasing and start closing.</p>
+    <div class="hero-buttons">
+      <a href="#contact" class="btn btn-primary btn-lg">View Demo</a>
+      <a href="#track-record" class="btn btn-outline btn-lg">View Track Record</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="value">$600M+</div><div class="label">Capital Raised</div></div>
+      <div class="hero-stat"><div class="value">2.46%</div><div class="label">Avg. Cost of Capital</div></div>
+      <div class="hero-stat"><div class="value">$10M</div><div class="label">Raised in 90 Days</div></div>
+      <div class="hero-stat"><div class="value">$1.5B+</div><div class="label">Capital Pipeline Generated</div></div>
+    </div>
+    <!-- Platform channels -->
+    <div class="channels">
+      <p class="channels-label">We Run Paid Ads That Attract Accredited Investors On</p>
+      <div class="channels-grid">
+        <div class="channel-item"><div class="channel-icon">▣</div><div class="channel-name">Meta Ads</div><div class="channel-desc">Facebook & Instagram</div></div>
+        <div class="channel-item"><div class="channel-icon">◎</div><div class="channel-name">Google Ads</div><div class="channel-desc">Search & Display</div></div>
+        <div class="channel-item"><div class="channel-icon">▦</div><div class="channel-name">LinkedIn Ads</div><div class="channel-desc">B2B Targeting</div></div>
+        <div class="channel-item"><div class="channel-icon">▶</div><div class="channel-name">YouTube Ads</div><div class="channel-desc">Video Campaigns</div></div>
+        <div class="channel-item"><div class="channel-icon">✉</div><div class="channel-name">Email</div><div class="channel-desc">Drip Sequences</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== LOGO TICKER ==================== -->
+<section class="logo-ticker">
+  <p>Trusted by Leading Investment Funds</p>
+  <div style="position:relative;">
+    <div style="position:absolute;left:0;top:0;bottom:0;width:6rem;background:linear-gradient(to right,hsl(220 14% 96%/0.3),transparent);z-index:2;"></div>
+    <div style="position:absolute;right:0;top:0;bottom:0;width:6rem;background:linear-gradient(to left,hsl(220 14% 96%/0.3),transparent);z-index:2;"></div>
+    <div class="ticker-track">
+      <div class="ticker-item"><div class="ticker-icon">R</div><span>Real Estate Fund I</span></div>
+      <div class="ticker-item"><div class="ticker-icon">O</div><span>Oil & Gas Partners</span></div>
+      <div class="ticker-item"><div class="ticker-icon">V</div><span>Venture Capital LLC</span></div>
+      <div class="ticker-item"><div class="ticker-icon">P</div><span>Private Equity Group</span></div>
+      <div class="ticker-item"><div class="ticker-icon">M</div><span>Multifamily Fund</span></div>
+      <div class="ticker-item"><div class="ticker-icon">L</div><span>Land Development Co</span></div>
+      <div class="ticker-item"><div class="ticker-icon">T</div><span>Tech Growth Fund</span></div>
+      <div class="ticker-item"><div class="ticker-icon">E</div><span>Energy Partners LP</span></div>
+      <div class="ticker-item"><div class="ticker-icon">C</div><span>Capital Holdings</span></div>
+      <div class="ticker-item"><div class="ticker-icon">S</div><span>Strategic Ventures</span></div>
+      <!-- duplicate for seamless loop -->
+      <div class="ticker-item"><div class="ticker-icon">R</div><span>Real Estate Fund I</span></div>
+      <div class="ticker-item"><div class="ticker-icon">O</div><span>Oil & Gas Partners</span></div>
+      <div class="ticker-item"><div class="ticker-icon">V</div><span>Venture Capital LLC</span></div>
+      <div class="ticker-item"><div class="ticker-icon">P</div><span>Private Equity Group</span></div>
+      <div class="ticker-item"><div class="ticker-icon">M</div><span>Multifamily Fund</span></div>
+      <div class="ticker-item"><div class="ticker-icon">L</div><span>Land Development Co</span></div>
+      <div class="ticker-item"><div class="ticker-icon">T</div><span>Tech Growth Fund</span></div>
+      <div class="ticker-item"><div class="ticker-icon">E</div><span>Energy Partners LP</span></div>
+      <div class="ticker-item"><div class="ticker-icon">C</div><span>Capital Holdings</span></div>
+      <div class="ticker-item"><div class="ticker-icon">S</div><span>Strategic Ventures</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== WHO WE WORK WITH ==================== -->
+<section class="section">
+  <div class="container">
+    <div class="who-section">
+      <div>
+        <h2 style="font-size:clamp(1.75rem,3.5vw,3rem);font-weight:700;margin-bottom:1.5rem;line-height:1.15;">Built for Funds That Are <span class="gradient-text">Ready to Scale</span></h2>
+        <p style="color:var(--muted-fg);font-size:1.125rem;margin-bottom:2rem;line-height:1.7;">We work with fund managers who have a minimum of <span style="color:var(--primary);font-weight:600;">$5M in committed capital</span> and are ready to deploy AI-powered investor acquisition at scale.</p>
+        <a href="#contact" class="btn btn-primary btn-lg">See If You Qualify</a>
+      </div>
+      <div class="grid-2x3">
+        <div class="who-card">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+          <span>Real Estate Funds</span>
+        </div>
+        <div class="who-card">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V7h-5a8 8 0 0 0-5 2 8 8 0 0 0-5-2H2Z"/></svg>
+          <span>Oil & Gas</span>
+        </div>
+        <div class="who-card">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          <span>Private Equity</span>
+        </div>
+        <div class="who-card">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Venture Capital</span>
+        </div>
+        <div class="who-card">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Multifamily</span>
+        </div>
+        <div class="who-card">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.9C15.5 4.9 17 3.5 17 3.5s1.6 1.4 2.2 3.5c.3 1.1-.1 3.4-.8 5"/><path d="M16.5 15.5C15 17 13 18 11 20"/></svg>
+          <span>Land Development</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== COMPARISON ==================== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Why Funds Are <span class="gradient-text">Making the Switch</span></h2>
+      <p>The old playbook is broken. See how AI-powered capital raising compares.</p>
+    </div>
+    <div class="grid-2">
+      <div class="comparison-card traditional">
+        <div class="comparison-header">
+          <div class="comparison-icon red">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          </div>
+          <div>
+            <h3>Traditional Capital Raising</h3>
+            <p style="font-size:0.875rem;color:var(--muted-fg);">The old way—slow, expensive, unscalable</p>
+          </div>
+        </div>
+        <ul class="comparison-list">
+          <li><div class="dot red"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div><span class="traditional-text">Expensive conferences, events & roadshows</span></li>
+          <li><div class="dot red"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div><span class="traditional-text">Friends & family referrals—not scalable</span></li>
+          <li><div class="dot red"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div><span class="traditional-text">Cold calling & outdated broker networks</span></li>
+          <li><div class="dot red"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div><span class="traditional-text">No visibility into investor pipeline</span></li>
+          <li><div class="dot red"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div><span class="traditional-text">Months of relationship building before first meeting</span></li>
+          <li><div class="dot red"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div><span class="traditional-text">High cost of capital (5–8%+ in fees)</span></li>
+        </ul>
+      </div>
+      <div class="comparison-card ai">
+        <div class="comparison-header">
+          <div class="comparison-icon green">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          </div>
+          <div>
+            <h3>AI Capital Raising</h3>
+            <p style="font-size:0.875rem;color:var(--muted-fg);">The new standard—fast, scalable, data-driven</p>
+          </div>
+        </div>
+        <ul class="comparison-list">
+          <li><div class="dot green"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="ai-text">AI-targeted digital ads that find accredited investors</span></li>
+          <li><div class="dot green"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="ai-text">Scalable lead gen from 15M+ investor database</span></li>
+          <li><div class="dot green"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="ai-text">Automated funnels that pre-qualify investors 24/7</span></li>
+          <li><div class="dot green"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="ai-text">Real-time CRM with enriched investor profiles</span></li>
+          <li><div class="dot green"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="ai-text">Investors come to you—warm & pre-qualified</span></li>
+          <li><div class="dot green"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="ai-text">Avg. 2.46% cost of capital</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SERVICES / 4-STEP FRAMEWORK ==================== -->
+<section id="services" class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>The 4-Step <span class="gradient-text">AI Framework</span></h2>
+      <p>A systematic approach that transforms sporadic fundraising into consistent, scalable capital inflow.</p>
+    </div>
+    <div class="grid-2" style="margin-bottom:6rem;">
+      <div class="card"><div class="step-card"><div class="step-num">1</div><div><h3>AI-Powered Investor Lead Generation</h3><p>Finding your ideal investors digitally through sophisticated targeting and "Investor Magnet" content that attracts accredited investors at scale.</p></div></div></div>
+      <div class="card"><div class="step-card"><div class="step-num">2</div><div><h3>High-Converting Investor Funnels</h3><p>Turning interest into engagement with landing pages and content designed specifically for sophisticated investors.</p></div></div></div>
+      <div class="card"><div class="step-card"><div class="step-num">3</div><div><h3>Marketing Automation & Nurturing</h3><p>Building relationships at scale through personalized, automated follow-up sequences that move investors toward commitment.</p></div></div></div>
+      <div class="card"><div class="step-card"><div class="step-num">4</div><div><h3>Analytics & KPI Tracking</h3><p>Turning data into dollars by measuring, analyzing, and optimizing your entire investor acquisition system.</p></div></div></div>
+    </div>
+    <div class="section-header">
+      <h2>Our <span class="gradient-text">Unfair Advantage</span></h2>
+      <p>Proprietary data and technology that no other capital raising firm can offer.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+        </div>
+        <h3>15M+ Accredited Investor Database</h3>
+        <p>Leverage our proprietary database of 15 million accredited investors to supercharge your ad targeting—plus access our best-kept secret: a 5,000 funded investor list to scale your campaigns with proven buyers.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+        </div>
+        <h3>Instant Lead Enrichment</h3>
+        <p>Every lead that enters your CRM is instantly enriched with net worth, income, investment history, and accreditation status—so your team only spends time on qualified prospects.</p>
+        <div style="margin-top:1.5rem;">
+          <div class="enrichment-card">
+            <div class="enrichment-header">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(142 52% 36%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              <span class="title">Lead Enrichment</span>
+              <div class="enrichment-badges">
+                <span class="enriched">Enriched</span>
+                <span class="contact">Phone+Email</span>
+              </div>
+            </div>
+            <div class="enrichment-body">
+              <!-- Identity -->
+              <div class="enrichment-section">
+                <div class="enrichment-section-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Identity</span>
+                </div>
+                <p class="enrichment-field blurred">Margo Lauterbach</p>
+                <p class="enrichment-field"><span class="label">Gender:</span> <span class="value">Female</span></p>
+                <p class="enrichment-field"><span class="label">Age:</span> <span class="value">50</span></p>
+                <p class="enrichment-field"><span class="label">Marital:</span> <span class="value">Married</span></p>
+              </div>
+              <!-- Address -->
+              <div class="enrichment-section">
+                <div class="enrichment-section-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span>Address</span>
+                </div>
+                <p class="enrichment-field blurred">1001 Malvern Ave, Towson, MD, 21204</p>
+                <p class="enrichment-field"><span class="label">Area:</span> <span class="value">Urban</span></p>
+              </div>
+              <!-- Financial -->
+              <div class="enrichment-section">
+                <div class="enrichment-section-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  <span>Financial Profile</span>
+                </div>
+                <p class="enrichment-field"><span class="label">Net Worth:</span> <span class="value">Greater than $499K</span></p>
+                <p class="enrichment-field"><span class="label">Income:</span> <span class="value">GT_150K</span></p>
+                <div class="enrichment-tags"><span>Investor</span><span>Owns Investments</span></div>
+              </div>
+              <!-- Home -->
+              <div class="enrichment-section">
+                <div class="enrichment-section-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <span>Home</span>
+                </div>
+                <p class="enrichment-field bold">Home Owner</p>
+                <p class="enrichment-field"><span class="label">Value:</span> <span class="value">$1,745,200</span></p>
+                <p class="enrichment-field"><span class="label">Type:</span> <span class="value">Single Family</span></p>
+              </div>
+              <!-- Household -->
+              <div class="enrichment-section">
+                <div class="enrichment-section-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <span>Household</span>
+                </div>
+                <p class="enrichment-field bold">1 person(s), 1 adult(s)</p>
+                <div class="enrichment-tags"><span>Has Children</span></div>
+              </div>
+              <!-- Education -->
+              <div class="enrichment-section">
+                <div class="enrichment-section-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 6 3 6 3s3 0 6-3v-5"/></svg>
+                  <span>Education & Career</span>
+                </div>
+                <p class="enrichment-field bold">Completed Graduate School</p>
+                <p class="enrichment-field"><span class="label">Type:</span> <span class="value">White Collar</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p>Real results from real funds. Here's what AI-powered capital raising looks like.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <div class="tx-card">
+        <div style="flex:1;"><div class="tx-meta"><span>Real Estate Fund</span><span style="color:var(--primary);">→</span><span class="tx-badge">$290K Ad Spend</span></div><p style="color:var(--muted-fg);line-height:1.7;">Deployed $290K in ad spend to generate $10M in committed capital through AI-powered accredited investor acquisition.</p></div>
+        <div class="tx-stats"><div class="tx-stat"><div class="value primary">$10M</div><div class="label">Raised</div></div><div class="tx-stat"><div class="value">90 Days</div><div class="label">Timeline</div></div></div>
+      </div>
+      <div class="tx-card">
+        <div style="flex:1;"><div class="tx-meta"><span>Real Estate Fund</span><span style="color:var(--primary);">→</span><span class="tx-badge">$120K Ad Spend</span></div><p style="color:var(--muted-fg);line-height:1.7;">Rapid capital deployment through pre-qualified investor pipeline and targeted digital acquisition.</p></div>
+        <div class="tx-stats"><div class="tx-stat"><div class="value primary">$5M</div><div class="label">Raised</div></div><div class="tx-stat"><div class="value">31 Days</div><div class="label">Timeline</div></div></div>
+      </div>
+      <div class="tx-card">
+        <div style="flex:1;"><div class="tx-meta"><span>Oil & Gas Fund</span></div><p style="color:var(--muted-fg);line-height:1.7;">From zero to fully funded using AI-powered accredited investor funnels.</p></div>
+        <div class="tx-stats"><div class="tx-stat"><div class="value primary">$3.2M</div><div class="label">Raised</div></div><div class="tx-stat"><div class="value">135 Days</div><div class="label">Timeline</div></div></div>
+      </div>
+      <div class="tx-card">
+        <div style="flex:1;"><div class="tx-meta"><span>Land Development Fund</span></div><p style="color:var(--muted-fg);line-height:1.7;">Scaled from $2M seed to full allocation through targeted digital acquisition.</p></div>
+        <div class="tx-stats"><div class="tx-stat"><div class="value primary">$10.5M</div><div class="label">Raised</div></div><div class="tx-stat"><div class="value">8 Months</div><div class="label">Timeline</div></div></div>
+      </div>
+      <div class="tx-card">
+        <div style="flex:1;"><div class="tx-meta"><span>Multifamily Fund</span></div><p style="color:var(--muted-fg);line-height:1.7;">Rapid capital deployment through pre-qualified investor pipeline.</p></div>
+        <div class="tx-stats"><div class="tx-stat"><div class="value primary">$850K</div><div class="label">Raised</div></div><div class="tx-stat"><div class="value">7 Days</div><div class="label">Timeline</div></div></div>
+      </div>
+      <div class="tx-card">
+        <div style="flex:1;"><div class="tx-meta"><span>Private Equity Fund</span></div><p style="color:var(--muted-fg);line-height:1.7;">Built a recurring investor acquisition engine for ongoing capital raises.</p></div>
+        <div class="tx-stats"><div class="tx-stat"><div class="value primary">$22M</div><div class="label">Raised</div></div><div class="tx-stat"><div class="value">14 Months</div><div class="label">Timeline</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TESTIMONIALS ==================== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>What Fund Managers <span class="gradient-text">Are Saying</span></h2>
+    </div>
+    <div class="grid-3">
+      <div class="testimonial-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="hsl(142 52% 36% / 0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:1rem;"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+        <blockquote>"They raised $3.2M for our oil and gas fund in just 135 days. The AI-powered approach brought in investors we never would have reached through traditional channels."</blockquote>
+        <div class="testimonial-footer"><div class="name">Managing Partner</div><div class="fund">Oil & Gas Fund</div></div>
+      </div>
+      <div class="testimonial-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="hsl(142 52% 36% / 0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:1rem;"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+        <blockquote>"We went from struggling to raise $500K to closing $10.5M in 8 months. The system just works—qualified investors come in on autopilot."</blockquote>
+        <div class="testimonial-footer"><div class="name">Fund Manager</div><div class="fund">Land Development Fund</div></div>
+      </div>
+      <div class="testimonial-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="hsl(142 52% 36% / 0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:1rem;"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+        <blockquote>"$850K in 7 days. I didn't think it was possible until I saw the pipeline they built. Every investor was pre-qualified and ready to commit."</blockquote>
+        <div class="testimonial-footer"><div class="name">GP</div><div class="fund">Multifamily Fund</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ABOUT ==================== -->
+<section id="about" class="section">
+  <div class="container-sm" style="text-align:center;">
+    <div class="section-label">About</div>
+    <h2 style="font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;margin-bottom:2rem;">High Performance Ads</h2>
+    <p style="color:var(--muted-fg);font-size:1.125rem;line-height:1.7;margin-bottom:1.5rem;">We are a performance marketing agency specializing in AI-powered capital raising for alternative investment funds. Our team combines deep expertise in digital marketing, investor psychology, and artificial intelligence to build systems that attract, qualify, and convert accredited investors at scale.</p>
+    <p style="color:var(--muted-fg);line-height:1.7;">With over <span style="color:var(--primary);font-weight:600;">$600M+ in capital raised</span> across 47+ funds, we've proven that the future of fundraising is automated, intelligent, and measurable.</p>
+  </div>
+</section>
+
+<!-- ==================== CONTACT ==================== -->
+<section id="contact" class="section section-muted">
+  <div class="container-sm">
+    <div class="section-header">
+      <h2>Let's Talk About <span class="gradient-text">What Comes Next</span></h2>
+      <p>Tell us about your fund and we'll show you how AI can accelerate your raise.</p>
+    </div>
+    <div class="form-card">
+      <form>
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name</label><input type="text" placeholder="John Smith" required /></div>
+          <div class="form-group"><label>Email</label><input type="email" placeholder="john@fund.com" required /></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label>Phone</label><input type="tel" placeholder="+1 (555) 000-0000" /></div>
+          <div class="form-group">
+            <label>How Much Do You Want To Raise?</label>
+            <select>
+              <option value="" disabled selected>Select amount</option>
+              <option value="5-10">$5M – $10M</option>
+              <option value="10-25">$10M – $25M</option>
+              <option value="25-50">$25M – $50M</option>
+              <option value="50-100">$50M – $100M</option>
+              <option value="100-200">$100M – $200M</option>
+              <option value="200+">$200M+</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>Tell us about your fund</label><textarea placeholder="Brief description of your fund, asset class, and current raise status..."></textarea></div>
+        <button type="submit" class="btn btn-primary btn-lg btn-full">Submit Inquiry</button>
+        <p class="form-disclaimer">By submitting this form, you agree to our Terms of Service and Privacy Policy. We will never share your information with third parties.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="navbar-logo">AI <span>Capital Raising</span></div>
+      <div class="footer-links">
+        <a href="#track-record">Track Record</a>
+        <a href="#services">Services</a>
+        <a href="#transactions">Transactions</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>This site is operated by High Performance Ads. All investment opportunities referenced are provided by third-party fund managers. Past performance does not guarantee future results. All investments carry risk.</p>
+      <p style="margin-top:1rem;">Terms & Conditions &nbsp;•&nbsp; Privacy Policy</p>
+      <p style="margin-top:1rem;">© 2026 AI Capital Raising. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+// Navbar scroll effect
+const navInner = document.getElementById('navbarInner');
+window.addEventListener('scroll', () => {
+  navInner.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Typewriter effect
+const words = ['Accredited Investors', 'Institutional Capital', 'Capital Partners', 'Family Offices'];
+let wordIdx = 0, charIdx = 0, deleting = false;
+const tw = document.getElementById('typewriter');
+function type() {
+  const word = words[wordIdx];
+  tw.textContent = deleting ? word.slice(0, charIdx--) : word.slice(0, charIdx++);
+  if (!deleting && charIdx > word.length) { setTimeout(() => { deleting = true; type(); }, 2000); return; }
+  if (deleting && charIdx < 0) { deleting = false; wordIdx = (wordIdx + 1) % words.length; charIdx = 0; }
+  setTimeout(type, deleting ? 40 : 70);
+}
+type();
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; } });
+}, { threshold: 0.1, rootMargin: '-50px' });
+
+document.querySelectorAll('.card, .comparison-card, .tx-card, .testimonial-card, .form-card, .who-card').forEach((el, i) => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(40px)';
+  el.style.transition = `opacity 0.7s ease ${i * 0.08}s, transform 0.7s ease ${i * 0.08}s`;
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
