@@ -14,7 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      asset_comments: {
+        Row: {
+          asset_id: string
+          author_name: string
+          author_role: string | null
+          comment: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          asset_id: string
+          author_name: string
+          author_role?: string | null
+          comment: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          asset_id?: string
+          author_name?: string
+          author_role?: string | null
+          comment?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_comments_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "client_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_assets: {
+        Row: {
+          angle_id: string | null
+          asset_type: string
+          client_id: string
+          content: Json | null
+          created_at: string
+          id: string
+          status: string
+          title: string | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          angle_id?: string | null
+          asset_type: string
+          client_id: string
+          content?: Json | null
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          angle_id?: string | null
+          asset_type?: string
+          client_id?: string
+          content?: Json | null
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_assets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          additional_notes: string | null
+          brand_notes: string | null
+          budget_amount: string | null
+          budget_mode: string | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          fund_name: string | null
+          fund_type: string | null
+          id: string
+          investor_list_path: string | null
+          kickoff_date: string | null
+          kickoff_time: string | null
+          min_investment: string | null
+          pitch_deck_link: string | null
+          pitch_deck_path: string | null
+          raise_amount: string | null
+          share_token: string
+          status: string
+          target_investor: string | null
+          timeline: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          additional_notes?: string | null
+          brand_notes?: string | null
+          budget_amount?: string | null
+          budget_mode?: string | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          fund_name?: string | null
+          fund_type?: string | null
+          id?: string
+          investor_list_path?: string | null
+          kickoff_date?: string | null
+          kickoff_time?: string | null
+          min_investment?: string | null
+          pitch_deck_link?: string | null
+          pitch_deck_path?: string | null
+          raise_amount?: string | null
+          share_token?: string
+          status?: string
+          target_investor?: string | null
+          timeline?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          additional_notes?: string | null
+          brand_notes?: string | null
+          budget_amount?: string | null
+          budget_mode?: string | null
+          company_name?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          fund_name?: string | null
+          fund_type?: string | null
+          id?: string
+          investor_list_path?: string | null
+          kickoff_date?: string | null
+          kickoff_time?: string | null
+          min_investment?: string | null
+          pitch_deck_link?: string | null
+          pitch_deck_path?: string | null
+          raise_amount?: string | null
+          share_token?: string
+          status?: string
+          target_investor?: string | null
+          timeline?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
