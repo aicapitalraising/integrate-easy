@@ -7,43 +7,59 @@ const corsHeaders = {
 };
 
 const SYSTEM_PROMPTS: Record<string, string> = {
-  research: `You are an expert capital markets researcher for alternative investments. Given a fund's details, produce comprehensive research structured as JSON with these keys:
-- industry_overview: 2-3 paragraphs on the industry/asset class
-- asset_class_trends: current trends and growth data
-- market_opportunity: size, growth rate, key drivers
-- supply_demand: supply/demand dynamics and imbalances
-- demographic_tailwinds: demographic and economic factors
-- competitive_landscape: how this fund compares
-- timing_factors: why now is the right time
-- why_asset_class: compelling reason for this asset class
-- why_market: why this specific market/geography
-- why_now: urgency and timing argument
-- why_operator: why this team/operator
-Each value should be 2-4 sentences of insightful, data-informed analysis. Be specific, cite realistic market stats.`,
+  research: `You are an expert capital markets researcher for alternative investments. You have access to Google Search to find REAL, CURRENT market data. 
 
-  angles: `You are a world-class direct response copywriter specializing in alternative investment marketing to accredited investors. Given research and fund details, generate 8 marketing angles as JSON array. Each angle object:
+Given a fund's details, conduct thorough research using web search and produce comprehensive research structured as JSON with these keys:
+- industry_overview: 2-3 paragraphs on the industry/asset class with real market data, recent news, and current statistics
+- asset_class_trends: current trends and growth data with specific numbers, sources, and recent developments
+- market_opportunity: market size, growth rate, key drivers — cite real statistics from industry reports
+- supply_demand: supply/demand dynamics and imbalances with current data points
+- demographic_tailwinds: demographic and economic factors driving demand — use real census, economic data
+- competitive_landscape: how this type of fund compares to alternatives, current competitor landscape
+- timing_factors: why now is the right time — reference current interest rates, market conditions, regulatory environment
+- why_asset_class: compelling data-driven reason for this asset class
+- why_market: why this specific market/geography with real local market data
+- why_now: urgency and timing argument backed by current market conditions
+- why_operator: framework for why an experienced operator matters in this space
+- key_statistics: array of 8-10 objects with {stat, source, context} — real industry statistics
+- recent_news: array of 3-5 recent relevant headlines/developments
+Each value should be detailed, data-informed analysis. Be specific with numbers, percentages, and market data. Reference real sources where possible.`,
+
+  angles: `You are a world-class direct response copywriter specializing in alternative investment marketing to accredited investors. 
+
+IMPORTANT: You have been given real market research with actual statistics and data. USE THIS RESEARCH extensively in your angles — reference specific numbers, trends, and data points to make angles credible and compelling.
+
+Generate 8 marketing angles as JSON array. Each angle object:
 - title: short punchy angle name
-- hook: one-line attention grabber
+- hook: one-line attention grabber that references a real stat or trend from the research
 - emotional_driver: core emotion this taps into
-- why_it_works: strategic reasoning
+- why_it_works: strategic reasoning tied to the research data
 - use_case: where to deploy (ads, emails, landing page)
-- ad_hooks: array of 3 short ad hook variations
+- ad_hooks: array of 3 short ad hook variations — each should reference real data
 - email_subject: suggested email subject line
 - video_hook: opening line for a video script
+- key_data_point: the specific research stat/fact that powers this angle
 Be sophisticated — these target HNW accredited investors, not retail.`,
 
-  emails: `You are an elite email copywriter for capital raising campaigns targeting accredited investors. Generate a 7-email nurture sequence as JSON array. Each email object:
-- subject: compelling subject line
+  emails: `You are an elite email copywriter for capital raising campaigns targeting accredited investors. 
+
+IMPORTANT: You have been given real market research AND marketing angles. Weave specific statistics, market data, and research findings into the emails to build credibility and urgency. Each email should feel data-driven and authoritative.
+
+Generate a 7-email nurture sequence as JSON array. Each email object:
+- subject: compelling subject line (reference data when possible)
 - preview_text: preview/preheader text
-- body: full email body (use \\n for line breaks)
+- body: full email body (use \\n for line breaks) — include specific stats and data points from research
 - cta_text: button text
 - cta_url_placeholder: "[BOOKING_LINK]" or "[INVESTOR_PORTAL]"
 - angle_used: which marketing angle this ties to
 - sequence_step: number in sequence
 - purpose: strategic goal of this email
+- data_points_used: array of key stats referenced in this email
 Primary CTA = book a strategy call. Tone: professional, authoritative, exclusive.`,
 
-  sms: `You are an SMS marketing expert for capital raising. Generate a 6-message SMS sequence as JSON array. Each message object:
+  sms: `You are an SMS marketing expert for capital raising. You have research data and angles — use compelling stats in messages where possible.
+
+Generate a 6-message SMS sequence as JSON array. Each message object:
 - message: SMS text (under 160 chars)
 - character_count: number
 - sequence_step: number
@@ -52,100 +68,135 @@ Primary CTA = book a strategy call. Tone: professional, authoritative, exclusive
 - timing: when to send relative to opt-in
 Keep messages compliant, professional, and action-oriented.`,
 
-  adcopy: `You are a paid media copywriter specializing in Meta/LinkedIn ads for alternative investments. For each marketing angle provided, generate ad copy variations as JSON array. Each object:
+  adcopy: `You are a paid media copywriter specializing in Meta/LinkedIn ads for alternative investments. 
+
+IMPORTANT: You have real market research AND marketing angles. Every ad should reference specific data points, statistics, or market trends from the research to build credibility. Data-driven ads outperform generic ones.
+
+For each marketing angle provided, generate ad copy variations as JSON array. Each object:
 - angle: which angle this is for
-- primary_text: main ad body (2-3 sentences)
+- primary_text: main ad body (2-3 sentences) — must include at least one specific stat or data point
 - headline: ad headline (under 40 chars)
 - description: description line
 - cta: suggested CTA button
 - platform: "meta" or "linkedin"
 - variation: number (generate 3 per angle)
+- data_point_used: the specific stat referenced
 Write for accredited investors. Compliant, no guarantees, sophisticated tone.`,
 
-  scripts: `You are a video script writer for capital raising campaigns. Generate video scripts as JSON array. Each object:
+  scripts: `You are a video script writer for capital raising campaigns. You have real research data and angles — weave specific statistics and market insights throughout scripts to build authority.
+
+Generate video scripts as JSON array. Each object:
 - title: script name
 - type: one of "avatar", "broll", "ugc", "vsl_short"
-- hook: opening 3-second hook
-- body: main script body
+- hook: opening 3-second hook — lead with a compelling stat or fact
+- body: main script body — reference specific research data throughout
 - cta: closing call to action
 - angle_used: marketing angle
 - format: "9:16", "1:1", or "16:9"
 - duration_estimate: estimated seconds
 Generate 4-6 scripts mixing types. Tone: authoritative, trustworthy, urgent.`,
 
-  creatives: `You are a creative director for alternative investment ad campaigns. Generate creative concepts as JSON with keys:
-- static_concepts: array of 5 objects, each with: headline, supporting_text, visual_direction, layout_idea, format ("1080x1080", "1080x1920", "1200x628")
-- video_concepts: array of 3 objects, each with: style, setting, visual_scenes (array of scene descriptions), caption_direction, hook_concept, format
-Be specific about visual direction — colors, imagery, composition.`,
+  creatives: `You are a creative director for alternative investment ad campaigns. You have research data and angles — use specific stats and data points in headlines and copy.
 
-  report: `You are a financial content strategist. Generate a special report / lead magnet outline as JSON:
+Generate creative concepts as JSON with keys:
+- static_concepts: array of 5 objects, each with: headline (include a stat), supporting_text, visual_direction, layout_idea, format ("1080x1080", "1080x1920", "1200x628"), data_callout (a key stat to feature prominently)
+- video_concepts: array of 3 objects, each with: style, setting, visual_scenes (array of scene descriptions), caption_direction, hook_concept (lead with data), format
+Be specific about visual direction — colors, imagery, composition. Feature data prominently in designs.`,
+
+  report: `You are a financial content strategist. You have real market research data — use it extensively to create a data-rich, authoritative special report.
+
+Generate a special report / lead magnet as JSON:
 - title: compelling report title
 - subtitle: supporting subtitle
-- executive_summary: 2-3 paragraph executive summary
-- market_opportunity: section on market size and growth
-- why_now: timing and urgency section
-- strategy_overview: the investment strategy explained
-- operator_advantage: why this team
-- faqs: array of 5 {question, answer} objects
+- executive_summary: 2-3 paragraph executive summary packed with key statistics
+- market_opportunity: detailed section on market size and growth with real data
+- why_now: timing and urgency section with current market conditions
+- strategy_overview: the investment strategy explained with supporting data
+- operator_advantage: why this team — framework with industry context
+- key_charts: array of 4-6 {chart_title, data_description, insight} — describe charts that should be created
+- faqs: array of 5 {question, answer} objects with data-backed answers
 - cta_heading: call to action heading
 - cta_body: call to action paragraph
 Write for sophisticated accredited investors. Data-driven, authoritative.`,
 
-  funnel: `You are a conversion copywriter for alternative investment funnels. Generate funnel copy as JSON:
-- landing_page: { headline, subheadline, body_sections (array of {heading, copy}), social_proof_placeholder, cta_primary, cta_secondary }
+  funnel: `You are a conversion copywriter for alternative investment funnels. You have research data and angles — use specific stats and urgency from real market data throughout.
+
+Generate funnel copy as JSON:
+- landing_page: { headline (include a compelling stat), subheadline, hero_stat (key number to feature prominently), body_sections (array of {heading, copy} — each with data points), social_proof_placeholder, cta_primary, cta_secondary }
 - thank_you_page: { headline, body, next_steps (array), cta }
-- booking_page: { headline, subheadline, bullet_points (array), urgency_note }
+- booking_page: { headline, subheadline, bullet_points (array — include stats), urgency_note (reference real market timing) }
 - investor_portal_intro: { welcome_headline, welcome_body, sections (array of {title, description}) }
-- faqs: array of {question, answer}
+- faqs: array of {question, answer} with data-backed answers
 Conversion-focused, premium tone, accredited investor audience.`,
 };
+
+function buildUserPrompt(client_data: any, asset_type: string, existing_research: any, existing_angles: any): string {
+  let userPrompt = `Fund Details:\n`;
+  userPrompt += `- Company: ${client_data.company_name}\n`;
+  userPrompt += `- Fund: ${client_data.fund_name || client_data.company_name}\n`;
+  userPrompt += `- Fund Type: ${client_data.fund_type || "Alternative Investment"}\n`;
+  userPrompt += `- Raise Amount: $${client_data.raise_amount || "TBD"}\n`;
+  userPrompt += `- Minimum Investment: $${client_data.min_investment || "TBD"}\n`;
+  userPrompt += `- Timeline: ${client_data.timeline || "TBD"}\n`;
+  userPrompt += `- Target Investor: ${client_data.target_investor || "Accredited investors"}\n`;
+  userPrompt += `- Website: ${client_data.website || "N/A"}\n`;
+  if (client_data.brand_notes) userPrompt += `- Brand Notes: ${client_data.brand_notes}\n`;
+  if (client_data.additional_notes) userPrompt += `- Additional Notes: ${client_data.additional_notes}\n`;
+
+  if (existing_research && asset_type !== "research") {
+    userPrompt += `\n=== MARKET RESEARCH (use this data extensively) ===\n${JSON.stringify(existing_research, null, 2)}\n`;
+  }
+  if (existing_angles && ["emails", "sms", "adcopy", "scripts", "creatives", "funnel"].includes(asset_type)) {
+    userPrompt += `\n=== MARKETING ANGLES (build on these) ===\n${JSON.stringify(existing_angles, null, 2)}\n`;
+  }
+
+  if (asset_type === "research") {
+    userPrompt += `\nSearch the web for REAL, CURRENT data about this asset class, market, industry trends, and news. Include specific statistics, market sizes, growth rates, and recent developments. Return ONLY valid JSON.`;
+  } else {
+    userPrompt += `\nGenerate the ${asset_type} content now. USE the research data and statistics throughout — every piece of content should feel data-driven and credible. Return ONLY valid JSON.`;
+  }
+
+  return userPrompt;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { client_id, asset_type, client_data, existing_research, existing_angles } = await req.json();
-    
+
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
 
     const systemPrompt = SYSTEM_PROMPTS[asset_type];
     if (!systemPrompt) throw new Error(`Unknown asset type: ${asset_type}`);
 
-    // Build context prompt
-    let userPrompt = `Fund Details:\n`;
-    userPrompt += `- Company: ${client_data.company_name}\n`;
-    userPrompt += `- Fund: ${client_data.fund_name || client_data.company_name}\n`;
-    userPrompt += `- Fund Type: ${client_data.fund_type || "Alternative Investment"}\n`;
-    userPrompt += `- Raise Amount: $${client_data.raise_amount || "TBD"}\n`;
-    userPrompt += `- Minimum Investment: $${client_data.min_investment || "TBD"}\n`;
-    userPrompt += `- Timeline: ${client_data.timeline || "TBD"}\n`;
-    userPrompt += `- Target Investor: ${client_data.target_investor || "Accredited investors"}\n`;
-    userPrompt += `- Website: ${client_data.website || "N/A"}\n`;
-    if (client_data.brand_notes) userPrompt += `- Brand Notes: ${client_data.brand_notes}\n`;
-    if (client_data.additional_notes) userPrompt += `- Additional Notes: ${client_data.additional_notes}\n`;
+    const userPrompt = buildUserPrompt(client_data, asset_type, existing_research, existing_angles);
 
-    if (existing_research && ["angles", "emails", "sms", "adcopy", "scripts", "creatives", "report", "funnel"].includes(asset_type)) {
-      userPrompt += `\nResearch Context:\n${JSON.stringify(existing_research, null, 2)}\n`;
-    }
-    if (existing_angles && ["emails", "sms", "adcopy", "scripts", "creatives"].includes(asset_type)) {
-      userPrompt += `\nMarketing Angles:\n${JSON.stringify(existing_angles, null, 2)}\n`;
-    }
+    // For research: use Google Search grounding for real data
+    // For everything else: standard generation using the research context
+    const isResearch = asset_type === "research";
+    
+    const requestBody: any = {
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        temperature: isResearch ? 0.3 : 0.8, // Lower temp for research accuracy, higher for creative
+      },
+    };
 
-    userPrompt += `\nGenerate the ${asset_type} content now. Return ONLY valid JSON, no markdown.`;
+    // Enable Google Search grounding for research to get real market data
+    if (isResearch) {
+      requestBody.tools = [{ googleSearch: {} }];
+    }
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: systemPrompt }] },
-          contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-          generationConfig: {
-            responseMimeType: "application/json",
-          },
-        }),
+        body: JSON.stringify(requestBody),
       }
     );
 
@@ -161,16 +212,43 @@ serve(async (req) => {
     }
 
     const result = await response.json();
-    let content = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
     
+    // Extract text from potentially multiple parts (grounded responses can have multiple)
+    let content = "";
+    const parts = result.candidates?.[0]?.content?.parts || [];
+    for (const part of parts) {
+      if (part.text) content += part.text;
+    }
+
+    // Also capture grounding metadata if present (search sources)
+    const groundingMetadata = result.candidates?.[0]?.groundingMetadata;
+
     // Strip markdown code fences if present
     content = content.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
-    
+
     let parsed;
     try {
       parsed = JSON.parse(content);
     } catch {
-      parsed = { raw: content };
+      // Try to extract JSON from mixed content
+      const jsonMatch = content.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch {
+          parsed = { raw: content };
+        }
+      } else {
+        parsed = { raw: content };
+      }
+    }
+
+    // For research, append grounding sources if available
+    if (isResearch && groundingMetadata?.searchEntryPoint) {
+      parsed._grounding_sources = groundingMetadata.groundingChunks?.map((c: any) => ({
+        title: c.web?.title,
+        uri: c.web?.uri,
+      })) || [];
     }
 
     // Save to database

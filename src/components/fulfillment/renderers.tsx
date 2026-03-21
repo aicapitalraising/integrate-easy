@@ -18,18 +18,69 @@ export function ResearchRenderer({ content }: { content: any }) {
     { key: 'why_operator', label: 'Why This Operator' },
   ];
 
+  const stats = content.key_statistics || [];
+  const news = content.recent_news || [];
+  const sources = content._grounding_sources || [];
+
   return (
-    <div className="grid md:grid-cols-2 gap-4">
-      {sections.map(({ key, label }) => content[key] && (
-        <Card key={key} className="border-border">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">{label}</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground leading-relaxed">
-            {content[key]}
+    <div className="space-y-6">
+      {/* Key Statistics Banner */}
+      {stats.length > 0 && (
+        <div>
+          <h4 className="font-display font-bold text-foreground mb-3 text-sm">Key Statistics</h4>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {stats.map((s: any, i: number) => (
+              <Card key={i} className="border-primary/20 bg-primary/5">
+                <CardContent className="p-3">
+                  <p className="font-bold text-foreground text-lg">{s.stat}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{s.context}</p>
+                  {s.source && <p className="text-[10px] text-muted-foreground/60 mt-1">Source: {s.source}</p>}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Research Sections */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {sections.map(({ key, label }) => content[key] && (
+          <Card key={key} className="border-border">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold">{label}</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+              {content[key]}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Recent News */}
+      {news.length > 0 && (
+        <Card className="border-border">
+          <CardHeader className="pb-2"><CardTitle className="text-sm">Recent News & Developments</CardTitle></CardHeader>
+          <CardContent className="space-y-2">
+            {news.map((item: any, i: number) => (
+              <p key={i} className="text-sm text-muted-foreground">• {typeof item === 'string' ? item : item.headline || item.title || JSON.stringify(item)}</p>
+            ))}
           </CardContent>
         </Card>
-      ))}
+      )}
+
+      {/* Grounding Sources */}
+      {sources.length > 0 && (
+        <Card className="border-border">
+          <CardHeader className="pb-2"><CardTitle className="text-sm">Research Sources</CardTitle></CardHeader>
+          <CardContent className="space-y-1">
+            {sources.map((src: any, i: number) => (
+              <a key={i} href={src.uri} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline block truncate">
+                {src.title || src.uri}
+              </a>
+            ))}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
