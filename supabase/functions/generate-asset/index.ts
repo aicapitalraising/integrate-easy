@@ -106,8 +106,8 @@ serve(async (req) => {
   try {
     const { client_id, asset_type, client_data, existing_research, existing_angles } = await req.json();
     
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
 
     const systemPrompt = SYSTEM_PROMPTS[asset_type];
     if (!systemPrompt) throw new Error(`Unknown asset type: ${asset_type}`);
