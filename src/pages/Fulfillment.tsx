@@ -184,21 +184,6 @@ function ClientOverview({ client }: { client: Client }) {
   );
 }
 
-function PlaceholderTab({ icon: Icon, title, description }: { icon: any; title: string; description: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-        <Icon className="w-8 h-8 text-muted-foreground" />
-      </div>
-      <h3 className="font-display text-lg font-bold text-foreground mb-1">{title}</h3>
-      <p className="text-sm text-muted-foreground max-w-md">{description}</p>
-      <Button variant="outline" size="sm" className="mt-4 gap-2">
-        <Plus className="w-3.5 h-3.5" /> Generate
-      </Button>
-    </div>
-  );
-}
-
 function ClientWorkspace({ client }: { client: Client }) {
   return (
     <Tabs defaultValue="overview" className="space-y-6">
@@ -213,20 +198,36 @@ function ClientWorkspace({ client }: { client: Client }) {
         <TabsTrigger value="creatives" className="text-xs">Creatives</TabsTrigger>
         <TabsTrigger value="report" className="text-xs">Report</TabsTrigger>
         <TabsTrigger value="funnel" className="text-xs">Funnel</TabsTrigger>
-        <TabsTrigger value="approval" className="text-xs">Approval</TabsTrigger>
       </TabsList>
 
       <TabsContent value="overview"><ClientOverview client={client} /></TabsContent>
-      <TabsContent value="research"><PlaceholderTab icon={BarChart3} title="Research Engine" description="AI-powered market research, industry analysis, and opportunity identification for this client's fund." /></TabsContent>
-      <TabsContent value="angles"><PlaceholderTab icon={Target} title="Marketing Angles" description="Generate 6-10 marketing angles based on research — hooks, emotional drivers, and use cases." /></TabsContent>
-      <TabsContent value="emails"><PlaceholderTab icon={Mail} title="Email Sequences" description="Generate nurture email sequences with subject lines, preview text, and CTAs." /></TabsContent>
-      <TabsContent value="sms"><PlaceholderTab icon={MessageSquare} title="SMS Sequences" description="Generate SMS follow-up, reminder, and re-engagement sequences." /></TabsContent>
-      <TabsContent value="adcopy"><PlaceholderTab icon={Megaphone} title="Ad Copy" description="Generate ad copy variations — primary text, headlines, and descriptions per angle." /></TabsContent>
-      <TabsContent value="scripts"><PlaceholderTab icon={Video} title="Video Scripts" description="Generate avatar, B-roll, UGC, and VSL scripts with hooks and CTAs." /></TabsContent>
-      <TabsContent value="creatives"><PlaceholderTab icon={Image} title="Creative Concepts" description="Static and video ad concepts with visual direction and layout ideas." /></TabsContent>
-      <TabsContent value="report"><PlaceholderTab icon={FileText} title="Special Report" description="Generate a lead magnet report — cover page, executive summary, market opportunity." /></TabsContent>
-      <TabsContent value="funnel"><PlaceholderTab icon={Globe} title="Funnel Copy" description="Landing page, thank you page, booking page, and investor portal copy." /></TabsContent>
-      <TabsContent value="approval"><PlaceholderTab icon={CheckCircle2} title="Approval Workflow" description="Review, approve, or request revisions on all generated assets." /></TabsContent>
+      <TabsContent value="research">
+        <AssetGeneratorTab client={client} assetType="research" icon={BarChart3} title="Research Engine" description="AI-powered market research, industry analysis, and opportunity identification." renderContent={(c) => <ResearchRenderer content={c} />} />
+      </TabsContent>
+      <TabsContent value="angles">
+        <AssetGeneratorTab client={client} assetType="angles" icon={Target} title="Marketing Angles" description="Generate 6-10 marketing angles with hooks, emotional drivers, and use cases." renderContent={(c) => <AnglesRenderer content={c} />} />
+      </TabsContent>
+      <TabsContent value="emails">
+        <AssetGeneratorTab client={client} assetType="emails" icon={Mail} title="Email Sequences" description="Generate nurture email sequences with subject lines, preview text, and CTAs." renderContent={(c) => <EmailsRenderer content={c} />} />
+      </TabsContent>
+      <TabsContent value="sms">
+        <AssetGeneratorTab client={client} assetType="sms" icon={MessageSquare} title="SMS Sequences" description="Generate SMS follow-up, reminder, and re-engagement sequences." renderContent={(c) => <SMSRenderer content={c} />} />
+      </TabsContent>
+      <TabsContent value="adcopy">
+        <AssetGeneratorTab client={client} assetType="adcopy" icon={Megaphone} title="Ad Copy" description="Generate ad copy variations per angle — primary text, headlines, and descriptions." renderContent={(c) => <AdCopyRenderer content={c} />} />
+      </TabsContent>
+      <TabsContent value="scripts">
+        <AssetGeneratorTab client={client} assetType="scripts" icon={Video} title="Video Scripts" description="Generate avatar, B-roll, UGC, and VSL scripts with hooks and CTAs." renderContent={(c) => <ScriptsRenderer content={c} />} />
+      </TabsContent>
+      <TabsContent value="creatives">
+        <AssetGeneratorTab client={client} assetType="creatives" icon={Image} title="Creative Concepts" description="Static and video ad concepts with visual direction and layout ideas." renderContent={(c) => <CreativesRenderer content={c} />} />
+      </TabsContent>
+      <TabsContent value="report">
+        <AssetGeneratorTab client={client} assetType="report" icon={FileText} title="Special Report" description="Generate a lead magnet report — cover page, executive summary, market opportunity." renderContent={(c) => <ReportRenderer content={c} />} />
+      </TabsContent>
+      <TabsContent value="funnel">
+        <AssetGeneratorTab client={client} assetType="funnel" icon={Globe} title="Funnel Copy" description="Landing page, thank you page, booking page, and investor portal copy." renderContent={(c) => <FunnelRenderer content={c} />} />
+      </TabsContent>
     </Tabs>
   );
 }
