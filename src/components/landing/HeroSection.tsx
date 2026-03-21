@@ -52,7 +52,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-0">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12 md:pt-0 md:pb-0">
       {/* Subtle background */}
       <div className="absolute inset-0 bg-gradient-to-b from-muted/40 via-background to-background" />
       
@@ -62,7 +62,7 @@ export default function HeroSection() {
         backgroundSize: '60px 60px'
       }} />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,7 +75,7 @@ export default function HeroSection() {
         </motion.div>
 
         <motion.h1
-          className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6 text-balance text-foreground"
+          className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6 text-balance text-foreground"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
@@ -122,7 +122,7 @@ export default function HeroSection() {
 
         {/* Stats directly under buttons */}
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-14 max-w-4xl mx-auto"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mt-10 md:mt-14 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
@@ -134,7 +134,7 @@ export default function HeroSection() {
 
         {/* Platform logos - paid ads emphasis */}
         <motion.div
-          className="mt-12 max-w-3xl mx-auto"
+          className="mt-8 md:mt-12 max-w-3xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
@@ -142,7 +142,7 @@ export default function HeroSection() {
           <p className="text-[11px] tracking-[0.25em] uppercase text-muted-foreground mb-5 font-medium">
             We Run Paid Ads That Attract Investors On
           </p>
-          <div className="grid grid-cols-4 sm:grid-cols-7 gap-4 md:gap-6 max-w-2xl mx-auto">
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-3 sm:gap-4 md:gap-6 max-w-2xl mx-auto">
             {[
               { name: 'Meta Ads', icon: Facebook },
               { name: 'Google Ads', icon: Search },
@@ -165,7 +165,7 @@ export default function HeroSection() {
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground"
+        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground hidden md:flex"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
