@@ -134,7 +134,7 @@ export default function HeroSection() {
 
         {/* Platform logos - paid ads emphasis */}
         <motion.div
-          className="mt-12 max-w-3xl mx-auto"
+          className="mt-8 md:mt-12 max-w-3xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
