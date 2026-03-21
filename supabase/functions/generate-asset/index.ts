@@ -106,8 +106,8 @@ serve(async (req) => {
   try {
     const { client_id, asset_type, client_data, existing_research, existing_angles } = await req.json();
     
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
 
     const systemPrompt = SYSTEM_PROMPTS[asset_type];
     if (!systemPrompt) throw new Error(`Unknown asset type: ${asset_type}`);
@@ -134,20 +134,20 @@ serve(async (req) => {
 
     userPrompt += `\nGenerate the ${asset_type} content now. Return ONLY valid JSON, no markdown.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: systemPrompt }] },
+          contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+          },
+        }),
+      }
+    );
 
     if (!response.ok) {
       if (response.status === 429) {
@@ -155,18 +155,13 @@ serve(async (req) => {
           status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
-      throw new Error(`AI gateway error: ${response.status}`);
+      console.error("Gemini API error:", response.status, t);
+      throw new Error(`Gemini API error: ${response.status}`);
     }
 
     const result = await response.json();
-    let content = result.choices?.[0]?.message?.content || "";
+    let content = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
     
     // Strip markdown code fences if present
     content = content.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
