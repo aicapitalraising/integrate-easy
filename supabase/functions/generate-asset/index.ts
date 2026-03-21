@@ -173,81 +173,100 @@ serve(async (req) => {
 
     const userPrompt = buildUserPrompt(client_data, asset_type, existing_research, existing_angles);
 
-    // For research: use Google Search grounding for real data
-    // For everything else: standard generation using the research context
     const isResearch = asset_type === "research";
-    
-    const requestBody: any = {
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json",
-        temperature: isResearch ? 0.3 : 0.8, // Lower temp for research accuracy, higher for creative
-      },
-    };
+    let parsed: any;
+    let groundingSources: any[] = [];
 
-    // Enable Google Search grounding for research to get real market data
     if (isResearch) {
-      requestBody.tools = [{ googleSearch: {} }];
-    }
+      // Step 1: Search with grounding (no JSON mode — not compatible with Search tool)
+      const searchBody = {
+        system_instruction: { parts: [{ text: "You are an expert capital markets researcher. Search the web for real, current data about this fund's industry, asset class, market, and recent news. Provide comprehensive findings with specific statistics, market sizes, growth rates, and recent developments." }] },
+        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+        tools: [{ googleSearch: {} }],
+        generationConfig: { temperature: 0.3 },
+      };
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
+      const searchResponse = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(searchBody) }
+      );
+
+      if (!searchResponse.ok) {
+        const t = await searchResponse.text();
+        console.error("Gemini search error:", searchResponse.status, t);
+        throw new Error(`Gemini search error: ${searchResponse.status}`);
       }
-    );
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited. Please try again in a moment." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+      const searchResult = await searchResponse.json();
+      let rawResearch = "";
+      for (const part of searchResult.candidates?.[0]?.content?.parts || []) {
+        if (part.text) rawResearch += part.text;
       }
-      const t = await response.text();
-      console.error("Gemini API error:", response.status, t);
-      throw new Error(`Gemini API error: ${response.status}`);
-    }
 
-    const result = await response.json();
-    
-    // Extract text from potentially multiple parts (grounded responses can have multiple)
-    let content = "";
-    const parts = result.candidates?.[0]?.content?.parts || [];
-    for (const part of parts) {
-      if (part.text) content += part.text;
-    }
+      const gm = searchResult.candidates?.[0]?.groundingMetadata;
+      if (gm?.groundingChunks) {
+        groundingSources = gm.groundingChunks.map((c: any) => ({ title: c.web?.title, uri: c.web?.uri }));
+      }
 
-    // Also capture grounding metadata if present (search sources)
-    const groundingMetadata = result.candidates?.[0]?.groundingMetadata;
+      // Step 2: Structure the research as JSON (no search tool, JSON mode OK)
+      const structureBody = {
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: "user", parts: [{ text: `Here is raw research data gathered from web search:\n\n${rawResearch}\n\nNow structure this into the required JSON format. Include all statistics and data points found. Return ONLY valid JSON.` }] }],
+        generationConfig: { responseMimeType: "application/json", temperature: 0.2 },
+      };
 
-    // Strip markdown code fences if present
-    content = content.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
+      const structureResponse = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(structureBody) }
+      );
 
-    let parsed;
-    try {
-      parsed = JSON.parse(content);
-    } catch {
-      // Try to extract JSON from mixed content
-      const jsonMatch = content.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
-      if (jsonMatch) {
-        try {
-          parsed = JSON.parse(jsonMatch[0]);
-        } catch {
-          parsed = { raw: content };
+      if (!structureResponse.ok) {
+        const t = await structureResponse.text();
+        console.error("Gemini structure error:", structureResponse.status, t);
+        throw new Error(`Gemini structure error: ${structureResponse.status}`);
+      }
+
+      const structureResult = await structureResponse.json();
+      let content = structureResult.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      content = content.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
+
+      try { parsed = JSON.parse(content); } catch { parsed = { raw: content }; }
+      if (groundingSources.length > 0) parsed._grounding_sources = groundingSources;
+
+    } else {
+      // Non-research: single call with JSON mode
+      const requestBody = {
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+        generationConfig: { responseMimeType: "application/json", temperature: 0.8 },
+      };
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(requestBody) }
+      );
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limited. Please try again in a moment." }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
         }
-      } else {
-        parsed = { raw: content };
+        const t = await response.text();
+        console.error("Gemini API error:", response.status, t);
+        throw new Error(`Gemini API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      let content = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      content = content.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
+
+      try { parsed = JSON.parse(content); } catch {
+        const jsonMatch = content.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+        if (jsonMatch) { try { parsed = JSON.parse(jsonMatch[0]); } catch { parsed = { raw: content }; } }
+        else { parsed = { raw: content }; }
       }
     }
-
-    // For research, append grounding sources if available
-    if (isResearch && groundingMetadata?.searchEntryPoint) {
-      parsed._grounding_sources = groundingMetadata.groundingChunks?.map((c: any) => ({
-        title: c.web?.title,
-        uri: c.web?.uri,
       })) || [];
     }
 
