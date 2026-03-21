@@ -122,7 +122,7 @@ export default function HeroSection() {
 
         {/* Stats directly under buttons */}
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-14 max-w-4xl mx-auto"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mt-10 md:mt-14 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
