@@ -52,7 +52,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-0">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12 md:pt-0 md:pb-0">
       {/* Subtle background */}
       <div className="absolute inset-0 bg-gradient-to-b from-muted/40 via-background to-background" />
       
