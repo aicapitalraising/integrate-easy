@@ -112,24 +112,52 @@ export default function Onboarding() {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      // Save to leads table
-      const { error } = await supabase.from('leads').insert({
-        lead_name: contactName,
-        lead_email: contactEmail,
-        lead_phone: contactPhone,
-        source: 'onboarding',
-        investment_range: exactRaiseAmount ? `$${exactRaiseAmount}` : undefined,
-        status: 'booked',
-        appointment_date: selectedKickoffDate && selectedKickoffTime
-          ? new Date(`${selectedKickoffDate}T${selectedKickoffTime}`).toISOString()
-          : undefined,
-      });
+      // Upload files to storage
+      let pitchDeckPath: string | undefined;
+      let investorListPath: string | undefined;
+
+      if (pitchDeckFile) {
+        const ext = pitchDeckFile.name.split('.').pop();
+        const path = `pitch-decks/${Date.now()}-${pitchDeckFile.name}`;
+        const { error: uploadErr } = await supabase.storage.from('client-uploads').upload(path, pitchDeckFile);
+        if (!uploadErr) pitchDeckPath = path;
+      }
+
+      if (investorListFile) {
+        const path = `investor-lists/${Date.now()}-${investorListFile.name}`;
+        const { error: uploadErr } = await supabase.storage.from('client-uploads').upload(path, investorListFile);
+        if (!uploadErr) investorListPath = path;
+      }
+
+      // Save to clients table
+      const { data: clientData, error } = await supabase.from('clients').insert({
+        company_name: companyName,
+        website: website || undefined,
+        contact_name: contactName,
+        contact_email: contactEmail,
+        contact_phone: contactPhone,
+        fund_type: fundType,
+        raise_amount: exactRaiseAmount || undefined,
+        timeline: timeline || undefined,
+        min_investment: minInvestment || undefined,
+        target_investor: targetInvestor || undefined,
+        pitch_deck_link: pitchDeckLink || undefined,
+        pitch_deck_path: pitchDeckPath,
+        budget_mode: budgetMode,
+        budget_amount: budgetAmount || undefined,
+        investor_list_path: investorListPath,
+        brand_notes: brandNotes || undefined,
+        additional_notes: additionalNotes || undefined,
+        kickoff_date: selectedKickoffDate || undefined,
+        kickoff_time: selectedKickoffTime || undefined,
+        status: 'onboarding',
+      }).select().single();
 
       if (error) throw error;
 
       // Sync contact to GHL
       try {
-        const { data: syncData } = await supabase.functions.invoke('ghl-sync', {
+        await supabase.functions.invoke('ghl-sync', {
           body: {
             action: 'sync-lead',
             name: contactName,
@@ -142,8 +170,6 @@ export default function Onboarding() {
 
         // Book kickoff call on GHL calendar
         if (selectedKickoffDate && selectedKickoffTime) {
-          // calendarId is configured server-side via GHL_KICKOFF_CALENDAR_ID env var
-          // Parse the selected time into 24h format
           const timeParts = selectedKickoffTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
           if (timeParts) {
             let hours = parseInt(timeParts[1]);
@@ -153,7 +179,7 @@ export default function Onboarding() {
             if (ampm === 'AM' && hours === 12) hours = 0;
             const startTime = new Date(`${selectedKickoffDate}T${String(hours).padStart(2, '0')}:${minutes}:00`);
 
-          await supabase.functions.invoke('ghl-sync', {
+            await supabase.functions.invoke('ghl-sync', {
               body: {
                 action: 'sync-booking',
                 name: contactName,
