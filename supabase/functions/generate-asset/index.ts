@@ -267,8 +267,6 @@ serve(async (req) => {
         else { parsed = { raw: content }; }
       }
     }
-      })) || [];
-    }
 
     // Save to database
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
