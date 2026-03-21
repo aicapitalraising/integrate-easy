@@ -14,6 +14,11 @@ import {
   Plus, RefreshCw,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import AssetGeneratorTab from '@/components/fulfillment/AssetGeneratorTab';
+import {
+  ResearchRenderer, AnglesRenderer, EmailsRenderer, SMSRenderer,
+  AdCopyRenderer, ScriptsRenderer, CreativesRenderer, ReportRenderer, FunnelRenderer,
+} from '@/components/fulfillment/renderers';
 
 interface Client {
   id: string;
