@@ -28,6 +28,24 @@ async function ghlFetch(path: string, method: string, body?: unknown) {
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  // Log full response for debugging on errors
+  const text = await res.text();
+  let data: unknown;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = { raw: text };
+  }
+  if (!res.ok) {
+    logStep("GHL API error", { status: res.status, path, data });
+    throw new Error(`GHL API ${res.status}: ${JSON.stringify(data)}`);
+  }
+  return data;
+}
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
   const data = await res.json();
   if (!res.ok) {
     logStep("GHL API error", { status: res.status, path, data });
