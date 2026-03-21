@@ -31,7 +31,7 @@ export default function StatsSection() {
 
   return (
     <section id="track-record" ref={ref} className="py-24 md:py-32 relative">
-      <div className="max-w-6xl mx-auto px-6 relative">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative">
         <motion.p
           className="text-center text-sm text-muted-foreground mb-16 tracking-wide"
           initial={{ opacity: 0 }}
