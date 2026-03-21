@@ -14,150 +14,169 @@ export type Database = {
   }
   public: {
     Tables: {
-      calendar_mappings: {
+      asset_comments: {
         Row: {
-          calendar_id: string
+          asset_id: string
+          author_name: string
+          author_role: string | null
+          comment: string
           created_at: string
           id: string
-          label: string
-          route: string
-          updated_at: string
         }
         Insert: {
-          calendar_id: string
+          asset_id: string
+          author_name: string
+          author_role?: string | null
+          comment: string
           created_at?: string
           id?: string
-          label: string
-          route: string
-          updated_at?: string
         }
         Update: {
-          calendar_id?: string
+          asset_id?: string
+          author_name?: string
+          author_role?: string | null
+          comment?: string
           created_at?: string
           id?: string
-          label?: string
-          route?: string
-          updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "asset_comments_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "client_assets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      leads: {
+      client_assets: {
         Row: {
-          accredited: boolean | null
-          address: Json | null
-          appointment_date: string | null
-          companies: Json | null
+          angle_id: string | null
+          asset_type: string
+          client_id: string
+          content: Json | null
           created_at: string
-          donations: string[] | null
-          education: Json | null
-          emails: Json | null
-          enrichment_method: string | null
-          enrichment_status:
-            | Database["public"]["Enums"]["enrichment_status"]
-            | null
-          financial: Json | null
-          home: Json | null
-          household: Json | null
           id: string
-          identity: Json | null
-          interests: string[] | null
-          investment_range: string | null
-          investments: Json | null
-          lead_email: string | null
-          lead_name: string
-          lead_phone: string | null
-          phones: Json | null
-          qualification_score: number | null
-          qualification_tier:
-            | Database["public"]["Enums"]["qualification_tier"]
-            | null
-          reading: string[] | null
-          routing_destination:
-            | Database["public"]["Enums"]["routing_destination"]
-            | null
-          showed_up: boolean | null
-          source: string | null
-          status: Database["public"]["Enums"]["lead_status"]
+          status: string
+          title: string | null
           updated_at: string
-          vehicles: Json | null
+          version: number
         }
         Insert: {
-          accredited?: boolean | null
-          address?: Json | null
-          appointment_date?: string | null
-          companies?: Json | null
+          angle_id?: string | null
+          asset_type: string
+          client_id: string
+          content?: Json | null
           created_at?: string
-          donations?: string[] | null
-          education?: Json | null
-          emails?: Json | null
-          enrichment_method?: string | null
-          enrichment_status?:
-            | Database["public"]["Enums"]["enrichment_status"]
-            | null
-          financial?: Json | null
-          home?: Json | null
-          household?: Json | null
           id?: string
-          identity?: Json | null
-          interests?: string[] | null
-          investment_range?: string | null
-          investments?: Json | null
-          lead_email?: string | null
-          lead_name: string
-          lead_phone?: string | null
-          phones?: Json | null
-          qualification_score?: number | null
-          qualification_tier?:
-            | Database["public"]["Enums"]["qualification_tier"]
-            | null
-          reading?: string[] | null
-          routing_destination?:
-            | Database["public"]["Enums"]["routing_destination"]
-            | null
-          showed_up?: boolean | null
-          source?: string | null
-          status?: Database["public"]["Enums"]["lead_status"]
+          status?: string
+          title?: string | null
           updated_at?: string
-          vehicles?: Json | null
+          version?: number
         }
         Update: {
-          accredited?: boolean | null
-          address?: Json | null
-          appointment_date?: string | null
-          companies?: Json | null
+          angle_id?: string | null
+          asset_type?: string
+          client_id?: string
+          content?: Json | null
           created_at?: string
-          donations?: string[] | null
-          education?: Json | null
-          emails?: Json | null
-          enrichment_method?: string | null
-          enrichment_status?:
-            | Database["public"]["Enums"]["enrichment_status"]
-            | null
-          financial?: Json | null
-          home?: Json | null
-          household?: Json | null
           id?: string
-          identity?: Json | null
-          interests?: string[] | null
-          investment_range?: string | null
-          investments?: Json | null
-          lead_email?: string | null
-          lead_name?: string
-          lead_phone?: string | null
-          phones?: Json | null
-          qualification_score?: number | null
-          qualification_tier?:
-            | Database["public"]["Enums"]["qualification_tier"]
-            | null
-          reading?: string[] | null
-          routing_destination?:
-            | Database["public"]["Enums"]["routing_destination"]
-            | null
-          showed_up?: boolean | null
-          source?: string | null
-          status?: Database["public"]["Enums"]["lead_status"]
+          status?: string
+          title?: string | null
           updated_at?: string
-          vehicles?: Json | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_assets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          additional_notes: string | null
+          brand_notes: string | null
+          budget_amount: string | null
+          budget_mode: string | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          fund_name: string | null
+          fund_type: string | null
+          id: string
+          investor_list_path: string | null
+          kickoff_date: string | null
+          kickoff_time: string | null
+          min_investment: string | null
+          pitch_deck_link: string | null
+          pitch_deck_path: string | null
+          raise_amount: string | null
+          share_token: string
+          status: string
+          target_investor: string | null
+          timeline: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          additional_notes?: string | null
+          brand_notes?: string | null
+          budget_amount?: string | null
+          budget_mode?: string | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          fund_name?: string | null
+          fund_type?: string | null
+          id?: string
+          investor_list_path?: string | null
+          kickoff_date?: string | null
+          kickoff_time?: string | null
+          min_investment?: string | null
+          pitch_deck_link?: string | null
+          pitch_deck_path?: string | null
+          raise_amount?: string | null
+          share_token?: string
+          status?: string
+          target_investor?: string | null
+          timeline?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          additional_notes?: string | null
+          brand_notes?: string | null
+          budget_amount?: string | null
+          budget_mode?: string | null
+          company_name?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          fund_name?: string | null
+          fund_type?: string | null
+          id?: string
+          investor_list_path?: string | null
+          kickoff_date?: string | null
+          kickoff_time?: string | null
+          min_investment?: string | null
+          pitch_deck_link?: string | null
+          pitch_deck_path?: string | null
+          raise_amount?: string | null
+          share_token?: string
+          status?: string
+          target_investor?: string | null
+          timeline?: string | null
+          updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -169,15 +188,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      enrichment_status: "verified" | "spouse" | "no-match" | "pending"
-      lead_status:
-        | "new"
-        | "booked"
-        | "qualified"
-        | "non-accredited"
-        | "abandoned"
-      qualification_tier: "qualified" | "borderline" | "unqualified"
-      routing_destination: "closer" | "setter" | "downsell"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -304,17 +315,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      enrichment_status: ["verified", "spouse", "no-match", "pending"],
-      lead_status: [
-        "new",
-        "booked",
-        "qualified",
-        "non-accredited",
-        "abandoned",
-      ],
-      qualification_tier: ["qualified", "borderline", "unqualified"],
-      routing_destination: ["closer", "setter", "downsell"],
-    },
+    Enums: {},
   },
 } as const

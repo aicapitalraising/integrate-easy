@@ -1,13 +1,1 @@
-project_id = "szjgfknmckknbjuztgld"
-
-[functions.retargetiq-enrich]
-verify_jwt = false
-
-[functions.lead-intake]
-verify_jwt = false
-
-[functions.create-payment]
-verify_jwt = false
-
-[functions.ghl-sync]
-verify_jwt = false
+project_id = "chaocdpyyeqnqqlstgzw"
