@@ -142,7 +142,7 @@ export default function HeroSection() {
           <p className="text-[11px] tracking-[0.25em] uppercase text-muted-foreground mb-5 font-medium">
             We Run Paid Ads That Attract Investors On
           </p>
-          <div className="grid grid-cols-4 sm:grid-cols-7 gap-4 md:gap-6 max-w-2xl mx-auto">
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-3 sm:gap-4 md:gap-6 max-w-2xl mx-auto">
             {[
               { name: 'Meta Ads', icon: Facebook },
               { name: 'Google Ads', icon: Search },
