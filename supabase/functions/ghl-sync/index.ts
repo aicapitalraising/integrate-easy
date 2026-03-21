@@ -42,17 +42,7 @@ async function ghlFetch(path: string, method: string, body?: unknown) {
   }
   return data;
 }
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
 
-  const data = await res.json();
-  if (!res.ok) {
-    logStep("GHL API error", { status: res.status, path, data });
-    throw new Error(`GHL API ${res.status}: ${JSON.stringify(data)}`);
-  }
-  return data;
-}
 
 // ── Action: Create or update a GHL contact ──────────────────────────
 async function syncContact(payload: {
