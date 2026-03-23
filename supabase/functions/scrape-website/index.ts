@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
 
     console.log('Scraping website:', normalizedUrl)
 
-    // Try fetching the website with multiple user agents
+    // Try fetching the website to get raw content
     let htmlContent = ''
     const userAgents = [
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
     console.log('Fetched HTML length:', htmlContent.length)
 
     // Strip script/style tags to get cleaner text content
-    let cleanContent = htmlContent
+    const cleanContent = htmlContent
       .replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<style[\s\S]*?<\/style>/gi, '')
       .replace(/<svg[\s\S]*?<\/svg>/gi, '')
@@ -63,26 +63,27 @@ Deno.serve(async (req) => {
       .replace(/\s+/g, ' ')
       .trim()
 
-    // If cleaned content is too short, the site is probably JS-rendered
-    // Use Gemini with Google Search grounding to look up the website
     const lovableKey = Deno.env.get('LOVABLE_API_KEY')
-    const geminiKey = Deno.env.get('GEMINI_API_KEY')
-    
-    if (!lovableKey && !geminiKey) {
-      return new Response(JSON.stringify({ error: 'AI key not configured' }), {
+
+    if (!lovableKey) {
+      return new Response(JSON.stringify({ error: 'LOVABLE_API_KEY not configured' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
 
-    const useGrounding = cleanContent.length < 500
+    console.log('Clean content length:', cleanContent.length)
 
-    console.log('Clean content length:', cleanContent.length, '| Using grounding:', useGrounding)
-
-    // Trim content
     const trimmedContent = cleanContent.substring(0, 12000)
 
-    const prompt = useGrounding
-      ? `Look up the website ${normalizedUrl} and extract all available information about this investment fund or company. Return a JSON object with these fields (use null for anything not found):
+    // Build prompt - always include the URL so the model can search for it
+    const prompt = `You are an expert at extracting investment fund information from websites.
+
+Research the website ${normalizedUrl} and combine with the following scraped content to extract ALL available information about this investment fund or company.
+
+Scraped website content (may be partial):
+${trimmedContent || '(No content could be scraped - please use your knowledge of this website)'}
+
+Return a JSON object with these fields (use null for anything not found):
 
 {
   "company_name": "company or fund name",
@@ -103,95 +104,47 @@ Deno.serve(async (req) => {
 }
 
 Only return valid JSON, no other text.`
-      : `Analyze this investment fund website content and extract ALL available information. Return a JSON object with these fields (use null for anything not found):
-
-{
-  "company_name": "company or fund name",
-  "speaker_name": "founder/CEO/speaker name",
-  "industry_focus": "e.g. multifamily real estate, oil & gas, etc.",
-  "targeted_returns": "e.g. 10%, 15-20%",
-  "hold_period": "e.g. 3-5 years, 6-36 months",
-  "distribution_schedule": "e.g. Monthly, Quarterly, Post Project Completion",
-  "investment_range": "e.g. $25k - $500k",
-  "min_investment": "e.g. 50000 (number only)",
-  "tax_advantages": "any tax benefits mentioned",
-  "credibility": "track record, years in business, AUM, past returns, total payouts",
-  "fund_history": "background/history of the fund or company",
-  "fund_type": "e.g. Real Estate Fund, Private Equity, Private Credit",
-  "raise_amount": "target raise amount if mentioned",
-  "contact_email": "contact email if found",
-  "contact_phone": "phone number if found"
-}
-
-Only return valid JSON, no other text.
-
-Website URL: ${normalizedUrl}
-Website content:
-${trimmedContent}`
 
     let rawText = ''
 
-    // Try Lovable AI proxy first (no spending cap issues)
-    if (lovableKey) {
-      try {
-        const lovableRes = await fetch('https://api.lovable.dev/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${lovableKey}`,
-          },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
-            messages: [{ role: 'user', content: prompt }],
-            temperature: 0.1,
-            max_tokens: 2048,
-          }),
-        })
-        const lovableResText = await lovableRes.text()
-        console.log('Lovable AI status:', lovableRes.status, 'response length:', lovableResText.length)
-        if (lovableRes.ok) {
-          try {
-            const lovableData = JSON.parse(lovableResText)
-            if (lovableData?.choices?.[0]?.message?.content) {
-              rawText = lovableData.choices[0].message.content
-              console.log('Used Lovable AI proxy')
-            }
-          } catch (parseErr) {
-            console.error('Lovable AI response parse error:', lovableResText.substring(0, 200))
-          }
-        } else {
-          console.error('Lovable AI error:', lovableResText.substring(0, 200))
+    // Use Lovable AI Gateway (correct URL)
+    try {
+      const lovableRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${lovableKey}`,
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.1,
+          max_tokens: 2048,
+        }),
+      })
+      const lovableResText = await lovableRes.text()
+      console.log('Lovable AI status:', lovableRes.status, 'response length:', lovableResText.length)
+      if (lovableRes.ok) {
+        const lovableData = JSON.parse(lovableResText)
+        if (lovableData?.choices?.[0]?.message?.content) {
+          rawText = lovableData.choices[0].message.content
+          console.log('Used Lovable AI gateway successfully')
         }
-      } catch (e) {
-        console.error('Lovable AI proxy failed:', e)
-      }
-    }
-
-    // Fallback to direct Gemini
-    if (!rawText && geminiKey) {
-      const requestBody: Record<string, unknown> = {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.1, maxOutputTokens: 2048 },
-      }
-      if (useGrounding) {
-        requestBody.tools = [{ google_search: {} }]
-      }
-      const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody),
+      } else {
+        console.error('Lovable AI error:', lovableResText.substring(0, 300))
+        if (lovableRes.status === 429) {
+          return new Response(JSON.stringify({ error: 'Rate limited, please try again shortly' }), {
+            status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
         }
-      )
-      const geminiData = await geminiRes.json()
-      if (!geminiRes.ok) {
-        console.error('Gemini API error:', JSON.stringify(geminiData))
-        return new Response(JSON.stringify({ error: 'AI analysis failed' }), {
-          status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        })
+        if (lovableRes.status === 402) {
+          return new Response(JSON.stringify({ error: 'AI credits exhausted' }), {
+            status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        }
       }
-      rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || ''
+    } catch (e) {
+      console.error('Lovable AI gateway failed:', e)
     }
 
     if (!rawText) {
@@ -208,7 +161,6 @@ ${trimmedContent}`
     if (jsonMatch) {
       jsonStr = jsonMatch[1].trim()
     } else {
-      // Try to find raw JSON object
       const braceMatch = rawText.match(/\{[\s\S]*\}/)
       if (braceMatch) {
         jsonStr = braceMatch[0]
@@ -219,7 +171,7 @@ ${trimmedContent}`
     try {
       extracted = JSON.parse(jsonStr)
     } catch {
-      console.error('Failed to parse Gemini response:', rawText.substring(0, 500))
+      console.error('Failed to parse AI response:', rawText.substring(0, 500))
       return new Response(JSON.stringify({ error: 'Failed to parse website data' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
