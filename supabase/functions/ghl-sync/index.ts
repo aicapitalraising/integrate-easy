@@ -142,12 +142,8 @@ async function createAppointment(payload: {
   endTime: string;
   title?: string;
 }) {
-  const locationId = Deno.env.get("GHL_LOCATION_ID");
-  if (!locationId) throw new Error("GHL_LOCATION_ID not configured");
-
   const result = await ghlFetch("/calendars/events/appointments", "POST", {
     calendarId: payload.calendarId,
-    locationId,
     contactId: payload.contactId,
     startTime: payload.startTime,
     endTime: payload.endTime,
@@ -155,6 +151,7 @@ async function createAppointment(payload: {
     appointmentStatus: "confirmed",
   });
   logStep("Created GHL appointment", { id: result?.id });
+  return result;
   return result;
 }
 
