@@ -12,6 +12,7 @@ import BookingPage from "./pages/BookingPage";
 import Admin from "./pages/Admin";
 import Fulfillment from "./pages/Fulfillment";
 import Onboarding from "./pages/Onboarding";
+import Start from "./pages/Start";
 import Invest from "./pages/Invest";
 import Portal from "./pages/Portal";
 import NotFound from "./pages/NotFound";
