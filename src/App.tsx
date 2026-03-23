@@ -12,6 +12,7 @@ import BookingPage from "./pages/BookingPage";
 import Admin from "./pages/Admin";
 import Fulfillment from "./pages/Fulfillment";
 import Onboarding from "./pages/Onboarding";
+import Start from "./pages/Start";
 import Invest from "./pages/Invest";
 import Portal from "./pages/Portal";
 import NotFound from "./pages/NotFound";
@@ -36,6 +37,7 @@ const App = () => {
             <Route path="/admin" element={<Admin />} />
             <Route path="/fulfillment" element={<Fulfillment />} />
             <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/start" element={<Start />} />
             <Route path="/invest" element={<Invest />} />
             <Route path="/portal/:token" element={<Portal />} />
             <Route path="*" element={<NotFound />} />
