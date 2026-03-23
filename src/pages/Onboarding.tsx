@@ -227,7 +227,50 @@ export default function Onboarding() {
     }
   };
 
-  const next = () => {
+  const scrapeWebsite = async () => {
+    if (!website.trim() || scraped) return;
+    setScraping(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('scrape-website', {
+        body: { url: website },
+      });
+      if (error || !data?.success) {
+        console.error('Scrape failed:', error || data?.error);
+        toast({ title: 'Could not auto-fill from website', description: 'You can fill in the details manually.', variant: 'destructive' });
+        setScraped(true);
+        return;
+      }
+      const d = data.data;
+      // Only fill empty fields
+      if (d.company_name && !companyName) setCompanyName(d.company_name);
+      if (d.speaker_name && !speakerName) setSpeakerName(d.speaker_name);
+      if (d.industry_focus && !industryFocus) setIndustryFocus(d.industry_focus);
+      if (d.targeted_returns && !targetedReturns) setTargetedReturns(d.targeted_returns);
+      if (d.hold_period && !holdPeriod) setHoldPeriod(d.hold_period);
+      if (d.distribution_schedule && !distributionSchedule) setDistributionSchedule(d.distribution_schedule);
+      if (d.investment_range && !investmentRange) setInvestmentRange(d.investment_range);
+      if (d.min_investment && !minInvestment) setMinInvestment(String(d.min_investment));
+      if (d.tax_advantages && !taxAdvantages) setTaxAdvantages(d.tax_advantages);
+      if (d.credibility && !credibility) setCredibility(d.credibility);
+      if (d.fund_history && !fundHistory) setFundHistory(d.fund_history);
+      if (d.raise_amount && !exactRaiseAmount) setExactRaiseAmount(String(d.raise_amount));
+      if (d.contact_email && !contactEmail) setContactEmail(d.contact_email);
+      if (d.contact_phone && !contactPhone) setContactPhone(d.contact_phone);
+      setScraped(true);
+      toast({ title: 'Auto-filled from website!', description: 'Review the populated fields and adjust as needed.' });
+    } catch (err) {
+      console.error('Scrape error:', err);
+      setScraped(true);
+    } finally {
+      setScraping(false);
+    }
+  };
+
+  const next = async () => {
+    // Scrape website when leaving step 0
+    if (currentStep === 0 && website.trim() && !scraped) {
+      await scrapeWebsite();
+    }
     if (currentStep < steps.length - 1) setCurrentStep((s) => s + 1);
     else handleSubmit();
   };
