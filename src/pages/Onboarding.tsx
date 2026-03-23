@@ -54,6 +54,8 @@ export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [scraping, setScraping] = useState(false);
+  const [scraped, setScraped] = useState(false);
 
   useEffect(() => {
     if (searchParams.get('payment') === 'success') {
