@@ -75,7 +75,7 @@ export default function Onboarding() {
 
   // Goals
   const [exactRaiseAmount, setExactRaiseAmount] = useState('');
-  const [timeline, setTimeline] = useState('');
+  const [timeline, setTimeline] = useState('90 days');
   const [minInvestment, setMinInvestment] = useState('');
   const [targetInvestor, setTargetInvestor] = useState('');
   const [pitchDeckLink, setPitchDeckLink] = useState('');
