@@ -926,11 +926,15 @@ export default function Onboarding() {
             )}
             <Button
               onClick={next}
-              disabled={!canProceed() || submitting}
+              disabled={!canProceed() || submitting || scraping}
               size="lg"
               className="font-semibold gap-2 min-w-[160px]"
             >
-              {submitting ? (
+              {scraping ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Analyzing Website...
+                </>
+              ) : submitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" /> Submitting...
                 </>
