@@ -77,24 +77,31 @@ async function syncContact(payload: {
     }
   }
 
-  const contactBody: Record<string, unknown> = {
-    locationId,
-    firstName,
-    lastName,
-    email: payload.email || undefined,
-    phone: payload.phone || undefined,
-    source: payload.source || "AI Capital Raising",
-    tags: payload.tags || [],
-  };
-
   if (contactId) {
-    // Update existing
-    const updated = await ghlFetch(`/contacts/${contactId}`, "PUT", contactBody);
+    // Update existing — do NOT include locationId in PUT body
+    const updateBody: Record<string, unknown> = {
+      firstName,
+      lastName,
+      email: payload.email || undefined,
+      phone: payload.phone || undefined,
+      source: payload.source || "AI Capital Raising",
+      tags: payload.tags || [],
+    };
+    const updated = await ghlFetch(`/contacts/${contactId}`, "PUT", updateBody);
     logStep("Updated GHL contact", { contactId });
     return updated.contact || { id: contactId };
   } else {
-    // Create new
-    const created = await ghlFetch("/contacts/", "POST", contactBody);
+    // Create new — locationId required for creation
+    const createBody: Record<string, unknown> = {
+      locationId,
+      firstName,
+      lastName,
+      email: payload.email || undefined,
+      phone: payload.phone || undefined,
+      source: payload.source || "AI Capital Raising",
+      tags: payload.tags || [],
+    };
+    const created = await ghlFetch("/contacts/", "POST", createBody);
     logStep("Created GHL contact", { contactId: created?.contact?.id });
     return created.contact;
   }
@@ -145,7 +152,7 @@ async function createAppointment(payload: {
   const locationId = Deno.env.get("GHL_LOCATION_ID");
   if (!locationId) throw new Error("GHL_LOCATION_ID not configured");
 
-  const result = await ghlFetch("/calendars/events/appointments", "POST", {
+  const body: Record<string, unknown> = {
     calendarId: payload.calendarId,
     locationId,
     contactId: payload.contactId,
@@ -153,7 +160,10 @@ async function createAppointment(payload: {
     endTime: payload.endTime,
     title: payload.title || "Strategy Call",
     appointmentStatus: "confirmed",
-  });
+  };
+  logStep("Creating appointment", body);
+
+  const result = await ghlFetch("/calendars/events/appointments", "POST", body);
   logStep("Created GHL appointment", { id: result?.id });
   return result;
 }
