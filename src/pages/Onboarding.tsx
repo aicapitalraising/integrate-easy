@@ -546,7 +546,7 @@ export default function Onboarding() {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-sm font-medium text-foreground">Distribution Schedule</label>
-                        <ChoiceGrid options={['Monthly', 'Quarterly', 'Annually']} value={distributionSchedule} onChange={setDistributionSchedule} columns={3} />
+                        <ChoiceGrid options={['Monthly', 'Quarterly', 'Annually', 'Post Project Completion']} value={distributionSchedule} onChange={setDistributionSchedule} columns={2} />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-sm font-medium text-foreground">Investment Range</label>
