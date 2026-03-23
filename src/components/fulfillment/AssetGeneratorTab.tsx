@@ -19,6 +19,16 @@ interface Client {
   website: string | null;
   brand_notes: string | null;
   additional_notes: string | null;
+  contact_name?: string;
+  speaker_name?: string | null;
+  industry_focus?: string | null;
+  targeted_returns?: string | null;
+  hold_period?: string | null;
+  distribution_schedule?: string | null;
+  investment_range?: string | null;
+  tax_advantages?: string | null;
+  credibility?: string | null;
+  fund_history?: string | null;
 }
 
 interface Asset {
