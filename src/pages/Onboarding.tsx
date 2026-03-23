@@ -146,6 +146,7 @@ export default function Onboarding() {
         contact_email: contactEmail,
         contact_phone: contactPhone,
         fund_type: fundType,
+        fund_name: companyName,
         raise_amount: exactRaiseAmount || undefined,
         timeline: timeline || undefined,
         min_investment: minInvestment || undefined,
@@ -159,8 +160,17 @@ export default function Onboarding() {
         additional_notes: additionalNotes || undefined,
         kickoff_date: selectedKickoffDate || undefined,
         kickoff_time: selectedKickoffTime || undefined,
+        speaker_name: speakerName || undefined,
+        industry_focus: industryFocus || undefined,
+        targeted_returns: targetedReturns || undefined,
+        hold_period: holdPeriod || undefined,
+        distribution_schedule: distributionSchedule || undefined,
+        investment_range: investmentRange || undefined,
+        tax_advantages: taxAdvantages || undefined,
+        credibility: credibility || undefined,
+        fund_history: fundHistory || undefined,
         status: 'onboarding',
-      }).select().single();
+      } as any).select().single();
 
       if (error) throw error;
 
