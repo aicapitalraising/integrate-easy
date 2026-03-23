@@ -68,6 +68,8 @@ export default function Onboarding() {
   const [contactPhone, setContactPhone] = useState('');
   const [fundType, setFundType] = useState('');
   const [website, setWebsite] = useState('');
+  const [speakerName, setSpeakerName] = useState('');
+  const [industryFocus, setIndustryFocus] = useState('');
 
   // Goals
   const [exactRaiseAmount, setExactRaiseAmount] = useState('');
@@ -76,6 +78,13 @@ export default function Onboarding() {
   const [targetInvestor, setTargetInvestor] = useState('');
   const [pitchDeckLink, setPitchDeckLink] = useState('');
   const [pitchDeckFile, setPitchDeckFile] = useState<File | null>(null);
+  const [targetedReturns, setTargetedReturns] = useState('');
+  const [holdPeriod, setHoldPeriod] = useState('');
+  const [distributionSchedule, setDistributionSchedule] = useState('');
+  const [investmentRange, setInvestmentRange] = useState('');
+  const [taxAdvantages, setTaxAdvantages] = useState('');
+  const [credibility, setCredibility] = useState('');
+  const [fundHistory, setFundHistory] = useState('');
 
   // Assets
   const [budgetMode, setBudgetMode] = useState<'monthly' | 'daily'>('monthly');
