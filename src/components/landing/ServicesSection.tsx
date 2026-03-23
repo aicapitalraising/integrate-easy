@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Cpu, Target, Zap, Database, UserCheck, BarChart3 } from 'lucide-react';
+import { Cpu, Target, Zap, Database, UserCheck, BarChart3, Monitor } from 'lucide-react';
 import LeadEnrichmentCard from './LeadEnrichmentCard';
 import AudienceBuilderCard from './AudienceBuilderCard';
+import TrackingSoftwareCard from './TrackingSoftwareCard';
 
 const steps = [
   {
