@@ -59,7 +59,13 @@ function KPICard({ kpi, index }: { kpi: KPI; index: number }) {
 
 export default function TrackingSoftwareCard() {
   return (
-    <div className="rounded-xl border border-border bg-muted/30 p-4 overflow-hidden">
+    <motion.div
+      className="max-w-md mx-auto glass-card rounded-2xl p-4 overflow-hidden animate-enrichment-glow"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+    >
       {/* Header bar */}
       <div className="flex items-center justify-between mb-3">
         <div>
