@@ -1,7 +1,18 @@
-import { Calendar, Clock, Video, CheckCircle2, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
+import { Clock, Video, CheckCircle2 } from 'lucide-react';
 
 export default function KickoffTab() {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://go.nurtureking.com/js/form_embed.js';
+    script.type = 'text/javascript';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <div className="space-y-16">
       {/* Hero */}
@@ -18,8 +29,8 @@ export default function KickoffTab() {
         <div className="luxury-divider mt-6" />
       </section>
 
-      {/* Call details */}
-      <section className="max-w-2xl mx-auto">
+      {/* Call details + embedded calendar */}
+      <section className="max-w-3xl mx-auto">
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <div className="px-6 py-4 border-b border-border bg-muted/40">
             <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Onboarding Call</span>
@@ -54,14 +65,15 @@ export default function KickoffTab() {
               </ul>
             </div>
 
+            {/* Embedded GHL Calendar */}
             <div className="pt-2">
-              <a href="https://aicapitalraising.com/kickoff" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" className="w-full sm:w-auto font-semibold gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Schedule Your Kickoff Call
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </a>
+              <iframe
+                src="https://go.nurtureking.com/widget/booking/F1ZShaGIFnOCnk7AahCa"
+                style={{ width: '100%', minHeight: '700px', border: 'none', overflow: 'hidden' }}
+                scrolling="no"
+                id="4PaRPbnmHBupUrX1ISTM_1774297853158"
+                title="Schedule Kickoff Call"
+              />
             </div>
           </div>
         </div>
