@@ -129,39 +129,68 @@ Website URL: ${normalizedUrl}
 Website content:
 ${trimmedContent}`
 
-    const requestBody: Record<string, unknown> = {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.1,
-        maxOutputTokens: 2048,
-      },
-    }
+    let rawText = ''
 
-    // Add Google Search grounding for JS-rendered sites
-    if (useGrounding) {
-      requestBody.tools = [{ google_search: {} }]
-    }
-
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
+    // Try Lovable AI proxy first (no spending cap issues)
+    if (lovableKey) {
+      try {
+        const lovableRes = await fetch('https://api.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${lovableKey}`,
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.1,
+            max_tokens: 2048,
+          }),
+        })
+        const lovableData = await lovableRes.json()
+        if (lovableRes.ok && lovableData?.choices?.[0]?.message?.content) {
+          rawText = lovableData.choices[0].message.content
+          console.log('Used Lovable AI proxy')
+        }
+      } catch (e) {
+        console.error('Lovable AI proxy failed:', e)
       }
-    )
+    }
 
-    const geminiData = await geminiRes.json()
+    // Fallback to direct Gemini
+    if (!rawText && geminiKey) {
+      const requestBody: Record<string, unknown> = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.1, maxOutputTokens: 2048 },
+      }
+      if (useGrounding) {
+        requestBody.tools = [{ google_search: {} }]
+      }
+      const geminiRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        }
+      )
+      const geminiData = await geminiRes.json()
+      if (!geminiRes.ok) {
+        console.error('Gemini API error:', JSON.stringify(geminiData))
+        return new Response(JSON.stringify({ error: 'AI analysis failed' }), {
+          status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+      rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || ''
+    }
 
-    if (!geminiRes.ok) {
-      console.error('Gemini API error:', JSON.stringify(geminiData))
-      return new Response(JSON.stringify({ error: 'AI analysis failed' }), {
+    if (!rawText) {
+      return new Response(JSON.stringify({ error: 'AI analysis returned no results' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
 
-    const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || ''
-    console.log('Gemini raw response:', rawText.substring(0, 500))
+    console.log('AI raw response:', rawText.substring(0, 500))
 
     // Extract JSON from the response
     let jsonStr = rawText
