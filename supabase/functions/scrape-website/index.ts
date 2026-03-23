@@ -65,8 +65,10 @@ Deno.serve(async (req) => {
 
     // If cleaned content is too short, the site is probably JS-rendered
     // Use Gemini with Google Search grounding to look up the website
+    const lovableKey = Deno.env.get('LOVABLE_API_KEY')
     const geminiKey = Deno.env.get('GEMINI_API_KEY')
-    if (!geminiKey) {
+    
+    if (!lovableKey && !geminiKey) {
       return new Response(JSON.stringify({ error: 'AI key not configured' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
