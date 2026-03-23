@@ -405,10 +405,6 @@ export default function Onboarding() {
                       </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-foreground">Fund Type <span className="text-destructive">*</span></label>
-                      <ChoiceGrid options={fundTypes} value={fundType} onChange={setFundType} columns={3} />
-                    </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
