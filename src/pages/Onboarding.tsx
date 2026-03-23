@@ -451,16 +451,8 @@ export default function Onboarding() {
                     </div>
 
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Speaker / Founder Name</label>
-                        <Input value={speakerName} onChange={(e) => setSpeakerName(e.target.value)} placeholder="John Smith" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Industry Focus</label>
-                        <Input value={industryFocus} onChange={(e) => setIndustryFocus(e.target.value)} placeholder="e.g. Multifamily real estate" />
-                      </div>
-                    </div>
+
+
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-sm font-medium text-foreground">Contact Name <span className="text-destructive">*</span></label>
