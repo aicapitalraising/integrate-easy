@@ -187,7 +187,7 @@ function HeroStatCard({ stat, delay }: { stat: typeof stats[0]; delay: number })
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay }}
     >
-      <div className="font-display text-2xl md:text-3xl font-bold text-foreground">
+      <div className="font-display text-3xl md:text-3xl font-bold text-foreground">
         {stat.prefix}{count}{stat.suffix}
       </div>
       <div className="text-xs text-muted-foreground tracking-wide uppercase mt-1">{stat.label}</div>
