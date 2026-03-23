@@ -107,9 +107,15 @@ export type Database = {
           contact_name: string
           contact_phone: string | null
           created_at: string
+          credibility: string | null
+          distribution_schedule: string | null
+          fund_history: string | null
           fund_name: string | null
           fund_type: string | null
+          hold_period: string | null
           id: string
+          industry_focus: string | null
+          investment_range: string | null
           investor_list_path: string | null
           kickoff_date: string | null
           kickoff_time: string | null
@@ -118,8 +124,11 @@ export type Database = {
           pitch_deck_path: string | null
           raise_amount: string | null
           share_token: string
+          speaker_name: string | null
           status: string
           target_investor: string | null
+          targeted_returns: string | null
+          tax_advantages: string | null
           timeline: string | null
           updated_at: string
           website: string | null
@@ -134,9 +143,15 @@ export type Database = {
           contact_name: string
           contact_phone?: string | null
           created_at?: string
+          credibility?: string | null
+          distribution_schedule?: string | null
+          fund_history?: string | null
           fund_name?: string | null
           fund_type?: string | null
+          hold_period?: string | null
           id?: string
+          industry_focus?: string | null
+          investment_range?: string | null
           investor_list_path?: string | null
           kickoff_date?: string | null
           kickoff_time?: string | null
@@ -145,8 +160,11 @@ export type Database = {
           pitch_deck_path?: string | null
           raise_amount?: string | null
           share_token?: string
+          speaker_name?: string | null
           status?: string
           target_investor?: string | null
+          targeted_returns?: string | null
+          tax_advantages?: string | null
           timeline?: string | null
           updated_at?: string
           website?: string | null
@@ -161,9 +179,15 @@ export type Database = {
           contact_name?: string
           contact_phone?: string | null
           created_at?: string
+          credibility?: string | null
+          distribution_schedule?: string | null
+          fund_history?: string | null
           fund_name?: string | null
           fund_type?: string | null
+          hold_period?: string | null
           id?: string
+          industry_focus?: string | null
+          investment_range?: string | null
           investor_list_path?: string | null
           kickoff_date?: string | null
           kickoff_time?: string | null
@@ -172,8 +196,11 @@ export type Database = {
           pitch_deck_path?: string | null
           raise_amount?: string | null
           share_token?: string
+          speaker_name?: string | null
           status?: string
           target_investor?: string | null
+          targeted_returns?: string | null
+          tax_advantages?: string | null
           timeline?: string | null
           updated_at?: string
           website?: string | null

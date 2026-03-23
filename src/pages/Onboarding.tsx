@@ -68,6 +68,8 @@ export default function Onboarding() {
   const [contactPhone, setContactPhone] = useState('');
   const [fundType, setFundType] = useState('');
   const [website, setWebsite] = useState('');
+  const [speakerName, setSpeakerName] = useState('');
+  const [industryFocus, setIndustryFocus] = useState('');
 
   // Goals
   const [exactRaiseAmount, setExactRaiseAmount] = useState('');
@@ -76,6 +78,13 @@ export default function Onboarding() {
   const [targetInvestor, setTargetInvestor] = useState('');
   const [pitchDeckLink, setPitchDeckLink] = useState('');
   const [pitchDeckFile, setPitchDeckFile] = useState<File | null>(null);
+  const [targetedReturns, setTargetedReturns] = useState('');
+  const [holdPeriod, setHoldPeriod] = useState('');
+  const [distributionSchedule, setDistributionSchedule] = useState('');
+  const [investmentRange, setInvestmentRange] = useState('');
+  const [taxAdvantages, setTaxAdvantages] = useState('');
+  const [credibility, setCredibility] = useState('');
+  const [fundHistory, setFundHistory] = useState('');
 
   // Assets
   const [budgetMode, setBudgetMode] = useState<'monthly' | 'daily'>('monthly');
@@ -137,6 +146,7 @@ export default function Onboarding() {
         contact_email: contactEmail,
         contact_phone: contactPhone,
         fund_type: fundType,
+        fund_name: companyName,
         raise_amount: exactRaiseAmount || undefined,
         timeline: timeline || undefined,
         min_investment: minInvestment || undefined,
@@ -150,8 +160,17 @@ export default function Onboarding() {
         additional_notes: additionalNotes || undefined,
         kickoff_date: selectedKickoffDate || undefined,
         kickoff_time: selectedKickoffTime || undefined,
+        speaker_name: speakerName || undefined,
+        industry_focus: industryFocus || undefined,
+        targeted_returns: targetedReturns || undefined,
+        hold_period: holdPeriod || undefined,
+        distribution_schedule: distributionSchedule || undefined,
+        investment_range: investmentRange || undefined,
+        tax_advantages: taxAdvantages || undefined,
+        credibility: credibility || undefined,
+        fund_history: fundHistory || undefined,
         status: 'onboarding',
-      }).select().single();
+      } as any).select().single();
 
       if (error) throw error;
 
@@ -393,6 +412,16 @@ export default function Onboarding() {
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Speaker / Founder Name</label>
+                        <Input value={speakerName} onChange={(e) => setSpeakerName(e.target.value)} placeholder="John Smith" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Industry Focus</label>
+                        <Input value={industryFocus} onChange={(e) => setIndustryFocus(e.target.value)} placeholder="e.g. Multifamily real estate" />
+                      </div>
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
                         <label className="text-sm font-medium text-foreground">Contact Name <span className="text-destructive">*</span></label>
                         <Input value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="John Smith" />
                       </div>
@@ -461,6 +490,42 @@ export default function Onboarding() {
                       </div>
                     </div>
 
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Targeted Returns (%)</label>
+                        <Input value={targetedReturns} onChange={(e) => setTargetedReturns(e.target.value)} placeholder="e.g. 10-15%" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Capital Hold Period</label>
+                        <ChoiceGrid options={['1 year', '3 years', '5 years', '10 years']} value={holdPeriod} onChange={setHoldPeriod} columns={2} />
+                      </div>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Distribution Schedule</label>
+                        <ChoiceGrid options={['Monthly', 'Quarterly', 'Annually']} value={distributionSchedule} onChange={setDistributionSchedule} columns={3} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Investment Range</label>
+                        <Input value={investmentRange} onChange={(e) => setInvestmentRange(e.target.value)} placeholder="e.g. $25K - $1,000,000" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Tax Advantages</label>
+                      <Input value={taxAdvantages} onChange={(e) => setTaxAdvantages(e.target.value)} placeholder="e.g. Depreciation, cost segregation, 1031 exchange..." />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Credibility / Track Record</label>
+                      <Textarea value={credibility} onChange={(e) => setCredibility(e.target.value)} placeholder="e.g. 12 years in business, $250M AUM, 15% avg returns last year, 50+ investors..." rows={3} />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Fund History / Backstory</label>
+                      <Textarea value={fundHistory} onChange={(e) => setFundHistory(e.target.value)} placeholder="Tell us about the journey of your fund — how it started, milestones, growth over the years..." rows={4} />
+                    </div>
                     <div className="space-y-1.5">
                       <label className="text-sm font-medium text-foreground flex items-center gap-2">
                         <FileText className="w-4 h-4 text-primary" /> Pitch deck
