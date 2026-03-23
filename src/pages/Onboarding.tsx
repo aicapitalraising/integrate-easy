@@ -511,9 +511,10 @@ export default function Onboarding() {
 
                     <div className="space-y-1.5">
                       <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-primary" /> Target timeline <span className="text-destructive">*</span>
+                        <Calendar className="w-4 h-4 text-primary" /> Target Timeline <span className="text-destructive">*</span>
                       </label>
                       <ChoiceGrid options={timelineOptions} value={timeline} onChange={setTimeline} columns={3} />
+                      <p className="text-[11px] text-muted-foreground">Recommended: 90 days — the avg investor takes 45–60 days from lead to funded.</p>
                     </div>
 
                     <div className="space-y-1.5">
