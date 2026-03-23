@@ -490,6 +490,42 @@ export default function Onboarding() {
                       </div>
                     </div>
 
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Targeted Returns (%)</label>
+                        <Input value={targetedReturns} onChange={(e) => setTargetedReturns(e.target.value)} placeholder="e.g. 10-15%" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Capital Hold Period</label>
+                        <ChoiceGrid options={['1 year', '3 years', '5 years', '10 years']} value={holdPeriod} onChange={setHoldPeriod} columns={2} />
+                      </div>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Distribution Schedule</label>
+                        <ChoiceGrid options={['Monthly', 'Quarterly', 'Annually']} value={distributionSchedule} onChange={setDistributionSchedule} columns={3} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Investment Range</label>
+                        <Input value={investmentRange} onChange={(e) => setInvestmentRange(e.target.value)} placeholder="e.g. $25K - $1,000,000" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Tax Advantages</label>
+                      <Input value={taxAdvantages} onChange={(e) => setTaxAdvantages(e.target.value)} placeholder="e.g. Depreciation, cost segregation, 1031 exchange..." />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Credibility / Track Record</label>
+                      <Textarea value={credibility} onChange={(e) => setCredibility(e.target.value)} placeholder="e.g. 12 years in business, $250M AUM, 15% avg returns last year, 50+ investors..." rows={3} />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Fund History / Backstory</label>
+                      <Textarea value={fundHistory} onChange={(e) => setFundHistory(e.target.value)} placeholder="Tell us about the journey of your fund — how it started, milestones, growth over the years..." rows={4} />
+                    </div>
                     <div className="space-y-1.5">
                       <label className="text-sm font-medium text-foreground flex items-center gap-2">
                         <FileText className="w-4 h-4 text-primary" /> Pitch deck
