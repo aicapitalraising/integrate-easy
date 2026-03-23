@@ -46,7 +46,7 @@ const fundTypes = [
   'Other',
 ];
 
-const timelineOptions = ['30 days', '60 days', '90 days', '6 months', '12 months'];
+const timelineOptions = ['60 days', '90 days', '6 months', '12 months'];
 
 
 export default function Onboarding() {
