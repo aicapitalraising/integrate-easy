@@ -147,10 +147,20 @@ ${trimmedContent}`
             max_tokens: 2048,
           }),
         })
-        const lovableData = await lovableRes.json()
-        if (lovableRes.ok && lovableData?.choices?.[0]?.message?.content) {
-          rawText = lovableData.choices[0].message.content
-          console.log('Used Lovable AI proxy')
+        const lovableResText = await lovableRes.text()
+        console.log('Lovable AI status:', lovableRes.status, 'response length:', lovableResText.length)
+        if (lovableRes.ok) {
+          try {
+            const lovableData = JSON.parse(lovableResText)
+            if (lovableData?.choices?.[0]?.message?.content) {
+              rawText = lovableData.choices[0].message.content
+              console.log('Used Lovable AI proxy')
+            }
+          } catch (parseErr) {
+            console.error('Lovable AI response parse error:', lovableResText.substring(0, 200))
+          }
+        } else {
+          console.error('Lovable AI error:', lovableResText.substring(0, 200))
         }
       } catch (e) {
         console.error('Lovable AI proxy failed:', e)
