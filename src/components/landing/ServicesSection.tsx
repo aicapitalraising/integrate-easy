@@ -130,6 +130,26 @@ export default function ServicesSection() {
             <LeadEnrichmentCard />
           </div>
         </motion.div>
+
+        {/* Tracking Software prop */}
+        <motion.div
+          className="glass-card rounded-2xl p-8 md:p-10 group hover:border-primary/30 transition-all duration-500 hover:-translate-y-1 mt-6"
+          initial={{ opacity: 0, y: 60, scale: 0.92 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: '-50px', amount: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/15 transition-colors">
+                <Monitor className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="font-display text-xl font-bold mb-4 text-foreground">Proprietary Track Software</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm">Track every KPI from first click to funded investor—ad spend, CTR, leads, booked calls, show rates, commitments, and capital deployed. Real-time dashboards with trend comparison so you always know your true cost of capital.</p>
+            </div>
+            <TrackingSoftwareCard />
+          </div>
+        </motion.div>
       </div>
     </section>
   );
