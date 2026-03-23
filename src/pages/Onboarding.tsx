@@ -106,7 +106,7 @@ export default function Onboarding() {
   const canProceed = () => {
     switch (currentStep) {
       case 0:
-        return companyName.trim() && contactName.trim() && contactEmail.trim() && contactPhone.replace(/\D/g, '').length >= 10 && fundType && website.trim();
+        return companyName.trim() && contactName.trim() && contactEmail.trim() && contactPhone.replace(/\D/g, '').length >= 10 && website.trim();
       case 1:
         return exactRaiseAmount.trim() && timeline && minInvestment;
       case 2:
@@ -401,14 +401,10 @@ export default function Onboarding() {
                       <div className="space-y-1.5">
                         <label className="text-sm font-medium text-foreground">Website <span className="text-destructive">*</span></label>
                         <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://acmecapital.com" />
-                        <p className="text-[11px] text-muted-foreground">Used to auto-populate brand colors & fonts</p>
+                        
                       </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-foreground">Fund Type <span className="text-destructive">*</span></label>
-                      <ChoiceGrid options={fundTypes} value={fundType} onChange={setFundType} columns={3} />
-                    </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
