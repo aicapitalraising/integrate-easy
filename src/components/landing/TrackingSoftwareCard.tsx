@@ -84,6 +84,6 @@ export default function TrackingSoftwareCard() {
           <KPICard key={kpi.label} kpi={kpi} index={i} />
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
