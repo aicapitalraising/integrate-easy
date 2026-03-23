@@ -644,7 +644,10 @@ export default function Onboarding() {
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">$</span>
                         <Input
                           value={budgetAmount}
-                          onChange={(e) => setBudgetAmount(e.target.value.replace(/[^0-9,]/g, ''))}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/[^0-9]/g, '');
+                            setBudgetAmount(raw ? Number(raw).toLocaleString() : '');
+                          }}
                           placeholder={budgetMode === 'monthly' ? '10,000' : '333'}
                           className="pl-7"
                         />
