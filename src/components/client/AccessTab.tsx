@@ -79,6 +79,7 @@ export default function AccessTab() {
                     <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@highperformanceads.com</code>
                     <span className="text-xs text-muted-foreground self-center">(Full Admin Access)</span>
                     <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">ads@highperformanceads.com</code>
+                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">emily@highperformanceads.com</code>
                   </div>
                 )}
                 {s.cta && (
@@ -129,34 +130,21 @@ export default function AccessTab() {
           </div>
           <div className="luxury-divider mt-4 mx-0" />
         </div>
-        <div className="rounded-xl border border-border bg-card p-6">
+        <div className="rounded-xl border border-border bg-card p-6 space-y-3">
           <ol className="space-y-3 text-sm text-foreground list-decimal list-inside">
             <li>Send Us Your Google Ads ID, and we will request access.</li>
+            <li>Add the following emails with admin access:
+              <div className="mt-2 flex flex-wrap gap-2 ml-5">
+                <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@highperformanceads.com</code>
+                <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">ads@highperformanceads.com</code>
+                <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">emily@highperformanceads.com</code>
+              </div>
+            </li>
             <li>Notify Our Team Once Completed.</li>
           </ol>
         </div>
       </section>
 
-      {/* LinkedIn Access */}
-      <section>
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-[hsl(210,80%,45%)]/10 flex items-center justify-center">
-              <Linkedin className="w-5 h-5 text-[hsl(210,80%,45%)]" />
-            </div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">LinkedIn Access</h2>
-          </div>
-          <div className="luxury-divider mt-4 mx-0" />
-        </div>
-        <div className="rounded-xl border border-border bg-card p-6 space-y-3">
-          <p className="text-sm text-foreground">Add Zac Tavenner to your LinkedIn Page as an Admin.</p>
-          <a href="https://linkedin.com/campaignmanager/accounts" target="_blank" rel="noopener noreferrer">
-            <Button size="sm" variant="outline" className="text-xs gap-1.5">
-              <ExternalLink className="w-3 h-3" /> LinkedIn Campaign Manager
-            </Button>
-          </a>
-        </div>
-      </section>
     </div>
   );
 }
