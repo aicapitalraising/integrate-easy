@@ -11,10 +11,9 @@ const onboardingSteps = [
 ];
 
 const fbSteps = [
-  { step: 1, title: 'Add Zac Tavenner As A Friend', description: 'Establish a digital connection with Zac Tavenner on Facebook.', cta: { label: 'Add Zac On Facebook', url: 'https://www.facebook.com/zactavenner' } },
-  { step: 2, title: 'Add Zac To Your Ad Account', description: 'Go to Business Settings → People and add access to your advertising data.', cta: { label: 'Go To Ads Manager', url: 'https://business.facebook.com/settings/people' } },
-  { step: 3, title: 'Go To Business Settings → Add People', description: 'Navigate to your Business Settings and select "Add People" to grant access.' },
-  { step: 4, title: 'Add Emails With Admin Permissions', description: 'Add zac@zactavenner.com and ads@highperformanceads.com with admin access.' },
+  { step: 1, title: 'Go To Business Settings → People', description: 'Go to Business Settings → People and add access to your advertising data.', cta: { label: 'Go To Ads Manager', url: 'https://business.facebook.com/settings/people' } },
+  { step: 2, title: 'Go To Business Settings → Add People', description: 'Navigate to your Business Settings and select "Add People" to grant access.' },
+  { step: 3, title: 'Add Our Team With Admin Permissions', description: 'Add the following emails with full admin access.' },
 ];
 
 const newAccountSteps = [
@@ -75,9 +74,10 @@ export default function AccessTab() {
               <div className="min-w-0 flex-1">
                 <h4 className="font-display text-sm font-semibold text-foreground">{s.title}</h4>
                 <p className="text-xs text-muted-foreground mt-0.5">{s.description}</p>
-                {s.step === 4 && (
+                {s.step === 3 && (
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@zactavenner.com</code>
+                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@highperformanceads.com</code>
+                    <span className="text-xs text-muted-foreground self-center">(Full Admin Access)</span>
                     <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">ads@highperformanceads.com</code>
                   </div>
                 )}
