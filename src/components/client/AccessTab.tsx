@@ -145,26 +145,8 @@ export default function AccessTab() {
         </div>
       </section>
 
-      {/* LinkedIn Access */}
-      <section>
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-[hsl(210,80%,45%)]/10 flex items-center justify-center">
-              <Linkedin className="w-5 h-5 text-[hsl(210,80%,45%)]" />
-            </div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">LinkedIn Access</h2>
-          </div>
-          <div className="luxury-divider mt-4 mx-0" />
-        </div>
-        <div className="rounded-xl border border-border bg-card p-6 space-y-3">
-          <p className="text-sm text-foreground">Add Zac Tavenner to your LinkedIn Page as an Admin.</p>
-          <a href="https://linkedin.com/campaignmanager/accounts" target="_blank" rel="noopener noreferrer">
-            <Button size="sm" variant="outline" className="text-xs gap-1.5">
-              <ExternalLink className="w-3 h-3" /> LinkedIn Campaign Manager
-            </Button>
-          </a>
-        </div>
-      </section>
+    </div>
+  );
     </div>
   );
 }
