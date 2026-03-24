@@ -11,12 +11,6 @@ export default function Access() {
           <a href="/">
             <img src={logo} alt="AI Capital Raising Accelerator" className="h-8" />
           </a>
-          <a href="https://aicapitalraising.com/steps" target="_blank" rel="noopener noreferrer">
-            <Button size="sm" className="font-semibold rounded-lg">
-              <Phone className="w-4 h-4 mr-1.5" />
-              Kick Off Call
-            </Button>
-          </a>
         </div>
       </header>
 
