@@ -74,9 +74,10 @@ export default function AccessTab() {
               <div className="min-w-0 flex-1">
                 <h4 className="font-display text-sm font-semibold text-foreground">{s.title}</h4>
                 <p className="text-xs text-muted-foreground mt-0.5">{s.description}</p>
-                {s.step === 4 && (
+                {s.step === 3 && (
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@zactavenner.com</code>
+                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@highperformanceads.com</code>
+                    <span className="text-xs text-muted-foreground self-center">(Full Admin Access)</span>
                     <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">ads@highperformanceads.com</code>
                   </div>
                 )}
