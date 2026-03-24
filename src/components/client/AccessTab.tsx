@@ -147,6 +147,4 @@ export default function AccessTab() {
 
     </div>
   );
-    </div>
-  );
 }
