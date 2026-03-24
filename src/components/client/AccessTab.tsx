@@ -79,6 +79,7 @@ export default function AccessTab() {
                     <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@highperformanceads.com</code>
                     <span className="text-xs text-muted-foreground self-center">(Full Admin Access)</span>
                     <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">ads@highperformanceads.com</code>
+                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">emily@highperformanceads.com</code>
                   </div>
                 )}
                 {s.cta && (
