@@ -130,9 +130,16 @@ export default function AccessTab() {
           </div>
           <div className="luxury-divider mt-4 mx-0" />
         </div>
-        <div className="rounded-xl border border-border bg-card p-6">
+        <div className="rounded-xl border border-border bg-card p-6 space-y-3">
           <ol className="space-y-3 text-sm text-foreground list-decimal list-inside">
             <li>Send Us Your Google Ads ID, and we will request access.</li>
+            <li>Add the following emails with admin access:
+              <div className="mt-2 flex flex-wrap gap-2 ml-5">
+                <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@highperformanceads.com</code>
+                <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">ads@highperformanceads.com</code>
+                <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">emily@highperformanceads.com</code>
+              </div>
+            </li>
             <li>Notify Our Team Once Completed.</li>
           </ol>
         </div>
