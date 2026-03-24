@@ -135,7 +135,7 @@ export default function AccessTab() {
             <li>Send Us Your Google Ads ID, and we will request access.</li>
             <li>Add the following emails with admin access:
               <div className="mt-2 flex flex-wrap gap-2 ml-5">
-                <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@highperformanceads.com</code>
+                <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zactavenner@gmail.com</code>
                 <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">ads@highperformanceads.com</code>
                 <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">emily@highperformanceads.com</code>
               </div>
