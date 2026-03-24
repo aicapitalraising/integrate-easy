@@ -76,7 +76,7 @@ export default function AccessTab() {
                 <p className="text-xs text-muted-foreground mt-0.5">{s.description}</p>
                 {s.step === 3 && (
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zac@highperformanceads.com</code>
+                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">zactavenner@gmail.com</code>
                     <span className="text-xs text-muted-foreground self-center">(Full Admin Access)</span>
                     <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">ads@highperformanceads.com</code>
                     <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">emily@highperformanceads.com</code>
