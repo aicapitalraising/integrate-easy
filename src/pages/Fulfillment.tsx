@@ -11,7 +11,7 @@ import {
   Lock, Phone, Building2, Target, DollarSign, Globe, Calendar, Users,
   FileText, Palette, ExternalLink, Copy, CheckCircle2, Clock, Loader2,
   BarChart3, Mail, MessageSquare, Video, Image, Megaphone, ClipboardList,
-  Plus, RefreshCw,
+  Plus, RefreshCw, Trash2,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AssetGeneratorTab from '@/components/fulfillment/AssetGeneratorTab';
@@ -271,7 +271,6 @@ export default function Fulfillment() {
 
     if (!error && data) {
       setClients(data as Client[]);
-      // Auto-select from URL param or first client
       const tokenParam = searchParams.get('client');
       if (tokenParam) {
         const match = data.find((c: any) => c.share_token === tokenParam || c.id === tokenParam);
@@ -279,6 +278,17 @@ export default function Fulfillment() {
       }
     }
     setLoading(false);
+  };
+
+  const deleteClient = async (e: React.MouseEvent, clientId: string) => {
+    e.stopPropagation();
+    if (!confirm('Delete this client and all their assets? This cannot be undone.')) return;
+    
+    // Delete assets first, then the client
+    await supabase.from('client_assets').delete().eq('client_id', clientId);
+    await supabase.from('clients').delete().eq('id', clientId);
+    toast({ title: 'Client deleted' });
+    setClients((prev) => prev.filter((c) => c.id !== clientId));
   };
 
   if (!authenticated) {
@@ -369,6 +379,11 @@ export default function Fulfillment() {
                         <p>{client.contact_name} · {client.contact_email}</p>
                         {client.raise_amount && <p className="text-foreground font-medium">Raise: ${client.raise_amount}</p>}
                         <p>Added {new Date(client.created_at).toLocaleDateString()}</p>
+                      </div>
+                      <div className="flex justify-end pt-1">
+                        <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={(e) => deleteClient(e, client.id)}>
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
