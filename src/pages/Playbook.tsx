@@ -202,7 +202,7 @@ const Playbook = () => {
         {/* Promo Banner */}
         <div className="bg-primary py-2 text-center">
           <p className="font-display text-xs font-bold tracking-wide text-primary-foreground sm:text-sm md:text-base">
-            PROMO – ENDS March 24 @ 11:59PM EST 💍
+            PROMO – ENDS March 31 @ 11:59PM EST 💍
           </p>
         </div>
 
