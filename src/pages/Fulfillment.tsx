@@ -271,7 +271,6 @@ export default function Fulfillment() {
 
     if (!error && data) {
       setClients(data as Client[]);
-      // Auto-select from URL param or first client
       const tokenParam = searchParams.get('client');
       if (tokenParam) {
         const match = data.find((c: any) => c.share_token === tokenParam || c.id === tokenParam);
@@ -279,6 +278,17 @@ export default function Fulfillment() {
       }
     }
     setLoading(false);
+  };
+
+  const deleteClient = async (e: React.MouseEvent, clientId: string) => {
+    e.stopPropagation();
+    if (!confirm('Delete this client and all their assets? This cannot be undone.')) return;
+    
+    // Delete assets first, then the client
+    await supabase.from('client_assets').delete().eq('client_id', clientId);
+    await supabase.from('clients').delete().eq('id', clientId);
+    toast({ title: 'Client deleted' });
+    setClients((prev) => prev.filter((c) => c.id !== clientId));
   };
 
   if (!authenticated) {
