@@ -7,12 +7,6 @@ const corsHeaders = {
 
 const RETARGETIQ_BASE = 'https://app.retargetiq.com/api'
 
-interface EnrichmentResult {
-  enrichmentStatus: 'verified' | 'spouse' | 'no-match'
-  enrichmentMethod: 'phone' | 'email'
-  data: Record<string, unknown> | null
-}
-
 async function callRetargetIQ(endpoint: string, params: Record<string, string>, apiKey: string) {
   const url = new URL(`${RETARGETIQ_BASE}/${endpoint}`)
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
@@ -98,6 +92,56 @@ function calculateQualification(financial: Record<string, unknown> | null, inves
   return { tier, score, routing }
 }
 
+/** Waterfall: try phone → email → phone2 → email2, stop on first+last name match */
+async function waterfallEnrich(
+  name: string,
+  phone: string,
+  email: string,
+  phone2: string,
+  email2: string,
+  apiKey: string
+) {
+  const attempts: { type: 'phone' | 'email'; value: string }[] = []
+  if (phone) attempts.push({ type: 'phone', value: phone.replace(/\D/g, '') })
+  if (email) attempts.push({ type: 'email', value: email })
+  if (phone2) attempts.push({ type: 'phone', value: phone2.replace(/\D/g, '') })
+  if (email2) attempts.push({ type: 'email', value: email2 })
+
+  for (const attempt of attempts) {
+    const endpoint = attempt.type === 'phone' ? 'GetDataByPhone' : 'GetDataByEmail'
+    const paramKey = attempt.type === 'phone' ? 'phone' : 'email'
+    const rawData = await callRetargetIQ(endpoint, { [paramKey]: attempt.value, slug: 'high-performance-ads' }, apiKey)
+    
+    if (!rawData) continue
+
+    const fields = extractEnrichmentFields(rawData)
+    const identityData = fields.identity as Record<string, string> | null
+
+    if (!identityData) continue
+
+    const matchType = name
+      ? compareNames(name, identityData.firstName, identityData.lastName)
+      : 'verified'
+
+    if (matchType === 'verified' || matchType === 'spouse') {
+      const qual = calculateQualification(
+        fields.financial as Record<string, unknown> | null,
+        fields.investments as Record<string, unknown> | null
+      )
+      return {
+        matched: true,
+        status: matchType,
+        method: attempt.type,
+        score: qual.score,
+        tier: qual.tier,
+        fields,
+      }
+    }
+  }
+
+  return { matched: false }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -115,51 +159,25 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const { leadId, name, email, phone, mode } = await req.json()
+    const { leadId, name, email, phone, phone2, email2, mode } = await req.json()
 
     // Inline mode: enrich without DB
     if (mode === 'inline') {
-      let rawData: Record<string, unknown> | null = null
-      let method: 'phone' | 'email' = 'phone'
+      const result = await waterfallEnrich(name || '', phone || '', email || '', phone2 || '', email2 || '', RETARGETIQ_API_KEY)
 
-      if (phone) {
-        const cleanPhone = phone.replace(/\D/g, '')
-        rawData = await callRetargetIQ('GetDataByPhone', { phone: cleanPhone, slug: 'high-performance-ads' }, RETARGETIQ_API_KEY)
-      }
-      if (!rawData && email) {
-        method = 'email'
-        rawData = await callRetargetIQ('GetDataByEmail', { email, slug: 'high-performance-ads' }, RETARGETIQ_API_KEY)
-      }
-      if (!rawData) {
+      if (!result.matched) {
         return new Response(JSON.stringify({ status: 'no-match' }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
       }
-
-      const fields = extractEnrichmentFields(rawData)
-      const identityData = fields.identity as Record<string, string> | null
-      const matchType = identityData && name
-        ? compareNames(name, identityData.firstName, identityData.lastName)
-        : (identityData ? 'verified' : 'no-match')
-
-      if (matchType === 'no-match') {
-        return new Response(JSON.stringify({ status: 'no-match' }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        })
-      }
-
-      const qual = calculateQualification(
-        fields.financial as Record<string, unknown> | null,
-        fields.investments as Record<string, unknown> | null
-      )
 
       return new Response(JSON.stringify({
-        status: matchType,
-        score: qual.score,
-        tier: qual.tier,
-        financial: fields.financial,
-        identity: fields.identity,
-        address: fields.address,
+        status: result.status,
+        score: result.score,
+        tier: result.tier,
+        financial: result.fields!.financial,
+        identity: result.fields!.identity,
+        address: result.fields!.address,
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
@@ -179,81 +197,50 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Waterfall: phone first, then email
-    let rawData: Record<string, unknown> | null = null
-    let method: 'phone' | 'email' = 'phone'
-
-    if (lead.lead_phone) {
-      const phone = lead.lead_phone.replace(/\D/g, '')
-      rawData = await callRetargetIQ('GetDataByPhone', { phone, slug: 'high-performance-ads' }, RETARGETIQ_API_KEY)
-    }
-
-    if (!rawData && lead.lead_email) {
-      method = 'email'
-      rawData = await callRetargetIQ('GetDataByEmail', { email: lead.lead_email, slug: 'high-performance-ads' }, RETARGETIQ_API_KEY)
-    }
-
-    if (!rawData) {
-      await supabase.from('leads').update({
-        enrichment_status: 'no-match',
-        enrichment_method: method,
-      }).eq('id', leadId)
-
-      return new Response(JSON.stringify({ status: 'no-match' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      })
-    }
-
-    // Extract fields
-    const fields = extractEnrichmentFields(rawData)
-    const identityData = fields.identity as Record<string, string> | null
-
-    // Name comparison
-    const matchType = identityData
-      ? compareNames(lead.lead_name, identityData.firstName, identityData.lastName)
-      : 'no-match'
-
-    if (matchType === 'no-match') {
-      await supabase.from('leads').update({
-        enrichment_status: 'no-match',
-        enrichment_method: method,
-      }).eq('id', leadId)
-
-      return new Response(JSON.stringify({ status: 'no-match' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      })
-    }
-
-    // Calculate qualification
-    const qual = calculateQualification(
-      fields.financial as Record<string, unknown> | null,
-      fields.investments as Record<string, unknown> | null
+    const result = await waterfallEnrich(
+      lead.lead_name || '',
+      lead.lead_phone || '',
+      lead.lead_email || '',
+      '', '', // no secondary fields on DB leads
+      RETARGETIQ_API_KEY
     )
 
-    // Update lead with enrichment data
+    if (!result.matched) {
+      await supabase.from('leads').update({
+        enrichment_status: 'no-match',
+        enrichment_method: 'phone',
+      }).eq('id', leadId)
+
+      return new Response(JSON.stringify({ status: 'no-match' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    const { fields } = result
+
     await supabase.from('leads').update({
-      enrichment_status: matchType,
-      enrichment_method: method,
-      identity: fields.identity,
-      address: fields.address,
-      financial: fields.financial,
-      investments: fields.investments,
-      home: fields.home,
-      household: fields.household,
-      education: fields.education,
-      interests: Array.isArray(fields.interests) ? fields.interests : [],
-      vehicles: fields.vehicles,
-      companies: fields.companies,
-      phones: fields.phones,
-      emails: fields.emails,
-      donations: Array.isArray(fields.donations) ? fields.donations : [],
-      reading: Array.isArray(fields.reading) ? fields.reading : [],
-      qualification_tier: qual.tier,
-      qualification_score: qual.score,
-      routing_destination: qual.routing,
+      enrichment_status: result.status,
+      enrichment_method: result.method,
+      identity: fields!.identity,
+      address: fields!.address,
+      financial: fields!.financial,
+      investments: fields!.investments,
+      home: fields!.home,
+      household: fields!.household,
+      education: fields!.education,
+      interests: Array.isArray(fields!.interests) ? fields!.interests : [],
+      vehicles: fields!.vehicles,
+      companies: fields!.companies,
+      phones: fields!.phones,
+      emails: fields!.emails,
+      donations: Array.isArray(fields!.donations) ? fields!.donations : [],
+      reading: Array.isArray(fields!.reading) ? fields!.reading : [],
+      qualification_tier: result.tier,
+      qualification_score: result.score,
+      routing_destination: 'closer',
     }).eq('id', leadId)
 
-    return new Response(JSON.stringify({ status: matchType, score: qual.score, tier: qual.tier }), {
+    return new Response(JSON.stringify({ status: result.status, score: result.score, tier: result.tier }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
   } catch (err) {
