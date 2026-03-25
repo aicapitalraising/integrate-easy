@@ -27,7 +27,7 @@ const CTAButton = ({ className = "" }: { className?: string }) => {
   return (
     <button
       onClick={() => setOpen(true)}
-      className={`inline-block bg-primary text-primary-foreground rounded-lg px-8 py-4 font-display text-base font-bold transition-all hover:bg-primary/90 shadow-lg hover:shadow-xl ${className}`}
+      className={`inline-block bg-primary text-primary-foreground rounded-lg px-6 py-3.5 font-display text-sm font-bold transition-all hover:bg-primary/90 shadow-lg hover:shadow-xl sm:px-8 sm:py-4 sm:text-base ${className}`}
     >
       Click Here to Access It Now
     </button>
