@@ -41,7 +41,7 @@ export function useLeads() {
       const contacts = data?.data?.contacts || [];
 
       return contacts
-        .filter((c: any) => c.name || c.email || c.phone)
+        .filter((c: any) => c.name && c.email)
         .map((c: any): EnrichedLead => {
           const tags: string[] = c.tags || [];
           const status = deriveStatus(tags);
