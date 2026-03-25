@@ -249,11 +249,11 @@ const Playbook = () => {
 
         {/* Inside Playbook */}
         <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4 text-center md:px-8">
+          <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="mx-auto mb-8 max-w-3xl font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground md:text-base">
               If you've been frustrated with slow capital raises, wasted time pitching to the wrong people, or unpredictable investor interest, you're not alone.
             </p>
-            <h2 className="mb-12 font-display text-3xl font-extrabold text-foreground md:text-5xl">Inside this playbook, you'll discover:</h2>
+            <h2 className="mb-12 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">Inside this playbook, you'll discover:</h2>
             <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
               {discoverItems.map((item, i) => (
                 <div key={i} className="glass-card-elevated rounded-xl p-6 text-left">
@@ -274,12 +274,12 @@ const Playbook = () => {
 
         {/* Why Traditional Fails */}
         <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
-          <div className="container mx-auto grid items-center gap-12 px-4 md:grid-cols-2 md:px-8">
+          <div className="max-w-6xl mx-auto grid items-center gap-12 px-4 md:grid-cols-2 md:px-8">
             <div>
               <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67ae70487322557fbe14f604.png" alt="AI Robot" className="mx-auto max-w-xs md:max-w-sm" />
             </div>
             <div className="space-y-6">
-              <h2 className="font-display text-3xl font-extrabold text-foreground md:text-4xl">
+              <h2 className="font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-4xl">
                 Why Traditional Capital Raising Strategies Fail <span className="text-primary">(And What to Do Instead)</span>
               </h2>
               <p className="text-muted-foreground">Before we dive into the AI-driven framework, it's important to understand why most capital raising efforts stall or fail completely:</p>
@@ -301,14 +301,14 @@ const Playbook = () => {
 
         {/* Perfect For */}
         <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4 text-center md:px-8">
+          <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">PROCESS</p>
-            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">This playbook is perfect for:</h2>
-            <div className="mt-12 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+            <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">This playbook is perfect for:</h2>
+            <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-5">
               {audiences.map((a, i) => (
                 <div key={i} className="flex flex-col items-center gap-4">
                   <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
-                    <img src={a.img} alt={a.title} loading="lazy" width={512} height={512} className="h-40 w-full object-cover md:h-48" />
+                    <img src={a.img} alt={a.title} loading="lazy" width={512} height={512} className="h-32 w-full object-cover sm:h-40 md:h-48" />
                   </div>
                   <h3 className="font-display text-sm font-bold text-foreground md:text-base">{a.title}</h3>
                 </div>
@@ -319,9 +319,9 @@ const Playbook = () => {
 
         {/* Three Steps */}
         <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
-          <div className="container mx-auto px-4 text-center md:px-8">
+          <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">The AI Capital Raising Framework:</p>
-            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">The 3-Step System to Attract & Secure Accredited Investors</h2>
+            <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">The 3-Step System to Attract & Secure Accredited Investors</h2>
             <p className="mx-auto mt-4 max-w-3xl text-muted-foreground">
               This framework has been used to raise over <strong className="text-primary italic">$7M in just 5 months</strong> for a real estate fund.
             </p>
@@ -351,9 +351,9 @@ const Playbook = () => {
 
         {/* Why You Need */}
         <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4 text-center md:px-8">
+          <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">WHY YOU NEED THIS</p>
-            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">What Happens When You Implement This?</h2>
+            <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">What Happens When You Implement This?</h2>
             <div className="mx-auto mt-12 grid max-w-4xl gap-8 md:grid-cols-2">
               <div className="glass-card-elevated rounded-2xl p-6 text-left">
                 {cons.map((c, i) => (
@@ -377,7 +377,7 @@ const Playbook = () => {
 
         {/* Pricing */}
         <section id="pricing" className="py-16 md:py-24 bg-muted/30 border-t border-border">
-          <div className="container mx-auto px-4 md:px-8">
+          <div className="max-w-6xl mx-auto px-4 md:px-8">
             <div className="mx-auto max-w-4xl glass-card-elevated rounded-3xl p-8 md:p-12">
               <div className="grid items-center gap-10 md:grid-cols-2">
                 <div>
@@ -385,7 +385,7 @@ const Playbook = () => {
                     <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/3b47f04b-8523-4abf-973c-72dc50a14f39.png" alt="Stars" className="h-6" />
                     <span className="text-sm text-muted-foreground">4.9/5 star reviews from 500+ couples</span>
                   </div>
-                  <h2 className="font-display text-3xl font-extrabold text-foreground md:text-4xl">AI Capital Raising Playbook</h2>
+                  <h2 className="font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-4xl">AI Capital Raising Playbook</h2>
                   <p className="mt-2 text-muted-foreground">Unlock the Complete System (Ads, Funnels, Investor Email Templates & More).</p>
                   <div className="mt-6 flex gap-4">
                     <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67ad6436773f0202312de872.png" alt="Book" className="h-32 md:h-40" />
@@ -430,9 +430,9 @@ const Playbook = () => {
 
         {/* Testimonials */}
         <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4 text-center md:px-8">
+          <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">TESTIMONIALS</p>
-            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">See How Other People Saved Thousands</h2>
+            <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">See How Other People Saved Thousands</h2>
             <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-3">
               {testimonials.map((t, i) => (
                 <div key={i} className="glass-card-elevated rounded-2xl p-6 text-left">
@@ -449,9 +449,9 @@ const Playbook = () => {
 
         {/* Guarantee */}
         <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
-          <div className="container mx-auto px-4 text-center md:px-8">
+          <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">STILL NOT SURE?</p>
-            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">Our Ironclad 100% Risk-Free Guarantee</h2>
+            <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">Our Ironclad 100% Risk-Free Guarantee</h2>
             <div className="mx-auto mt-10 grid max-w-4xl items-center gap-10 md:grid-cols-2">
               <div className="space-y-4 text-left text-muted-foreground">
                 <p>We are so confident in the <strong className="text-foreground">AI Capital Raising Playbook</strong> that we're putting our money where our mouth is.</p>
@@ -469,9 +469,9 @@ const Playbook = () => {
 
         {/* FAQ */}
         <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4 text-center md:px-8">
+          <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">STILL GOT QUESTIONS?</p>
-            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">Frequently Asked Questions</h2>
+            <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">Frequently Asked Questions</h2>
             <div className="mx-auto mt-12 max-w-3xl text-left">
               <Accordion type="single" collapsible className="space-y-3">
                 {faqs.map((faq, i) => (
@@ -487,8 +487,8 @@ const Playbook = () => {
 
         {/* Final CTA */}
         <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
-          <div className="container mx-auto px-4 text-center md:px-8">
-            <h2 className="font-display text-3xl font-extrabold text-foreground md:text-5xl">Enroll now before it's too late!</h2>
+          <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
+            <h2 className="font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">Enroll now before it's too late!</h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Lock in your access to the complete system for just $27 before this special offer expires.</p>
             <div className="mt-8"><CTAButton /></div>
             <p className="mt-4 text-sm font-semibold text-primary">Price going up soon!</p>
@@ -497,7 +497,7 @@ const Playbook = () => {
 
         {/* Footer */}
         <footer className="border-t border-border py-8 bg-muted/30">
-          <div className="container mx-auto flex flex-col items-center gap-4 px-4 md:px-8">
+          <div className="max-w-6xl mx-auto flex flex-col items-center gap-4 px-4 md:px-8">
             <img src={logo} alt="AI Capital Raising" className="h-8" />
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} AI Capital Raising. All rights reserved.</p>
           </div>
