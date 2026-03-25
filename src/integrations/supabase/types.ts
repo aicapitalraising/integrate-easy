@@ -49,6 +49,33 @@ export type Database = {
           },
         ]
       }
+      calendar_mappings: {
+        Row: {
+          calendar_id: string
+          created_at: string
+          id: string
+          label: string
+          route: string
+          updated_at: string
+        }
+        Insert: {
+          calendar_id: string
+          created_at?: string
+          id?: string
+          label: string
+          route: string
+          updated_at?: string
+        }
+        Update: {
+          calendar_id?: string
+          created_at?: string
+          id?: string
+          label?: string
+          route?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       client_assets: {
         Row: {
           angle_id: string | null

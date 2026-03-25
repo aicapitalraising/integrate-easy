@@ -9,11 +9,31 @@ interface UseCalendarSlotsOptions {
 }
 
 export function useCalendarSlots({ route, selectedDate, timezone = 'America/New_York' }: UseCalendarSlotsOptions) {
-  // Use hardcoded calendar ID since calendar_mappings table doesn't exist yet
-  const [calendarId] = useState<string>('35XuJAAvPdr0w5Tf9sPf');
+  const [calendarId, setCalendarId] = useState<string | null>(null);
   const [slots, setSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
-  const loadingCalendarId = false;
+  const [loadingCalendarId, setLoadingCalendarId] = useState(true);
+
+  // Fetch calendar ID from DB mapping for this route
+  useEffect(() => {
+    const fetchMapping = async () => {
+      setLoadingCalendarId(true);
+      const { data, error } = await supabase
+        .from('calendar_mappings')
+        .select('calendar_id')
+        .eq('route', route)
+        .maybeSingle();
+
+      if (!error && data) {
+        setCalendarId(data.calendar_id);
+      } else {
+        // Fallback default
+        setCalendarId('35XuJAAvPdr0w5Tf9sPf');
+      }
+      setLoadingCalendarId(false);
+    };
+    fetchMapping();
+  }, [route]);
 
   const fetchSlots = useCallback(async (date: Date) => {
     if (!calendarId) return;

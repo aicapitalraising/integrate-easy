@@ -27,15 +27,25 @@ interface CalendarMapping {
   calendar_id: string;
 }
 
-const defaultMappings: CalendarMapping[] = [
-  { route: '/book', label: 'Booking Page', calendar_id: '35XuJAAvPdr0w5Tf9sPf' },
-  { route: '/onboarding', label: 'Onboarding Kickoff', calendar_id: '35XuJAAvPdr0w5Tf9sPf' },
-];
-
 export function SettingsTab() {
   const [ghlCalendars, setGhlCalendars] = useState<GHLCalendar[]>([]);
   const [loadingCalendars, setLoadingCalendars] = useState(false);
-  const [calendarMappings, setCalendarMappings] = useState<CalendarMapping[]>(defaultMappings);
+  const [calendarMappings, setCalendarMappings] = useState<CalendarMapping[]>([]);
+  const [savingMappings, setSavingMappings] = useState(false);
+
+  const fetchMappings = async () => {
+    const { data, error } = await supabase
+      .from('calendar_mappings')
+      .select('route, label, calendar_id')
+      .order('route');
+    if (!error && data) {
+      setCalendarMappings(data);
+    }
+  };
+
+  useEffect(() => {
+    fetchMappings();
+  }, []);
 
   const fetchCalendars = async () => {
     setLoadingCalendars(true);
@@ -64,8 +74,25 @@ export function SettingsTab() {
     setCalendarMappings(prev => prev.map((m, i) => i === index ? { ...m, calendar_id: calendarId } : m));
   };
 
-  const handleSaveCalendars = () => {
-    toast({ title: 'Calendar mappings saved', description: 'Page-to-calendar assignments updated.' });
+  const handleSaveCalendars = async () => {
+    setSavingMappings(true);
+    try {
+      for (const mapping of calendarMappings) {
+        const { error } = await supabase
+          .from('calendar_mappings')
+          .upsert(
+            { route: mapping.route, label: mapping.label, calendar_id: mapping.calendar_id, updated_at: new Date().toISOString() },
+            { onConflict: 'route' }
+          );
+        if (error) throw error;
+      }
+      toast({ title: 'Calendar mappings saved', description: 'Page-to-calendar assignments updated.' });
+    } catch (err) {
+      console.error('Failed to save mappings:', err);
+      toast({ title: 'Save failed', description: 'Could not save calendar mappings.', variant: 'destructive' });
+    } finally {
+      setSavingMappings(false);
+    }
   };
 
   return (
@@ -141,7 +168,7 @@ export function SettingsTab() {
               </div>
             ))}
             <div className="flex items-center gap-2">
-              <Button size="sm" onClick={handleSaveCalendars} className="gap-2"><Save className="w-3.5 h-3.5" /> Save</Button>
+              <Button size="sm" onClick={handleSaveCalendars} disabled={savingMappings} className="gap-2"><Save className="w-3.5 h-3.5" /> {savingMappings ? 'Saving…' : 'Save'}</Button>
               <Button size="sm" variant="outline" onClick={fetchCalendars} disabled={loadingCalendars} className="gap-2">
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingCalendars ? 'animate-spin' : ''}`} /> Refresh
               </Button>
