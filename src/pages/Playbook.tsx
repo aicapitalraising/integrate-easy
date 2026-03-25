@@ -21,6 +21,43 @@ type AccessFormContextType = { open: boolean; setOpen: (o: boolean) => void };
 const AccessFormContext = createContext<AccessFormContextType>({ open: false, setOpen: () => {} });
 const useAccessForm = () => useContext(AccessFormContext);
 
+/* ─── Countdown Hook ─── */
+const useCountdown = (targetDate: Date) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date().getTime();
+      const diff = targetDate.getTime() - now;
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+      setTimeLeft({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+
+  return timeLeft;
+};
+
+/* ─── Countdown Unit ─── */
+const CountdownUnit = ({ value, label }: { value: number; label: string }) => (
+  <div className="flex flex-col items-center">
+    <span className="font-display text-lg font-extrabold leading-none text-primary-foreground sm:text-xl md:text-2xl">
+      {String(value).padStart(2, "0")}
+    </span>
+    <span className="text-[9px] uppercase tracking-wider text-primary-foreground/70 sm:text-[10px]">{label}</span>
+  </div>
+);
+
 /* ─── CTA Button ─── */
 const CTAButton = ({ className = "" }: { className?: string }) => {
   const { setOpen } = useAccessForm();
