@@ -380,8 +380,11 @@ export default function Fulfillment() {
                         {client.raise_amount && <p className="text-foreground font-medium">Raise: ${client.raise_amount}</p>}
                         <p>Added {new Date(client.created_at).toLocaleDateString()}</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <div className="flex justify-end pt-1">
+                        <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={(e) => deleteClient(e, client.id)}>
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
                 ))}
               </div>
             )}
