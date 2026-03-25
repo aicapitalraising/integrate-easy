@@ -248,7 +248,7 @@ const Playbook = () => {
         </section>
 
         {/* Inside Playbook */}
-        <section className="py-16 md:py-24">
+        <section className="py-12 md:py-24">
           <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="mx-auto mb-8 max-w-3xl font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground md:text-base">
               If you've been frustrated with slow capital raises, wasted time pitching to the wrong people, or unpredictable investor interest, you're not alone.
@@ -273,7 +273,7 @@ const Playbook = () => {
         </section>
 
         {/* Why Traditional Fails */}
-        <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
+        <section className="py-12 md:py-24 bg-muted/30 border-t border-border">
           <div className="max-w-6xl mx-auto grid items-center gap-12 px-4 md:grid-cols-2 md:px-8">
             <div>
               <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67ae70487322557fbe14f604.png" alt="AI Robot" className="mx-auto max-w-xs md:max-w-sm" />
@@ -300,7 +300,7 @@ const Playbook = () => {
         </section>
 
         {/* Perfect For */}
-        <section className="py-16 md:py-24">
+        <section className="py-12 md:py-24">
           <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">PROCESS</p>
             <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">This playbook is perfect for:</h2>
@@ -318,7 +318,7 @@ const Playbook = () => {
         </section>
 
         {/* Three Steps */}
-        <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
+        <section className="py-12 md:py-24 bg-muted/30 border-t border-border">
           <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">The AI Capital Raising Framework:</p>
             <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">The 3-Step System to Attract & Secure Accredited Investors</h2>
@@ -350,7 +350,7 @@ const Playbook = () => {
         </section>
 
         {/* Why You Need */}
-        <section className="py-16 md:py-24">
+        <section className="py-12 md:py-24">
           <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">WHY YOU NEED THIS</p>
             <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">What Happens When You Implement This?</h2>
@@ -376,7 +376,7 @@ const Playbook = () => {
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="py-16 md:py-24 bg-muted/30 border-t border-border">
+        <section id="pricing" className="py-12 md:py-24 bg-muted/30 border-t border-border">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
             <div className="mx-auto max-w-4xl glass-card-elevated rounded-3xl p-8 md:p-12">
               <div className="grid items-center gap-10 md:grid-cols-2">
@@ -429,7 +429,7 @@ const Playbook = () => {
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 md:py-24">
+        <section className="py-12 md:py-24">
           <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">TESTIMONIALS</p>
             <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">See How Other People Saved Thousands</h2>
@@ -448,7 +448,7 @@ const Playbook = () => {
         </section>
 
         {/* Guarantee */}
-        <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
+        <section className="py-12 md:py-24 bg-muted/30 border-t border-border">
           <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">STILL NOT SURE?</p>
             <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">Our Ironclad 100% Risk-Free Guarantee</h2>
@@ -468,7 +468,7 @@ const Playbook = () => {
         </section>
 
         {/* FAQ */}
-        <section className="py-16 md:py-24">
+        <section className="py-12 md:py-24">
           <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">STILL GOT QUESTIONS?</p>
             <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">Frequently Asked Questions</h2>
@@ -486,7 +486,7 @@ const Playbook = () => {
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
+        <section className="py-12 md:py-24 bg-muted/30 border-t border-border">
           <div className="max-w-6xl mx-auto px-4 text-center md:px-8">
             <h2 className="font-display text-2xl font-extrabold text-foreground sm:text-3xl md:text-5xl">Enroll now before it's too late!</h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Lock in your access to the complete system for just $27 before this special offer expires.</p>
