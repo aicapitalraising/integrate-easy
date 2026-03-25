@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -153,4 +153,19 @@ html {
 }
 .animate-bounce-slow {
   animation: bounce-slow 2s ease-in-out infinite;
+}
+
+/* Playbook theme utilities */
+@keyframes pulse-glow-playbook {
+  0%, 100% { box-shadow: 0 0 20px hsl(142 71% 45% / 0.3); }
+  50% { box-shadow: 0 0 40px hsl(142 71% 45% / 0.5); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow-playbook 2s ease-in-out infinite;
+}
+.gradient-green {
+  background: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 76% 55%));
+}
+.font-heading {
+  font-family: 'Montserrat', sans-serif;
 }
