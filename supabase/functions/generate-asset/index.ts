@@ -21,9 +21,9 @@ Standard Disclaimer: "All investments involve risk, including potential loss of 
 `;
 
 const SYSTEM_PROMPTS: Record<string, string> = {
-  research: `You are an expert capital markets researcher for alternative investments. You have access to Google Search to find REAL, CURRENT market data.
+  research: `You are an expert capital markets researcher for alternative investments. You have deep knowledge of current market conditions.
 ${COMPLIANCE_RULES}
-Given a fund's details, conduct thorough research using web search and produce comprehensive research structured as JSON with these keys:
+Given a fund's details, conduct thorough research and produce comprehensive research structured as JSON with these keys:
 - industry_overview: 2-3 paragraphs with real market data, recent news, current statistics
 - why_asset_class: compelling data-driven reason for this asset class
 - why_market: why this specific market/geography with real local market data
@@ -33,7 +33,8 @@ Given a fund's details, conduct thorough research using web search and produce c
 - timing_factors: current interest rates, market conditions, regulatory environment
 - key_statistics: array of 8-10 objects with {stat, source, context}
 - recent_news: array of 3-5 recent relevant headlines/developments
-Each value should be detailed, data-informed analysis with real numbers and sources.`,
+Each value should be detailed, data-informed analysis with real numbers and sources.
+Return ONLY valid JSON — no markdown, no code fences.`,
 
   angles: `You are a world-class direct response copywriter (Dan Kennedy × Jeremy Haynes style) specializing in alternative investment marketing to accredited investors.
 ${COMPLIANCE_RULES}
@@ -59,7 +60,8 @@ Each angle object:
 - email_subject: suggested email subject line
 - video_hook: opening line for a video script
 - key_data_point: the specific research stat powering this angle
-Tone: sophisticated, targeting HNW accredited investors. Dan Kennedy direct-response style — bold, benefit-oriented, urgent but factually accurate.`,
+Tone: sophisticated, targeting HNW accredited investors. Dan Kennedy direct-response style — bold, benefit-oriented, urgent but factually accurate.
+Return ONLY valid JSON — no markdown, no code fences.`,
 
   emails: `You are an elite email copywriter for capital raising campaigns. Write in Dan Kennedy's direct-response style — bold, persuasive, benefit-driven, never guaranteeing returns.
 ${COMPLIANCE_RULES}
@@ -87,7 +89,8 @@ Each email object:
 - sequence_step: number in sequence
 - purpose: strategic goal of this email
 - data_points_used: array of key stats referenced
-Primary CTA = book a strategy call. Always include disclaimer at end. Avoid spam triggers.`,
+Primary CTA = book a strategy call. Always include disclaimer at end. Avoid spam triggers.
+Return ONLY valid JSON — no markdown, no code fences.`,
 
   sms: `You are an SMS marketing expert for capital raising. Write business casual, no emojis.
 ${COMPLIANCE_RULES}
@@ -110,7 +113,8 @@ Each message object:
 - purpose: one of "opt_in", "follow_up", "nurture", "scarcity", "book_call", "re_engagement"
 - cta: call to action
 - timing: when to send (e.g. "0 minutes", "10 seconds", "1 day", "3 days", "7 days", "10 days", "14 days", "21 days")
-Keep compliant, professional, short sentences.`,
+Keep compliant, professional, short sentences.
+Return ONLY valid JSON — no markdown, no code fences.`,
 
   adcopy: `You are an expert direct-response ad copywriter (Dan Kennedy × Jeremy Haynes style), specializing in SEC/FINRA-compliant ad campaigns for investment funds targeting accredited investors.
 ${COMPLIANCE_RULES}
@@ -135,7 +139,8 @@ Generate as JSON array. Each object:
 - platform: "meta" or "linkedin"
 - variation: number (generate 3 per angle)
 - data_point_used: the specific stat referenced
-Write for accredited investors. Compliant, sophisticated tone.`,
+Write for accredited investors. Compliant, sophisticated tone.
+Return ONLY valid JSON — no markdown, no code fences.`,
 
   scripts: `You are an expert video script writer for capital raising campaigns. Write scripts someone will actually say on camera — no scene directions, no quotes, no titles. Just the spoken script.
 ${COMPLIANCE_RULES}
@@ -173,14 +178,16 @@ Each script object:
 - format: "9:16", "1:1", or "16:9"
 - duration_estimate: estimated seconds
 - disclaimer: compliance disclaimer text
-Generate 12-15 scripts total mixing all types.`,
+Generate 12-15 scripts total mixing all types.
+Return ONLY valid JSON — no markdown, no code fences.`,
 
   creatives: `You are a creative director for alternative investment ad campaigns.
 ${COMPLIANCE_RULES}
 Generate creative concepts as JSON with keys:
 - static_concepts: array of 5 objects, each with: headline (include a stat), supporting_text, visual_direction, layout_idea, format ("1080x1080", "1080x1920", "1200x628"), data_callout
 - video_concepts: array of 3 objects, each with: style, setting, visual_scenes (array), caption_direction, hook_concept, format
-Feature data prominently in designs. Premium, institutional aesthetic.`,
+Feature data prominently in designs. Premium, institutional aesthetic.
+Return ONLY valid JSON — no markdown, no code fences.`,
 
   report: `You are a financial content strategist creating a special report / lead magnet for accredited investors.
 ${COMPLIANCE_RULES}
@@ -196,7 +203,8 @@ Generate as JSON:
 - faqs: array of 5 {question, answer} with data-backed answers
 - cta_heading: call to action heading
 - cta_body: call to action paragraph
-Data-driven, authoritative, institutional quality.`,
+Data-driven, authoritative, institutional quality.
+Return ONLY valid JSON — no markdown, no code fences.`,
 
   funnel: `You are a conversion copywriter for alternative investment funnels. Write in Dan Kennedy's direct-response style.
 ${COMPLIANCE_RULES}
@@ -204,13 +212,13 @@ Generate funnel copy as JSON with TWO complete pages:
 
 PAGE A — FUNNEL SCHEDULER PAGE:
 - landing_page:
-  - headline: Must call out Accredited Investors, highlight big benefit with stat (e.g. "Projected Returns of X% Through [Strategy] without [negative]")
+  - headline: Must call out Accredited Investors, highlight big benefit with stat
   - subheadline: Direct-response subheadline with credibility
   - hero_stat: key number to feature prominently
   - cta_primary: "Schedule a Call" or similar
   - how_it_works: array of 3-4 steps explaining: where money goes, how returns generated, distribution timeline, compliance mention
   - body_sections: array of {heading, copy} with data points
-  - benefits: array of ✅ bullet benefits (e.g. "Targeted Returns of X%", "Quarterly Distributions", "Tax Advantages", "Expert Management")
+  - benefits: array of ✅ bullet benefits
   - accredited_notice: "This opportunity is available exclusively to accredited investors."
   - social_proof_placeholder: placeholder for testimonials
   - cta_secondary: secondary CTA text
@@ -219,8 +227,8 @@ PAGE A — FUNNEL SCHEDULER PAGE:
 
 PAGE B — THANK YOU PAGE:
 - thank_you_page:
-  - headline: "Your Call Is Confirmed—Next Steps to Prepare" or "Your Call Is NOT Fully Confirmed Until You Complete These Steps"
-  - steps: array of {step_number, title, description} — Step 1: Watch video, Step 2: Download Pitch Deck, Step 3: Review Testimonials
+  - headline: "Your Call Is Confirmed—Next Steps to Prepare"
+  - steps: array of {step_number, title, description}
   - body: short reassuring copy
   - next_steps: array of action items
   - cta: final CTA
@@ -231,7 +239,8 @@ Also include:
 - investor_portal_intro: { welcome_headline, welcome_body, sections array }
 - faqs: array of 4 {question, answer} with data-backed answers
 
-Conversion-focused, premium tone, accredited investor audience.`,
+Conversion-focused, premium tone, accredited investor audience.
+Return ONLY valid JSON — no markdown, no code fences.`,
 };
 
 function buildUserPrompt(client_data: any, asset_type: string, existing_research: any, existing_angles: any): string {
@@ -264,12 +273,47 @@ function buildUserPrompt(client_data: any, asset_type: string, existing_research
   }
 
   if (asset_type === "research") {
-    userPrompt += `\nSearch the web for REAL, CURRENT data about this asset class, market, industry trends, and news. Include specific statistics, market sizes, growth rates, and recent developments. Return ONLY valid JSON.`;
+    userPrompt += `\nProvide REAL, CURRENT data about this asset class, market, industry trends, and news. Include specific statistics, market sizes, growth rates, and recent developments. Return ONLY valid JSON.`;
   } else {
     userPrompt += `\nGenerate the ${asset_type} content now. USE the research data and statistics throughout. Return ONLY valid JSON.`;
   }
 
   return userPrompt;
+}
+
+async function callLovableAI(systemPrompt: string, userPrompt: string): Promise<string> {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    if (response.status === 429) {
+      throw new Error("RATE_LIMITED");
+    }
+    if (response.status === 402) {
+      throw new Error("PAYMENT_REQUIRED");
+    }
+    const t = await response.text();
+    console.error("AI gateway error:", response.status, t);
+    throw new Error(`AI gateway error: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return result.choices?.[0]?.message?.content || "";
 }
 
 serve(async (req) => {
@@ -278,106 +322,26 @@ serve(async (req) => {
   try {
     const { client_id, asset_type, client_data, existing_research, existing_angles } = await req.json();
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
-
     const systemPrompt = SYSTEM_PROMPTS[asset_type];
     if (!systemPrompt) throw new Error(`Unknown asset type: ${asset_type}`);
 
     const userPrompt = buildUserPrompt(client_data, asset_type, existing_research, existing_angles);
 
-    const isResearch = asset_type === "research";
     let parsed: any;
-    let groundingSources: any[] = [];
 
-    if (isResearch) {
-      // Step 1: Search with grounding (no JSON mode)
-      const searchBody = {
-        system_instruction: { parts: [{ text: "You are an expert capital markets researcher. Search the web for real, current data about this fund's industry, asset class, market, and recent news. Provide comprehensive findings with specific statistics, market sizes, growth rates, and recent developments." }] },
-        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-        tools: [{ googleSearch: {} }],
-        generationConfig: { temperature: 0.3 },
-      };
+    const rawContent = await callLovableAI(systemPrompt, userPrompt);
 
-      const searchResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(searchBody) }
-      );
+    // Parse JSON from response
+    let content = rawContent.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
 
-      if (!searchResponse.ok) {
-        const t = await searchResponse.text();
-        console.error("Gemini search error:", searchResponse.status, t);
-        throw new Error(`Gemini search error: ${searchResponse.status}`);
-      }
-
-      const searchResult = await searchResponse.json();
-      let rawResearch = "";
-      for (const part of searchResult.candidates?.[0]?.content?.parts || []) {
-        if (part.text) rawResearch += part.text;
-      }
-
-      const gm = searchResult.candidates?.[0]?.groundingMetadata;
-      if (gm?.groundingChunks) {
-        groundingSources = gm.groundingChunks.map((c: any) => ({ title: c.web?.title, uri: c.web?.uri }));
-      }
-
-      // Step 2: Structure as JSON
-      const structureBody = {
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: "user", parts: [{ text: `Here is raw research data gathered from web search:\n\n${rawResearch}\n\nNow structure this into the required JSON format. Include all statistics and data points found. Return ONLY valid JSON.` }] }],
-        generationConfig: { responseMimeType: "application/json", temperature: 0.2 },
-      };
-
-      const structureResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(structureBody) }
-      );
-
-      if (!structureResponse.ok) {
-        const t = await structureResponse.text();
-        console.error("Gemini structure error:", structureResponse.status, t);
-        throw new Error(`Gemini structure error: ${structureResponse.status}`);
-      }
-
-      const structureResult = await structureResponse.json();
-      let content = structureResult.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      content = content.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
-
-      try { parsed = JSON.parse(content); } catch { parsed = { raw: content }; }
-      if (groundingSources.length > 0) parsed._grounding_sources = groundingSources;
-
-    } else {
-      // Non-research: single call with JSON mode
-      const requestBody = {
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-        generationConfig: { responseMimeType: "application/json", temperature: 0.8 },
-      };
-
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(requestBody) }
-      );
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          return new Response(JSON.stringify({ error: "Rate limited. Please try again in a moment." }), {
-            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-        const t = await response.text();
-        console.error("Gemini API error:", response.status, t);
-        throw new Error(`Gemini API error: ${response.status}`);
-      }
-
-      const result = await response.json();
-      let content = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      content = content.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
-
-      try { parsed = JSON.parse(content); } catch {
-        const jsonMatch = content.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
-        if (jsonMatch) { try { parsed = JSON.parse(jsonMatch[0]); } catch { parsed = { raw: content }; } }
-        else { parsed = { raw: content }; }
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      const jsonMatch = content.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+      if (jsonMatch) {
+        try { parsed = JSON.parse(jsonMatch[0]); } catch { parsed = { raw: content }; }
+      } else {
+        parsed = { raw: content };
       }
     }
 
@@ -407,8 +371,21 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
+    const msg = e instanceof Error ? e.message : "Unknown error";
+
+    if (msg === "RATE_LIMITED") {
+      return new Response(JSON.stringify({ error: "Rate limited — please try again in a moment." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (msg === "PAYMENT_REQUIRED") {
+      return new Response(JSON.stringify({ error: "AI credits exhausted — please add funds in Settings > Workspace > Usage." }), {
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     console.error("generate-asset error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
+    return new Response(JSON.stringify({ error: msg }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
