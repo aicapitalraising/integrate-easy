@@ -217,8 +217,20 @@ export default function Onboarding() {
         console.error('GHL sync failed:', e);
       }
 
+      // Trigger automatic asset generation pipeline
+      if (clientData?.id) {
+        try {
+          supabase.functions.invoke('auto-generate-assets', {
+            body: { client_id: clientData.id },
+          });
+          console.log('Auto-generation pipeline triggered for client:', clientData.id);
+        } catch (autoGenErr) {
+          console.error('Auto-generate trigger failed:', autoGenErr);
+        }
+      }
+
       setSubmitted(true);
-      toast({ title: 'Onboarding submitted!', description: 'We\'ll be in touch within 24 hours.' });
+      toast({ title: 'Onboarding submitted!', description: 'We\'ll be in touch within 24 hours. Your campaign assets are being generated automatically.' });
     } catch (err) {
       console.error('Submit error:', err);
       toast({ title: 'Error', description: 'Failed to submit. Please try again.', variant: 'destructive' });

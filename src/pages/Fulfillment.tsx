@@ -11,14 +11,16 @@ import {
   Lock, Phone, Building2, Target, DollarSign, Globe, Calendar, Users,
   FileText, Palette, ExternalLink, Copy, CheckCircle2, Clock, Loader2,
   BarChart3, Mail, MessageSquare, Video, Image, Megaphone, ClipboardList,
-  Plus, RefreshCw, Trash2,
+  Plus, RefreshCw, Trash2, Sparkles,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AssetGeneratorTab from '@/components/fulfillment/AssetGeneratorTab';
 import {
   ResearchRenderer, AnglesRenderer, EmailsRenderer, SMSRenderer,
-  AdCopyRenderer, ScriptsRenderer, CreativesRenderer, ReportRenderer, FunnelRenderer,
+  AdCopyRenderer, ScriptsRenderer, CreativesRenderer, ReportRenderer, FunnelRenderer, SetterRenderer,
 } from '@/components/fulfillment/renderers';
+import { Progress } from '@/components/ui/progress';
+import { Bot } from 'lucide-react';
 
 interface Client {
   id: string;
@@ -190,50 +192,106 @@ function ClientOverview({ client }: { client: Client }) {
 }
 
 function ClientWorkspace({ client }: { client: Client }) {
-  return (
-    <Tabs defaultValue="overview" className="space-y-6">
-      <TabsList className="flex-wrap h-auto gap-1 bg-muted/50 p-1">
-        <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-        <TabsTrigger value="research" className="text-xs">Research</TabsTrigger>
-        <TabsTrigger value="angles" className="text-xs">Angles</TabsTrigger>
-        <TabsTrigger value="emails" className="text-xs">Emails</TabsTrigger>
-        <TabsTrigger value="sms" className="text-xs">SMS</TabsTrigger>
-        <TabsTrigger value="adcopy" className="text-xs">Ad Copy</TabsTrigger>
-        <TabsTrigger value="scripts" className="text-xs">Scripts</TabsTrigger>
-        <TabsTrigger value="creatives" className="text-xs">Creatives</TabsTrigger>
-        <TabsTrigger value="report" className="text-xs">Report</TabsTrigger>
-        <TabsTrigger value="funnel" className="text-xs">Funnel</TabsTrigger>
-      </TabsList>
+  const [generatingAll, setGeneratingAll] = useState(false);
+  const [genProgress, setGenProgress] = useState(0);
+  const [genStatus, setGenStatus] = useState('');
+  const ASSET_TYPES = ['research', 'angles', 'emails', 'sms', 'adcopy', 'scripts', 'creatives', 'report', 'funnel', 'setter'];
 
-      <TabsContent value="overview"><ClientOverview client={client} /></TabsContent>
-      <TabsContent value="research">
-        <AssetGeneratorTab client={client} assetType="research" icon={BarChart3} title="Research Engine" description="AI-powered market research, industry analysis, and opportunity identification." renderContent={(c) => <ResearchRenderer content={c} />} />
-      </TabsContent>
-      <TabsContent value="angles">
-        <AssetGeneratorTab client={client} assetType="angles" icon={Target} title="Marketing Angles" description="Generate 6-10 marketing angles with hooks, emotional drivers, and use cases." renderContent={(c) => <AnglesRenderer content={c} />} />
-      </TabsContent>
-      <TabsContent value="emails">
-        <AssetGeneratorTab client={client} assetType="emails" icon={Mail} title="Email Sequences" description="Generate nurture email sequences with subject lines, preview text, and CTAs." renderContent={(c) => <EmailsRenderer content={c} />} />
-      </TabsContent>
-      <TabsContent value="sms">
-        <AssetGeneratorTab client={client} assetType="sms" icon={MessageSquare} title="SMS Sequences" description="Generate SMS follow-up, reminder, and re-engagement sequences." renderContent={(c) => <SMSRenderer content={c} />} />
-      </TabsContent>
-      <TabsContent value="adcopy">
-        <AssetGeneratorTab client={client} assetType="adcopy" icon={Megaphone} title="Ad Copy" description="Generate ad copy variations per angle — primary text, headlines, and descriptions." renderContent={(c) => <AdCopyRenderer content={c} />} />
-      </TabsContent>
-      <TabsContent value="scripts">
-        <AssetGeneratorTab client={client} assetType="scripts" icon={Video} title="Video Scripts" description="Generate avatar, B-roll, UGC, and VSL scripts with hooks and CTAs." renderContent={(c) => <ScriptsRenderer content={c} />} />
-      </TabsContent>
-      <TabsContent value="creatives">
-        <AssetGeneratorTab client={client} assetType="creatives" icon={Image} title="Creative Concepts" description="Static and video ad concepts with visual direction and layout ideas." renderContent={(c) => <CreativesRenderer content={c} />} />
-      </TabsContent>
-      <TabsContent value="report">
-        <AssetGeneratorTab client={client} assetType="report" icon={FileText} title="Special Report" description="Generate a lead magnet report — cover page, executive summary, market opportunity." renderContent={(c) => <ReportRenderer content={c} />} />
-      </TabsContent>
-      <TabsContent value="funnel">
-        <AssetGeneratorTab client={client} assetType="funnel" icon={Globe} title="Funnel Copy" description="Landing page, thank you page, booking page, and investor portal copy." renderContent={(c) => <FunnelRenderer content={c} />} />
-      </TabsContent>
-    </Tabs>
+  const generateAll = async () => {
+    setGeneratingAll(true);
+    setGenProgress(0);
+    setGenStatus('Starting generation pipeline...');
+    try {
+      // Fire-and-forget the auto-generate call, then poll for assets
+      supabase.functions.invoke('auto-generate-assets', {
+        body: { client_id: client.id },
+      });
+
+      // Poll for completed assets
+      for (let i = 0; i < 60; i++) {
+        await new Promise(r => setTimeout(r, 5000));
+        const { data } = await supabase
+          .from('client_assets')
+          .select('asset_type')
+          .eq('client_id', client.id);
+        const completed = new Set((data || []).map((a: any) => a.asset_type));
+        const count = ASSET_TYPES.filter(t => completed.has(t)).length;
+        setGenProgress(Math.round((count / ASSET_TYPES.length) * 100));
+        const current = ASSET_TYPES.find(t => !completed.has(t));
+        setGenStatus(current ? `Generating ${current}...` : 'Complete!');
+        if (count >= ASSET_TYPES.length) break;
+      }
+      toast({ title: 'All assets generated!', description: 'Review each tab to see the results.' });
+    } catch (e: any) {
+      toast({ title: 'Generation error', description: e.message, variant: 'destructive' });
+    }
+    setGeneratingAll(false);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Generate All Button */}
+      <div className="flex items-center gap-3">
+        <Button onClick={generateAll} disabled={generatingAll} className="gap-2">
+          {generatingAll ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+          {generatingAll ? 'Generating All...' : 'Generate All Assets'}
+        </Button>
+        {generatingAll && (
+          <div className="flex-1 max-w-xs space-y-1">
+            <Progress value={genProgress} className="h-2" />
+            <p className="text-xs text-muted-foreground">{genStatus} ({genProgress}%)</p>
+          </div>
+        )}
+      </div>
+
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="flex-wrap h-auto gap-1 bg-muted/50 p-1">
+          <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
+          <TabsTrigger value="research" className="text-xs">Research</TabsTrigger>
+          <TabsTrigger value="angles" className="text-xs">Angles</TabsTrigger>
+          <TabsTrigger value="emails" className="text-xs">Emails</TabsTrigger>
+          <TabsTrigger value="sms" className="text-xs">SMS</TabsTrigger>
+          <TabsTrigger value="adcopy" className="text-xs">Ad Copy</TabsTrigger>
+          <TabsTrigger value="scripts" className="text-xs">Scripts</TabsTrigger>
+          <TabsTrigger value="creatives" className="text-xs">Creatives</TabsTrigger>
+          <TabsTrigger value="report" className="text-xs">Report</TabsTrigger>
+          <TabsTrigger value="funnel" className="text-xs">Funnel</TabsTrigger>
+          <TabsTrigger value="setter" className="text-xs">AI Setter</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview"><ClientOverview client={client} /></TabsContent>
+        <TabsContent value="research">
+          <AssetGeneratorTab client={client} assetType="research" icon={BarChart3} title="Research Engine" description="AI-powered market research, industry analysis, and opportunity identification." renderContent={(c, edit, onEdit) => <ResearchRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="angles">
+          <AssetGeneratorTab client={client} assetType="angles" icon={Target} title="Marketing Angles" description="Generate 6-10 marketing angles with hooks, emotional drivers, and use cases." renderContent={(c, edit, onEdit) => <AnglesRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="emails">
+          <AssetGeneratorTab client={client} assetType="emails" icon={Mail} title="Email Sequences" description="Generate nurture email sequences with subject lines, preview text, and CTAs." renderContent={(c, edit, onEdit) => <EmailsRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="sms">
+          <AssetGeneratorTab client={client} assetType="sms" icon={MessageSquare} title="SMS Sequences" description="Generate SMS follow-up, reminder, and re-engagement sequences." renderContent={(c, edit, onEdit) => <SMSRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="adcopy">
+          <AssetGeneratorTab client={client} assetType="adcopy" icon={Megaphone} title="Ad Copy" description="Generate ad copy variations per angle — primary text, headlines, and descriptions." renderContent={(c, edit, onEdit) => <AdCopyRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="scripts">
+          <AssetGeneratorTab client={client} assetType="scripts" icon={Video} title="Video Scripts" description="Generate avatar, B-roll, UGC, and VSL scripts with hooks and CTAs." renderContent={(c, edit, onEdit) => <ScriptsRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="creatives">
+          <AssetGeneratorTab client={client} assetType="creatives" icon={Image} title="Creative Concepts" description="Static and video ad concepts with visual direction and layout ideas." renderContent={(c, edit, onEdit) => <CreativesRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="report">
+          <AssetGeneratorTab client={client} assetType="report" icon={FileText} title="Special Report" description="Generate a lead magnet report — cover page, executive summary, market opportunity." renderContent={(c, edit, onEdit) => <ReportRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="funnel">
+          <AssetGeneratorTab client={client} assetType="funnel" icon={Globe} title="Funnel Copy" description="Landing page, thank you page, booking page, and investor portal copy." renderContent={(c, edit, onEdit) => <FunnelRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+        <TabsContent value="setter">
+          <AssetGeneratorTab client={client} assetType="setter" icon={Bot} title="AI Setter" description="Generate AI virtual receptionist prompt, FAQ, and follow-up sequences." renderContent={(c, edit, onEdit) => <SetterRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }
 

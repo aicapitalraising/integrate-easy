@@ -3,7 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, RefreshCw, CheckCircle2, Clock, Edit3, Sparkles } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Loader2, RefreshCw, CheckCircle2, Clock, Edit3, Sparkles, Save, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import type { Json } from '@/integrations/supabase/types';
 
@@ -47,7 +48,7 @@ interface AssetGeneratorTabProps {
   icon: React.ElementType;
   title: string;
   description: string;
-  renderContent: (content: any) => React.ReactNode;
+  renderContent: (content: any, editMode: boolean, onEditContent: (content: any) => void) => React.ReactNode;
 }
 
 const statusBadge: Record<string, string> = {
@@ -62,6 +63,9 @@ export default function AssetGeneratorTab({ client, assetType, icon: Icon, title
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedContent, setEditedContent] = useState<any>(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadAssets();
@@ -83,7 +87,7 @@ export default function AssetGeneratorTab({ client, assetType, icon: Icon, title
     let existing_research = null;
     let existing_angles = null;
 
-    if (['angles', 'emails', 'sms', 'adcopy', 'scripts', 'creatives', 'report', 'funnel'].includes(assetType)) {
+    if (['angles', 'emails', 'sms', 'adcopy', 'scripts', 'creatives', 'report', 'funnel', 'setter'].includes(assetType)) {
       const { data: researchAssets } = await supabase
         .from('client_assets')
         .select('content')
@@ -94,7 +98,7 @@ export default function AssetGeneratorTab({ client, assetType, icon: Icon, title
       if (researchAssets?.[0]) existing_research = researchAssets[0].content;
     }
 
-    if (['emails', 'sms', 'adcopy', 'scripts', 'creatives'].includes(assetType)) {
+    if (['emails', 'sms', 'adcopy', 'scripts', 'creatives', 'setter'].includes(assetType)) {
       const { data: angleAssets } = await supabase
         .from('client_assets')
         .select('content')
@@ -129,15 +133,15 @@ export default function AssetGeneratorTab({ client, assetType, icon: Icon, title
             brand_notes: client.brand_notes,
             additional_notes: client.additional_notes,
             contact_name: client.contact_name,
-            speaker_name: (client as any).speaker_name,
-            industry_focus: (client as any).industry_focus,
-            targeted_returns: (client as any).targeted_returns,
-            hold_period: (client as any).hold_period,
-            distribution_schedule: (client as any).distribution_schedule,
-            investment_range: (client as any).investment_range,
-            tax_advantages: (client as any).tax_advantages,
-            credibility: (client as any).credibility,
-            fund_history: (client as any).fund_history,
+            speaker_name: client.speaker_name,
+            industry_focus: client.industry_focus,
+            targeted_returns: client.targeted_returns,
+            hold_period: client.hold_period,
+            distribution_schedule: client.distribution_schedule,
+            investment_range: client.investment_range,
+            tax_advantages: client.tax_advantages,
+            credibility: client.credibility,
+            fund_history: client.fund_history,
           },
           existing_research,
           existing_angles,
@@ -158,6 +162,37 @@ export default function AssetGeneratorTab({ client, assetType, icon: Icon, title
     await supabase.from('client_assets').update({ status }).eq('id', assetId);
     await loadAssets();
     toast({ title: `Status updated to ${status.replace('_', ' ')}` });
+  };
+
+  const startEditing = () => {
+    if (assets.length > 0) {
+      setEditedContent(JSON.parse(JSON.stringify(assets[0].content)));
+      setEditMode(true);
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditMode(false);
+    setEditedContent(null);
+  };
+
+  const saveEdits = async () => {
+    if (!editedContent || assets.length === 0) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('client_assets')
+        .update({ content: editedContent as unknown as Json })
+        .eq('id', assets[0].id);
+      if (error) throw error;
+      toast({ title: 'Changes saved!' });
+      setEditMode(false);
+      setEditedContent(null);
+      await loadAssets();
+    } catch (e: any) {
+      toast({ title: 'Save failed', description: e.message, variant: 'destructive' });
+    }
+    setSaving(false);
   };
 
   if (loading) {
@@ -204,28 +239,51 @@ export default function AssetGeneratorTab({ client, assetType, icon: Icon, title
           <Badge className={`text-[10px] ${statusBadge[latest.status] || statusBadge.draft}`}>
             {latest.status.replace('_', ' ')}
           </Badge>
-          <Button size="sm" variant="outline" onClick={generate} disabled={generating} className="gap-1.5">
-            {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-            Regenerate
-          </Button>
+          {editMode ? (
+            <>
+              <Button size="sm" variant="outline" onClick={cancelEditing} className="gap-1.5">
+                <X className="w-3.5 h-3.5" /> Cancel
+              </Button>
+              <Button size="sm" onClick={saveEdits} disabled={saving} className="gap-1.5">
+                {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                Save
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button size="sm" variant="outline" onClick={startEditing} className="gap-1.5">
+                <Edit3 className="w-3.5 h-3.5" /> Edit
+              </Button>
+              <Button size="sm" variant="outline" onClick={generate} disabled={generating} className="gap-1.5">
+                {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                Regenerate
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
       {/* Status Actions */}
-      <div className="flex gap-2 flex-wrap">
-        <Button size="sm" variant="outline" onClick={() => updateStatus(latest.id, 'internal_review')} className="gap-1.5 text-xs">
-          <Clock className="w-3 h-3" /> Send to Review
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => updateStatus(latest.id, 'client_review')} className="gap-1.5 text-xs">
-          <Edit3 className="w-3 h-3" /> Send to Client
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => updateStatus(latest.id, 'approved')} className="gap-1.5 text-xs text-emerald-600">
-          <CheckCircle2 className="w-3 h-3" /> Approve
-        </Button>
-      </div>
+      {!editMode && (
+        <div className="flex gap-2 flex-wrap">
+          <Button size="sm" variant="outline" onClick={() => updateStatus(latest.id, 'internal_review')} className="gap-1.5 text-xs">
+            <Clock className="w-3 h-3" /> Send to Review
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => updateStatus(latest.id, 'client_review')} className="gap-1.5 text-xs">
+            <Edit3 className="w-3 h-3" /> Send to Client
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => updateStatus(latest.id, 'approved')} className="gap-1.5 text-xs text-emerald-600">
+            <CheckCircle2 className="w-3 h-3" /> Approve
+          </Button>
+        </div>
+      )}
 
       {/* Render Content */}
-      {renderContent(latest.content)}
+      {renderContent(
+        editMode ? editedContent : latest.content,
+        editMode,
+        (newContent: any) => setEditedContent(newContent)
+      )}
     </div>
   );
 }
