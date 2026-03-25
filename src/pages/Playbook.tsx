@@ -9,8 +9,7 @@ import {
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-
-import logoAicra from "@/assets/playbook/black-logo-aicra.png";
+import logo from "@/assets/logo-aicra.png";
 import iconFundManagers from "@/assets/playbook/icon-fund-managers.png";
 import iconRealEstate from "@/assets/playbook/icon-real-estate.png";
 import iconPrivateEquity from "@/assets/playbook/icon-private-equity.png";
@@ -28,7 +27,7 @@ const CTAButton = ({ className = "" }: { className?: string }) => {
   return (
     <button
       onClick={() => setOpen(true)}
-      className={`inline-block gradient-green rounded-lg px-8 py-4 font-heading text-base font-bold text-[hsl(0_0%_2%)] transition-all hover:opacity-90 animate-pulse-glow ${className}`}
+      className={`inline-block bg-primary text-primary-foreground rounded-lg px-8 py-4 font-display text-base font-bold transition-all hover:bg-primary/90 shadow-lg hover:shadow-xl ${className}`}
     >
       Click Here to Access It Now
     </button>
@@ -63,34 +62,34 @@ const AccessFormDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange:
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md border-[hsl(0_0%_18%)] bg-[hsl(0_0%_95%)] p-0 sm:rounded-2xl">
+      <DialogContent className="max-w-md border-border bg-background p-0 sm:rounded-2xl">
         <DialogHeader className="px-6 pt-6 pb-2 text-center">
           <div className="flex justify-center">
-            <img src={logoAicra} alt="AI Capital Raising Accelerator" className="h-12" />
+            <img src={logo} alt="AI Capital Raising Accelerator" className="h-12" />
           </div>
-          <h2 className="mt-3 font-heading text-lg font-extrabold text-[hsl(0_0%_4%)] md:text-xl">
+          <h2 className="mt-3 font-display text-lg font-extrabold text-foreground md:text-xl">
             Get Instant Access Below 👇
           </h2>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 px-6 pb-6">
           <div>
-            <Input placeholder="Full Name*" value={fullName} onChange={(e) => setFullName(e.target.value)} maxLength={100} className="rounded-lg border-[hsl(0_0%_18%)] bg-[hsl(0_0%_4%)] text-[hsl(0_0%_95%)] placeholder:text-[hsl(0_0%_64%)]" />
+            <Input placeholder="Full Name*" value={fullName} onChange={(e) => setFullName(e.target.value)} maxLength={100} />
             {errors.fullName && <p className="mt-1 text-xs text-destructive">{errors.fullName}</p>}
           </div>
           <div>
-            <Input placeholder="Phone*" value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={20} className="rounded-lg border-[hsl(0_0%_18%)] bg-[hsl(0_0%_4%)] text-[hsl(0_0%_95%)] placeholder:text-[hsl(0_0%_64%)]" />
+            <Input placeholder="Phone*" value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={20} />
             {errors.phone && <p className="mt-1 text-xs text-destructive">{errors.phone}</p>}
           </div>
           <div>
-            <Input type="email" placeholder="Email*" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={255} className="rounded-lg border-[hsl(0_0%_18%)] bg-[hsl(0_0%_4%)] text-[hsl(0_0%_95%)] placeholder:text-[hsl(0_0%_64%)]" />
+            <Input type="email" placeholder="Email*" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={255} />
             {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
           </div>
-          <button type="submit" className="w-full gradient-green rounded-lg py-4 font-heading text-base font-bold text-[hsl(0_0%_2%)] transition-all hover:opacity-90">
+          <button type="submit" className="w-full bg-primary text-primary-foreground rounded-lg py-4 font-display text-base font-bold transition-all hover:bg-primary/90">
             Click Here to Access It Now
           </button>
           <div className="flex items-start gap-3">
-            <Checkbox id="pb-consent" checked={agreed} onCheckedChange={(c) => setAgreed(c === true)} className="mt-1 border-[hsl(0_0%_64%)] data-[state=checked]:bg-[hsl(142_71%_45%)] data-[state=checked]:border-[hsl(142_71%_45%)]" />
-            <label htmlFor="pb-consent" className="text-xs leading-relaxed text-[hsl(0_0%_64%)]">
+            <Checkbox id="pb-consent" checked={agreed} onCheckedChange={(c) => setAgreed(c === true)} className="mt-1" />
+            <label htmlFor="pb-consent" className="text-xs leading-relaxed text-muted-foreground">
               By submitting this form, you agree to receive marketing communications, including text messages and phone calls, from our business. You can opt out at any time by replying "STOP".
             </label>
           </div>
@@ -197,30 +196,21 @@ const faqs = [
 const Playbook = () => {
   const [open, setOpen] = useState(false);
 
-  // Shared style vars for the dark playbook theme
-  const bg = "hsl(0 0% 4%)";
-  const fg = "hsl(0 0% 95%)";
-  const cardBg = "hsl(0 0% 8%)";
-  const mutedFg = "hsl(0 0% 64%)";
-  const borderC = "hsl(0 0% 18%)";
-  const green = "hsl(142 71% 45%)";
-  const elevatedBg = "hsl(0 0% 12%)";
-
   return (
     <AccessFormContext.Provider value={{ open, setOpen }}>
-      <div className="playbook-theme min-h-screen" style={{ backgroundColor: bg, color: fg, fontFamily: "'Inter', sans-serif" }}>
+      <div className="min-h-screen bg-background text-foreground">
         {/* Promo Banner */}
-        <div style={{ backgroundColor: green }} className="py-2 text-center">
-          <p className="font-heading text-sm font-bold tracking-wide md:text-base" style={{ color: "hsl(0 0% 2%)" }}>
+        <div className="bg-primary py-2 text-center">
+          <p className="font-display text-sm font-bold tracking-wide text-primary-foreground md:text-base">
             PROMO – ENDS March 24@ 11:59PM EST 💍
           </p>
         </div>
 
         {/* Navbar */}
-        <nav className="py-4" style={{ backgroundColor: bg }}>
+        <nav className="border-b border-border bg-background py-4">
           <div className="container mx-auto flex items-center justify-between px-4 md:px-8">
-            <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67bbe9a01cc1bb195ccebb93.png" alt="AI Capital Raising Accelerator" className="h-10 md:h-12" />
-            <a href="mailto:support@aicapitalraising.com" className="flex items-center gap-2 text-sm transition-colors hover:opacity-80" style={{ color: mutedFg }}>
+            <a href="/"><img src={logo} alt="AI Capital Raising Accelerator" className="h-8 md:h-10" /></a>
+            <a href="mailto:support@aicapitalraising.com" className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
               <Mail className="h-4 w-4" />
               <span className="hidden sm:inline">support@aicapitalraising.com</span>
             </a>
@@ -228,17 +218,17 @@ const Playbook = () => {
         </nav>
 
         {/* Hero */}
-        <section className="py-16 md:py-24" style={{ background: `linear-gradient(135deg, hsl(0 0% 4%) 0%, hsl(142 71% 5%) 50%, hsl(0 0% 4%) 100%)` }}>
+        <section className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto grid items-center gap-10 px-4 md:grid-cols-2 md:px-8">
             <div className="space-y-6">
-              <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: mutedFg }}>THE #1 AI-DRIVEN CAPITAL RAISING SYSTEM</p>
-              <h1 className="font-heading text-4xl font-extrabold leading-tight md:text-5xl lg:text-6xl">
-                AI Capital Raising <span style={{ color: green }}>Playbook</span>
+              <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">THE #1 AI-DRIVEN CAPITAL RAISING SYSTEM</p>
+              <h1 className="font-display text-4xl font-extrabold leading-tight text-foreground md:text-5xl lg:text-6xl">
+                AI Capital Raising <span className="text-primary">Playbook</span>
               </h1>
-              <p className="text-lg leading-relaxed md:text-xl">
-                How to Raise <span className="font-bold" style={{ color: green }}>$5M to $100M</span> Using an <span style={{ color: green }}>AI-Driven System</span> That Attracts Accredited Investors on Autopilot
+              <p className="text-lg leading-relaxed text-foreground md:text-xl">
+                How to Raise <span className="font-bold text-primary">$5M to $100M</span> Using an <span className="text-primary">AI-Driven System</span> That Attracts Accredited Investors on Autopilot
               </p>
-              <p style={{ color: mutedFg }}>
+              <p className="text-muted-foreground">
                 Discover the <span className="underline">cutting-edge capital raising strategies</span> that top funds and startups are using to secure millions—without relying on personal networks, cold outreach, or expensive brokers.
               </p>
               <CTAButton />
@@ -250,69 +240,69 @@ const Playbook = () => {
         </section>
 
         {/* Inside Playbook */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: bg }}>
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4 text-center md:px-8">
-            <p className="mx-auto mb-8 max-w-3xl font-heading text-sm font-semibold uppercase tracking-wider md:text-base" style={{ color: mutedFg }}>
+            <p className="mx-auto mb-8 max-w-3xl font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground md:text-base">
               If you've been frustrated with slow capital raises, wasted time pitching to the wrong people, or unpredictable investor interest, you're not alone.
             </p>
-            <h2 className="mb-12 font-heading text-3xl font-extrabold md:text-5xl">Inside this playbook, you'll discover:</h2>
+            <h2 className="mb-12 font-display text-3xl font-extrabold text-foreground md:text-5xl">Inside this playbook, you'll discover:</h2>
             <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
               {discoverItems.map((item, i) => (
-                <div key={i} className="rounded-xl p-6 text-left" style={{ backgroundColor: cardBg, border: `1px solid ${borderC}` }}>
-                  <CheckCircle className="mb-4 h-8 w-8" style={{ color: green }} />
-                  <p className="text-base font-medium leading-relaxed">{item}</p>
+                <div key={i} className="glass-card-elevated rounded-xl p-6 text-left">
+                  <CheckCircle className="mb-4 h-8 w-8 text-primary" />
+                  <p className="text-base font-medium leading-relaxed text-foreground">{item}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-8 space-y-2 text-center">
+            <div className="mt-8 space-y-2 text-center text-foreground">
               <p><strong>No more uncertainty</strong> about where your next round of funding is coming from.</p>
               <p><strong>No more relying</strong> on personal networks that quickly dry up.</p>
               <p><strong>No more hoping</strong> that a broker will find investors for you.</p>
-              <p className="mt-4" style={{ color: mutedFg }}>Instead, you'll learn <strong style={{ color: fg }}>a systemized approach that works predictably</strong>—whether you're raising <strong>$1M or $100M.</strong></p>
+              <p className="mt-4 text-muted-foreground">Instead, you'll learn <strong className="text-foreground">a systemized approach that works predictably</strong>—whether you're raising <strong>$1M or $100M.</strong></p>
             </div>
             <div className="mt-10"><CTAButton /></div>
           </div>
         </section>
 
         {/* Why Traditional Fails */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: cardBg }}>
+        <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
           <div className="container mx-auto grid items-center gap-12 px-4 md:grid-cols-2 md:px-8">
             <div>
               <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67ae70487322557fbe14f604.png" alt="AI Robot" className="mx-auto max-w-xs md:max-w-sm" />
             </div>
             <div className="space-y-6">
-              <h2 className="font-heading text-3xl font-extrabold md:text-4xl">
-                Why Traditional Capital Raising Strategies Fail <span style={{ color: green }}>(And What to Do Instead)</span>
+              <h2 className="font-display text-3xl font-extrabold text-foreground md:text-4xl">
+                Why Traditional Capital Raising Strategies Fail <span className="text-primary">(And What to Do Instead)</span>
               </h2>
-              <p style={{ color: mutedFg }}>Before we dive into the AI-driven framework, it's important to understand why most capital raising efforts stall or fail completely:</p>
+              <p className="text-muted-foreground">Before we dive into the AI-driven framework, it's important to understand why most capital raising efforts stall or fail completely:</p>
               <ul className="space-y-4">
                 {failReasons.map((r, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: green }} />
+                  <li key={i} className="flex items-start gap-3 text-foreground">
+                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />
                     <span>{r}</span>
                   </li>
                 ))}
               </ul>
               <div className="pt-4">
-                <h3 className="font-heading text-2xl font-extrabold md:text-3xl">The solution?</h3>
-                <p className="mt-2 text-lg font-semibold">A fully automated, AI-powered investor acquisition system.</p>
+                <h3 className="font-display text-2xl font-extrabold text-foreground md:text-3xl">The solution?</h3>
+                <p className="mt-2 text-lg font-semibold text-foreground">A fully automated, AI-powered investor acquisition system.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* Perfect For */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: bg }}>
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4 text-center md:px-8">
-            <p className="font-heading text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: mutedFg }}>PROCESS</p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold md:text-5xl">This playbook is perfect for:</h2>
+            <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">PROCESS</p>
+            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">This playbook is perfect for:</h2>
             <div className="mt-12 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
               {audiences.map((a, i) => (
                 <div key={i} className="flex flex-col items-center gap-4">
-                  <div className="overflow-hidden rounded-2xl" style={{ border: `1px solid ${borderC}` }}>
+                  <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
                     <img src={a.img} alt={a.title} loading="lazy" width={512} height={512} className="h-40 w-full object-cover md:h-48" />
                   </div>
-                  <h3 className="font-heading text-sm font-bold md:text-base">{a.title}</h3>
+                  <h3 className="font-display text-sm font-bold text-foreground md:text-base">{a.title}</h3>
                 </div>
               ))}
             </div>
@@ -320,29 +310,29 @@ const Playbook = () => {
         </section>
 
         {/* Three Steps */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: cardBg }}>
+        <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
           <div className="container mx-auto px-4 text-center md:px-8">
-            <p className="font-heading text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: mutedFg }}>The AI Capital Raising Framework:</p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold md:text-5xl">The 3-Step System to Attract & Secure Accredited Investors</h2>
-            <p className="mx-auto mt-4 max-w-3xl" style={{ color: mutedFg }}>
-              This framework has been used to raise over <strong style={{ color: green }} className="italic">$7M in just 5 months</strong> for a real estate fund.
+            <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">The AI Capital Raising Framework:</p>
+            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">The 3-Step System to Attract & Secure Accredited Investors</h2>
+            <p className="mx-auto mt-4 max-w-3xl text-muted-foreground">
+              This framework has been used to raise over <strong className="text-primary italic">$7M in just 5 months</strong> for a real estate fund.
             </p>
             <div className="mt-12 space-y-10 text-left">
               {steps.map((s) => (
-                <div key={s.number} className="rounded-2xl p-6 md:p-10" style={{ backgroundColor: bg, border: `1px solid ${borderC}` }}>
-                  <h3 className="font-heading text-2xl font-extrabold md:text-3xl">
-                    <span style={{ color: green }}>Step {s.number}:</span> {s.title}
+                <div key={s.number} className="glass-card-elevated rounded-2xl p-6 md:p-10">
+                  <h3 className="font-display text-2xl font-extrabold text-foreground md:text-3xl">
+                    <span className="text-primary">Step {s.number}:</span> {s.title}
                   </h3>
                   <ul className="mt-6 space-y-3">
                     {s.bullets.map((b, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: green }} />
+                      <li key={i} className="flex items-start gap-3 text-foreground">
+                        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />
                         <span>{b}</span>
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-6 rounded-lg p-4" style={{ backgroundColor: elevatedBg }}>
-                    <p style={{ color: mutedFg }}>💡 <strong style={{ color: fg }}>Real-World Example: </strong>{s.example}</p>
+                  <div className="mt-6 rounded-lg bg-muted p-4">
+                    <p className="text-muted-foreground">💡 <strong className="text-foreground">Real-World Example: </strong>{s.example}</p>
                   </div>
                 </div>
               ))}
@@ -352,63 +342,63 @@ const Playbook = () => {
         </section>
 
         {/* Why You Need */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: bg }}>
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4 text-center md:px-8">
-            <p className="font-heading text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: mutedFg }}>WHY YOU NEED THIS</p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold md:text-5xl">What Happens When You Implement This?</h2>
+            <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">WHY YOU NEED THIS</p>
+            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">What Happens When You Implement This?</h2>
             <div className="mx-auto mt-12 grid max-w-4xl gap-8 md:grid-cols-2">
-              <div className="rounded-2xl p-6 text-left" style={{ backgroundColor: cardBg, border: `1px solid ${borderC}` }}>
+              <div className="glass-card-elevated rounded-2xl p-6 text-left">
                 {cons.map((c, i) => (
-                  <p key={i} className="mb-3 flex items-start gap-3" style={{ color: mutedFg }}>
+                  <p key={i} className="mb-3 flex items-start gap-3 text-muted-foreground">
                     <span className="shrink-0">❌</span> {c}
                   </p>
                 ))}
               </div>
-              <div className="rounded-2xl p-6 text-left" style={{ backgroundColor: cardBg, border: `1px solid ${green}` }}>
+              <div className="rounded-2xl border-2 border-primary bg-card p-6 text-left shadow-sm">
                 {pros.map((p, i) => (
-                  <p key={i} className="mb-3 flex items-start gap-3">
+                  <p key={i} className="mb-3 flex items-start gap-3 text-foreground">
                     <span className="shrink-0">{p.icon}</span> {p.text}
                   </p>
                 ))}
               </div>
             </div>
-            <p className="mx-auto mt-10 max-w-2xl text-lg">This is <strong>not just theory</strong>—this is a proven, scalable system used to raise <strong>millions</strong>.</p>
+            <p className="mx-auto mt-10 max-w-2xl text-lg text-foreground">This is <strong>not just theory</strong>—this is a proven, scalable system used to raise <strong>millions</strong>.</p>
             <div className="mt-8"><CTAButton /></div>
           </div>
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="py-16 md:py-24" style={{ backgroundColor: cardBg }}>
+        <section id="pricing" className="py-16 md:py-24 bg-muted/30 border-t border-border">
           <div className="container mx-auto px-4 md:px-8">
-            <div className="mx-auto max-w-4xl rounded-3xl p-8 md:p-12" style={{ backgroundColor: bg, border: `1px solid ${borderC}` }}>
+            <div className="mx-auto max-w-4xl glass-card-elevated rounded-3xl p-8 md:p-12">
               <div className="grid items-center gap-10 md:grid-cols-2">
                 <div>
                   <div className="mb-4 flex items-center gap-2">
                     <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/3b47f04b-8523-4abf-973c-72dc50a14f39.png" alt="Stars" className="h-6" />
-                    <span className="text-sm" style={{ color: mutedFg }}>4.9/5 star reviews from 500+ couples</span>
+                    <span className="text-sm text-muted-foreground">4.9/5 star reviews from 500+ couples</span>
                   </div>
-                  <h2 className="font-heading text-3xl font-extrabold md:text-4xl">AI Capital Raising Playbook</h2>
-                  <p className="mt-2" style={{ color: mutedFg }}>Unlock the Complete System (Ads, Funnels, Investor Email Templates & More).</p>
+                  <h2 className="font-display text-3xl font-extrabold text-foreground md:text-4xl">AI Capital Raising Playbook</h2>
+                  <p className="mt-2 text-muted-foreground">Unlock the Complete System (Ads, Funnels, Investor Email Templates & More).</p>
                   <div className="mt-6 flex gap-4">
                     <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67ad6436773f0202312de872.png" alt="Book" className="h-32 md:h-40" />
                     <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67ae70487322557fbe14f604.png" alt="AI" className="h-32 md:h-40" />
                   </div>
                 </div>
-                <div className="rounded-2xl p-6" style={{ backgroundColor: cardBg, border: `1px solid ${green}`, boxShadow: `0 0 30px hsl(142 71% 45% / 0.3), 0 0 60px hsl(142 71% 45% / 0.1)` }}>
-                  <h3 className="font-heading text-xl font-bold">Here's what you get:</h3>
-                  <p className="mt-1 text-sm" style={{ color: mutedFg }}>Includes:</p>
+                <div className="rounded-2xl border-2 border-primary bg-card p-6 shadow-[0_0_30px_hsl(142_52%_36%/0.15),0_0_60px_hsl(142_52%_36%/0.05)]">
+                  <h3 className="font-display text-xl font-bold text-foreground">Here's what you get:</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">Includes:</p>
                   <ul className="mt-4 space-y-3">
                     {pricingIncludes.map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
-                        <CheckCircle className="mt-0.5 h-5 w-5 shrink-0" style={{ color: green }} />
-                        <span className="text-sm">{item}</span>
+                        <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                        <span className="text-sm text-foreground">{item}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="mt-6 text-center">
-                    <p className="text-sm" style={{ color: mutedFg }}>Today Just</p>
-                    <p className="font-heading text-4xl font-extrabold" style={{ color: green }}>
-                      $27 <span className="text-base font-normal" style={{ color: mutedFg }}>one time</span>
+                    <p className="text-sm text-muted-foreground">Today Just</p>
+                    <p className="font-display text-4xl font-extrabold text-primary">
+                      $27 <span className="text-base font-normal text-muted-foreground">one time</span>
                     </p>
                   </div>
                   <div className="mt-6"><CTAButton className="w-full text-center" /></div>
@@ -417,13 +407,13 @@ const Playbook = () => {
             </div>
 
             {/* Featured testimonial */}
-            <div className="mx-auto mt-12 max-w-3xl rounded-2xl p-6 md:p-8" style={{ backgroundColor: bg, border: `1px solid ${borderC}` }}>
+            <div className="mx-auto mt-12 max-w-3xl glass-card-elevated rounded-2xl p-6 md:p-8">
               <div className="flex items-start gap-4">
                 <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67b2b11870fcfe34f6264444.png" alt="Testimonial" className="h-16 w-16 rounded-full object-cover" />
                 <div>
-                  <p className="font-heading text-lg font-bold">"Game-Changer for Our Fund"</p>
-                  <p className="mt-2 text-sm italic" style={{ color: mutedFg }}>"We struggled for months trying to raise capital the traditional way. After implementing this playbook, we secured $500K in commitments within 60 days."</p>
-                  <p className="mt-3 text-sm font-semibold" style={{ color: green }}>— Vanessa L., Real Estate Syndicator</p>
+                  <p className="font-display text-lg font-bold text-foreground">"Game-Changer for Our Fund"</p>
+                  <p className="mt-2 text-sm italic text-muted-foreground">"We struggled for months trying to raise capital the traditional way. After implementing this playbook, we secured $500K in commitments within 60 days."</p>
+                  <p className="mt-3 text-sm font-semibold text-primary">— Vanessa L., Real Estate Syndicator</p>
                 </div>
               </div>
             </div>
@@ -431,17 +421,17 @@ const Playbook = () => {
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: bg }}>
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4 text-center md:px-8">
-            <p className="font-heading text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: mutedFg }}>TESTIMONIALS</p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold md:text-5xl">See How Other People Saved Thousands</h2>
+            <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">TESTIMONIALS</p>
+            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">See How Other People Saved Thousands</h2>
             <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-3">
               {testimonials.map((t, i) => (
-                <div key={i} className="rounded-2xl p-6 text-left" style={{ backgroundColor: cardBg, border: `1px solid ${borderC}` }}>
+                <div key={i} className="glass-card-elevated rounded-2xl p-6 text-left">
                   <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/7e8d238f-262a-4578-9584-868f586cf85c.png" alt={t.author} className="mb-4 h-16 w-16 rounded-full object-cover" />
-                  <h3 className="font-heading text-lg font-bold">{t.title}</h3>
-                  <p className="mt-3 text-sm italic" style={{ color: mutedFg }}>{t.quote}</p>
-                  <p className="mt-4 text-sm font-semibold" style={{ color: green }}>— {t.author}</p>
+                  <h3 className="font-display text-lg font-bold text-foreground">{t.title}</h3>
+                  <p className="mt-3 text-sm italic text-muted-foreground">{t.quote}</p>
+                  <p className="mt-4 text-sm font-semibold text-primary">— {t.author}</p>
                 </div>
               ))}
             </div>
@@ -450,36 +440,36 @@ const Playbook = () => {
         </section>
 
         {/* Guarantee */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: cardBg }}>
+        <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
           <div className="container mx-auto px-4 text-center md:px-8">
-            <p className="font-heading text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: mutedFg }}>STILL NOT SURE?</p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold md:text-5xl">Our Ironclad 100% Risk-Free Guarantee</h2>
+            <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">STILL NOT SURE?</p>
+            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">Our Ironclad 100% Risk-Free Guarantee</h2>
             <div className="mx-auto mt-10 grid max-w-4xl items-center gap-10 md:grid-cols-2">
-              <div className="space-y-4 text-left" style={{ color: mutedFg }}>
-                <p>We are so confident in the <strong style={{ color: fg }}>AI Capital Raising Playbook</strong> that we're putting our money where our mouth is.</p>
+              <div className="space-y-4 text-left text-muted-foreground">
+                <p>We are so confident in the <strong className="text-foreground">AI Capital Raising Playbook</strong> that we're putting our money where our mouth is.</p>
                 <p>If you implement the strategies and don't see a measurable increase in investor interest within 60 days, we'll refund 100% of your investment—no questions asked.</p>
-                <p className="font-semibold" style={{ color: fg }}>That's how much we believe in this system.</p>
+                <p className="font-semibold text-foreground">That's how much we believe in this system.</p>
               </div>
               <div className="flex justify-center">
                 <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/662a0e2ded5f234b9ce5379c.jpeg" alt="Guarantee Badge" className="max-w-xs" />
               </div>
             </div>
             <div className="mt-10"><CTAButton /></div>
-            <p className="mt-4 text-sm" style={{ color: mutedFg }}>Take action today—your next investor is waiting.</p>
+            <p className="mt-4 text-sm text-muted-foreground">Take action today—your next investor is waiting.</p>
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: bg }}>
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4 text-center md:px-8">
-            <p className="font-heading text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: mutedFg }}>STILL GOT QUESTIONS?</p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold md:text-5xl">Frequently Asked Questions</h2>
+            <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">STILL GOT QUESTIONS?</p>
+            <h2 className="mt-4 font-display text-3xl font-extrabold text-foreground md:text-5xl">Frequently Asked Questions</h2>
             <div className="mx-auto mt-12 max-w-3xl text-left">
               <Accordion type="single" collapsible className="space-y-3">
                 {faqs.map((faq, i) => (
-                  <AccordionItem key={i} value={`faq-${i}`} className="rounded-xl px-6" style={{ backgroundColor: cardBg, border: `1px solid ${borderC}` }}>
-                    <AccordionTrigger className="font-heading text-base font-semibold hover:no-underline">{faq.q}</AccordionTrigger>
-                    <AccordionContent style={{ color: mutedFg }}>{faq.a}</AccordionContent>
+                  <AccordionItem key={i} value={`faq-${i}`} className="glass-card-elevated rounded-xl px-6 border-border">
+                    <AccordionTrigger className="font-display text-base font-semibold text-foreground hover:no-underline">{faq.q}</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">{faq.a}</AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>
@@ -488,20 +478,20 @@ const Playbook = () => {
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 md:py-24" style={{ backgroundColor: cardBg }}>
+        <section className="py-16 md:py-24 bg-muted/30 border-t border-border">
           <div className="container mx-auto px-4 text-center md:px-8">
-            <h2 className="font-heading text-3xl font-extrabold md:text-5xl">Enroll now before it's too late!</h2>
-            <p className="mx-auto mt-4 max-w-2xl" style={{ color: mutedFg }}>Lock in your access to the complete system for just $27 before this special offer expires.</p>
+            <h2 className="font-display text-3xl font-extrabold text-foreground md:text-5xl">Enroll now before it's too late!</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Lock in your access to the complete system for just $27 before this special offer expires.</p>
             <div className="mt-8"><CTAButton /></div>
-            <p className="mt-4 text-sm font-semibold" style={{ color: green }}>Price going up soon!</p>
+            <p className="mt-4 text-sm font-semibold text-primary">Price going up soon!</p>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="py-8" style={{ backgroundColor: bg }}>
+        <footer className="border-t border-border py-8 bg-muted/30">
           <div className="container mx-auto flex flex-col items-center gap-4 px-4 md:px-8">
-            <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67bbe9a01cc1bb195ccebb93.png" alt="AI Capital Raising" className="h-10" />
-            <p className="text-xs" style={{ color: mutedFg }}>© {new Date().getFullYear()} AI Capital Raising. All rights reserved.</p>
+            <img src={logo} alt="AI Capital Raising" className="h-8" />
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} AI Capital Raising. All rights reserved.</p>
           </div>
         </footer>
       </div>
