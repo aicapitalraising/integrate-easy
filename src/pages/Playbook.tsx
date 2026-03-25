@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { CheckCircle, Mail } from "lucide-react";
 import {
   Accordion,
@@ -20,6 +20,43 @@ import iconWealthAdvisor from "@/assets/playbook/icon-wealth-advisor.png";
 type AccessFormContextType = { open: boolean; setOpen: (o: boolean) => void };
 const AccessFormContext = createContext<AccessFormContextType>({ open: false, setOpen: () => {} });
 const useAccessForm = () => useContext(AccessFormContext);
+
+/* ─── Countdown Hook ─── */
+const useCountdown = (targetDate: Date) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date().getTime();
+      const diff = targetDate.getTime() - now;
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+      setTimeLeft({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+
+  return timeLeft;
+};
+
+/* ─── Countdown Unit ─── */
+const CountdownUnit = ({ value, label }: { value: number; label: string }) => (
+  <div className="flex flex-col items-center">
+    <span className="font-display text-lg font-extrabold leading-none text-primary-foreground sm:text-xl md:text-2xl">
+      {String(value).padStart(2, "0")}
+    </span>
+    <span className="text-[9px] uppercase tracking-wider text-primary-foreground/70 sm:text-[10px]">{label}</span>
+  </div>
+);
 
 /* ─── CTA Button ─── */
 const CTAButton = ({ className = "" }: { className?: string }) => {
@@ -195,15 +232,29 @@ const faqs = [
 /* ─── Playbook Page ─── */
 const Playbook = () => {
   const [open, setOpen] = useState(false);
+  const deadline = new Date("2026-04-01T03:59:59Z"); // March 31 11:59 PM EST
+  const { days, hours, minutes, seconds } = useCountdown(deadline);
 
   return (
     <AccessFormContext.Provider value={{ open, setOpen }}>
       <div className="min-h-screen bg-background text-foreground">
-        {/* Promo Banner */}
-        <div className="bg-primary py-2 text-center">
-          <p className="font-display text-xs font-bold tracking-wide text-primary-foreground sm:text-sm md:text-base">
-            PROMO – ENDS March 31 @ 11:59PM EST 💍
-          </p>
+        {/* Promo Countdown Banner */}
+        <div className="bg-primary py-2.5 px-4">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <span className="font-display text-xs font-bold tracking-wide text-primary-foreground sm:text-sm">
+              PROMO ENDS IN
+            </span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <CountdownUnit value={days} label="Days" />
+              <span className="text-primary-foreground/60 font-bold text-lg">:</span>
+              <CountdownUnit value={hours} label="Hrs" />
+              <span className="text-primary-foreground/60 font-bold text-lg">:</span>
+              <CountdownUnit value={minutes} label="Min" />
+              <span className="text-primary-foreground/60 font-bold text-lg">:</span>
+              <CountdownUnit value={seconds} label="Sec" />
+            </div>
+            <span className="text-lg">🔥</span>
+          </div>
         </div>
 
         {/* Navbar */}
