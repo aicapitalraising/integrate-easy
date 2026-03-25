@@ -17,8 +17,10 @@ import { toast } from '@/hooks/use-toast';
 import AssetGeneratorTab from '@/components/fulfillment/AssetGeneratorTab';
 import {
   ResearchRenderer, AnglesRenderer, EmailsRenderer, SMSRenderer,
-  AdCopyRenderer, ScriptsRenderer, CreativesRenderer, ReportRenderer, FunnelRenderer,
+  AdCopyRenderer, ScriptsRenderer, CreativesRenderer, ReportRenderer, FunnelRenderer, SetterRenderer,
 } from '@/components/fulfillment/renderers';
+import { Progress } from '@/components/ui/progress';
+import { Bot } from 'lucide-react';
 
 interface Client {
   id: string;
