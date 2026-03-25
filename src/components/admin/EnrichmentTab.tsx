@@ -62,12 +62,14 @@ export function EnrichmentTab() {
   const [enriching, setEnriching] = useState(false);
   const [progress, setProgress] = useState(0);
   const [fileName, setFileName] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const processFile = (file: File) => {
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      toast({ title: 'Invalid file type', description: 'Please upload a .csv file.', variant: 'destructive' });
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (ev) => {
       const text = ev.target?.result as string;
@@ -78,13 +80,38 @@ export function EnrichmentTab() {
       }
       setContacts(parsed);
       setProgress(0);
-      // Default file name from uploaded file
       const baseName = file.name.replace(/\.csv$/i, '');
       setFileName(`${baseName}-enriched`);
       toast({ title: `${parsed.length} contacts loaded`, description: 'Ready to enrich.' });
     };
     reader.readAsText(file);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    processFile(file);
     if (fileRef.current) fileRef.current.value = '';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) processFile(file);
   };
 
   const enrichAll = async () => {
@@ -167,20 +194,38 @@ export function EnrichmentTab() {
   return (
     <div className="space-y-6">
       {/* Upload Area */}
-      <Card className="border-dashed border-2 border-primary/20 bg-primary/5">
+      <Card
+        className={`border-dashed border-2 transition-colors cursor-pointer ${
+          isDragging
+            ? 'border-primary bg-primary/10 scale-[1.01]'
+            : 'border-primary/20 bg-primary/5 hover:border-primary/40'
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => fileRef.current?.click()}
+      >
         <CardContent className="p-8 text-center space-y-4">
-          <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-            <Upload className="h-7 w-7 text-primary" />
+          <div className={`mx-auto w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
+            isDragging ? 'bg-primary/20' : 'bg-primary/10'
+          }`}>
+            <Upload className={`h-7 w-7 text-primary transition-transform ${isDragging ? 'scale-110' : ''}`} />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">Upload Contact List</h3>
-            <p className="text-sm text-muted-foreground">CSV with name, email, phone, phone2, email2 columns</p>
+            <h3 className="text-lg font-semibold">
+              {isDragging ? 'Drop your CSV here' : 'Upload Contact List'}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {isDragging ? 'Release to upload' : 'Drag & drop a CSV or click to browse — needs name, email, phone, phone2, email2 columns'}
+            </p>
           </div>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
-          <Button onClick={() => fileRef.current?.click()} variant="outline" className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" />
-            Choose CSV File
-          </Button>
+          {!isDragging && (
+            <Button variant="outline" className="gap-2 pointer-events-none">
+              <FileSpreadsheet className="h-4 w-4" />
+              Choose CSV File
+            </Button>
+          )}
         </CardContent>
       </Card>
 
