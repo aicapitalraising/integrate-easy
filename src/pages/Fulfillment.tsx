@@ -11,7 +11,7 @@ import {
   Lock, Phone, Building2, Target, DollarSign, Globe, Calendar, Users,
   FileText, Palette, ExternalLink, Copy, CheckCircle2, Clock, Loader2,
   BarChart3, Mail, MessageSquare, Video, Image, Megaphone, ClipboardList,
-  Plus, RefreshCw, Trash2,
+  Plus, RefreshCw, Trash2, Sparkles,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AssetGeneratorTab from '@/components/fulfillment/AssetGeneratorTab';
