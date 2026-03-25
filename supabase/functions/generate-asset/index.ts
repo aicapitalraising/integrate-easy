@@ -127,6 +127,12 @@ Keep compliant, professional, short sentences.`,
 ${COMPLIANCE_RULES}
 IMPORTANT: Use real market research data. Every ad must reference specific data points.
 
+CRITICAL RULES:
+- ALWAYS say "Target" before any percentage. Example: "Target 20% Returns" NOT "20% Returns"
+- EVERY ad MUST include the full disclaimer at the bottom
+- Use double-spaced lines throughout for maximum readability
+- Use ✅ green checkmark bullets for benefits (each benefit on its own line)
+
 Write ad copy variants for these 6 SPECIFIC buying angles. For each angle, generate 3 variations (18 ads total).
 
 ANGLE 1: Direct Response — "Accredited investors: Are you ready to put your capital to work? Our fund is targeting [specific return percentage] with [specific benefits]. With a proven track record, this is your chance to invest in a high-performing asset class. Minimum investment starts at [$X]."
@@ -141,69 +147,87 @@ ANGLE 5: Proof of Concept — "This isn't theory—it's proof. Over the last [X 
 
 ANGLE 6: Urgency — "Opportunities like this don't last. We're raising [$X million] in equity for [specific asset class], and spots are filling fast. With a minimum investment of [$X], accredited investors can target [specific return percentage]."
 
-Format rules:
-- Use double-spaced lines throughout for maximum readability
-- Use ✅ green checkmark bullets for benefits (each benefit on its own line)
-- Each ad (60-100 words) must have: A bold hook → 1-2 expanding sentences → ✅ benefit list → compliant CTA → disclaimer
+Each ad (60-100 words) must have: A bold hook → 1-2 expanding sentences → ✅ benefit list → compliant CTA → FULL DISCLAIMER
 
 Generate as JSON array. Each object:
 - angle: which angle this is for
-- primary_text: main ad body (60-100 words) with ✅ bullet benefits and at least one specific stat
+- primary_text: main ad body (60-100 words) with ✅ bullet benefits and at least one specific stat. MUST use "Target X%" format. MUST end with full disclaimer.
 - headline: ad headline (under 40 chars)
 - description: description line
 - cta: "Learn More", "Invest Now", "Get Started", or "Schedule a Call"
 - platform: "meta" or "linkedin"
 - variation: number (1-3 per angle)
 - data_point_used: the specific stat referenced
+- disclaimer: "All investments involve risk, including potential loss of principal. Past performance does not guarantee future results. This opportunity is open exclusively to accredited investors. Any offer or sale of securities will be made only by means of a Private Placement Memorandum and related documents. You should carefully review all offering materials, perform independent due diligence, and consult your financial and legal advisors before investing."
 Write for accredited investors. Compliant, sophisticated tone.`,
 
   scripts: `You are an expert video script writer for capital raising campaigns. Write scripts someone will actually say on camera — no scene directions, no quotes, no titles. Just the spoken script.
 ${COMPLIANCE_RULES}
 IMPORTANT: Weave real research data throughout. Lead with compelling stats.
 
+CRITICAL RULES:
+- ALWAYS say "Target" before any percentage. Example: "Target 25% IRR" NOT "25% IRR"
+- Every script MUST include a disclaimer either spoken or noted
+- Write ONLY the words the speaker says — no scene directions, no "[pause]", no formatting cues
+- Scripts should sound natural and conversational, like someone talking to a friend about an investment
+
+REFERENCE EXAMPLES (study these for tone, pacing, and style):
+
+EXAMPLE AD SCRIPT STYLE:
+"Target 25% IRR, quarterly distributions, and 9% preferred returns. How can this stuff be possible for passive real estate investors like you? [Explain the mechanism]. Here's where it gets really interesting. [Explain the unique advantage]. [Explain why it de-risks the investment]. If you want to learn more about how our fund works, just hit the link below and we'll get you all the details."
+
+EXAMPLE FAQ/OBJECTION STYLE:
+"So a lot of questions that we're getting is, who are you, how long have you been doing this, and can I trust you? Well, my name's [Name], I'm with [Fund], I'm one of the founders. We've been doing this for [X] years now. We've completed [X] projects. We've got [X] in the pipeline, and you can call me or any of the investors that have done business with us upon request and ask if we're the real deal."
+
+EXAMPLE MARKET OPPORTUNITY STYLE:
+"[City/Market] isn't just any [market type], it's a hub for [growth factor]. Investors are flocking here for [reasons]. [Fund Name] taps into that by providing [unique value]. Accredited investors with a minimum of $[X] can become part of a proven model that's already delivered results. Ready to invest in a smarter future? Click the button below and get details."
+
 Generate video scripts as JSON array with these categories:
 
 A) VSL SCRIPT (3 minutes, compliance-safe, Hook-First Proof-Led):
 Structure:
-1) Cold open overlay (2s) — "For accredited investors only. Not an offer. Read the PPM. Past performance ≠ future results."
-2) Call-out hook (5-7s) — "Accredited investors: evaluating alternatives beyond stocks and bonds? Here's how [Fund Name] targets [X%] in [asset class] using [simple mechanism], with [monthly/quarterly distributions]."
-3) Credibility snapshot (10-15s) — "I'm [Name], [Role] at [Company]. We've [years/team experience], [AUM/transactions], and use [3rd-party admin/audited financials/custody]."
-4) Problem→mechanism (20-30s) — Problem: "Traditional portfolios are volatile and tax-inefficient." Mechanism: "We source [asset class] off-market via [deal flow], underwrite with [conservative LTV/covenants], and diversify across [geos/operators]."
-5) Evidence (20-30s) — balanced, not promissory. "Selected snapshots: [Deal/Segment] produced [X% net to LPs] since [year]."
-6) Terms in plain English (15-20s) — "Min: [$$]. Fees: [mgmt]% / [carry]%. Hold: [N] years. Distributions: [monthly/quarterly]. Accredited investors only."
-7) Risks (10-15s) — "All investments involve risk including loss of principal, illiquidity, and regulatory changes."
-8) CTA (10-12s) — "Tap 'Book Call' now. On the call: we verify accreditation, walk you through the PPM, and answer diligence."
+1) Cold open compliance overlay (2s) — "For accredited investors only. Not an offer. Read the PPM. Past performance does not equal future results."
+2) Call-out hook (5-7s) — "Accredited investors: Target [X%] IRR, [distribution schedule] distributions, and [preferred return]% preferred returns. How can this stuff be possible for investors like you? [One word: mechanism]."
+3) Credibility snapshot (10-15s) — "I'm [Name], [Role] at [Company]. We've [years/team experience], [AUM/transactions]."
+4) Problem→mechanism (20-30s) — Explain the strategy naturally. How money flows, what creates returns.
+5) Evidence (20-30s) — balanced, not promissory. Reference track record with "target" language.
+6) Terms in plain English (15-20s) — Min investment, hold period, distributions, accredited only.
+7) Risks (10-15s) — "All investments involve risk including loss of principal."
+8) CTA (10-12s) — "If you want to learn more, just hit the link below and we'll get you all the details."
 
 B) AD SCRIPTS (5 variations, 30-60 seconds each):
-Script 1: "Why We're Reaching Out" — growth outpacing capital capacity, investor count, pipeline expanding, new accredited investors brought on
-Script 2: "The Opportunity Window" — limited allocation, subscription %, once full allocation that's it
-Script 3: "The Cash Flow Play" — passive income, distributions, strategy of acquiring assets, enhancing operations
-Script 4: "Built for This Market" — market positioning, risk mitigation, focus on specific asset class/region
-Script 5: "Why Timing Matters" — current conditions stronger than in years, strategically positioned
+Script 1: "Why We're Reaching Out" — growth outpacing capital capacity
+Script 2: "The Opportunity Window" — limited allocation, subscription filling
+Script 3: "The Cash Flow Play" — passive income, distributions, strategy
+Script 4: "Built for This Market" — market positioning, specific city/region advantages
+Script 5: "Why Timing Matters" — current conditions, strategic positioning
 
-C) OBJECTION VIDEOS (5 scripts, under 40 seconds each):
-Objection 1: Risk Concerns — risk mitigation via strategy, distributions for ongoing cash flow
-Objection 2: Track Record — years of experience, successful projects, disciplined process
-Objection 3: Why Not Keep It In-House — scale, pipeline bigger than internal capital
-Objection 4: Market Volatility — low correlation to public markets, stable demand
-Objection 5: Liquidity — upfront about hold period, balanced with distributions
+C) OBJECTION/FAQ VIDEOS (5 scripts, under 40 seconds each):
+Write these in FIRST PERSON as the founder/speaker addressing camera directly.
+Objection 1: "Who are you and can I trust you?" — Introduce self, years in business, track record, invite to verify
+Objection 2: "Is this a scam?" — Address directly, name credentials, AUM raised, returns delivered
+Objection 3: "Why do you need my money?" — Growth outpacing current investor base, pipeline expansion
+Objection 4: "What about market risk?" — Explain specific risk mitigation, asset class resilience
+Objection 5: "Why this market/asset class?" — Demand outpacing supply, proven model, specific market data
 
-D) INTRO VIDEO (horizontal, 30-60s): Quick overview of fund benefits
+D) INTRO VIDEO (horizontal, 30-60s): Quick overview of fund benefits, conversational
 E) THANK YOU PAGE VIDEO (horizontal, 30s): Post-scheduling, invite to review pitch deck
 
-Rules: Do not add scenes or quotes or titles, just provide the video script for someone to say.
+F) PODCAST-STYLE SCRIPTS (2 scripts, 30-60 seconds each):
+Format: Two speakers (avatars) having a natural conversation about the fund. Alternating speaking parts, each part 8 seconds or less. Write as a dialogue between Speaker A and Speaker B discussing the investment opportunity. Keep it hyper-realistic and conversational.
 
 Each script object:
 - title: script name
-- type: one of "vsl", "ad_script", "objection", "intro", "thank_you"
-- hook: opening 3-second hook with compelling stat
-- body: main script body — JUST what the speaker says. No scene directions.
+- type: one of "vsl", "ad_script", "objection", "intro", "thank_you", "podcast"
+- hook: opening 3-second hook with compelling stat using "Target X%" format
+- body: main script body — JUST what the speaker says. No scene directions. For podcast type, format as "Speaker A: ... Speaker B: ..." alternating.
 - cta: closing call to action
 - angle_used: marketing angle
 - format: "9:16", "1:1", or "16:9"
 - duration_estimate: estimated seconds
-- disclaimer: compliance disclaimer text
-Generate 12-15 scripts total mixing all types.`,
+- disclaimer: full compliance disclaimer text
+- speaker_count: 1 or 2 (2 for podcast style)
+Generate 15-18 scripts total mixing all types including 2 podcast scripts.`,
 
   creatives: `You are a creative director for alternative investment ad campaigns.
 ${COMPLIANCE_RULES}
