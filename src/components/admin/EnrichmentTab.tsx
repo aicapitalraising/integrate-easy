@@ -62,12 +62,14 @@ export function EnrichmentTab() {
   const [enriching, setEnriching] = useState(false);
   const [progress, setProgress] = useState(0);
   const [fileName, setFileName] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const processFile = (file: File) => {
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      toast({ title: 'Invalid file type', description: 'Please upload a .csv file.', variant: 'destructive' });
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (ev) => {
       const text = ev.target?.result as string;
@@ -78,13 +80,38 @@ export function EnrichmentTab() {
       }
       setContacts(parsed);
       setProgress(0);
-      // Default file name from uploaded file
       const baseName = file.name.replace(/\.csv$/i, '');
       setFileName(`${baseName}-enriched`);
       toast({ title: `${parsed.length} contacts loaded`, description: 'Ready to enrich.' });
     };
     reader.readAsText(file);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    processFile(file);
     if (fileRef.current) fileRef.current.value = '';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) processFile(file);
   };
 
   const enrichAll = async () => {
