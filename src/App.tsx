@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Deck from "./pages/Deck";
+import Playbook from "./pages/Playbook";
 import Client from "./pages/Client";
 import Access from "./pages/Access";
 import Kickoff from "./pages/Kickoff";
