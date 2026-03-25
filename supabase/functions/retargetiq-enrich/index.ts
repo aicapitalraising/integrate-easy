@@ -115,7 +115,56 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const { leadId } = await req.json()
+    const { leadId, name, email, phone, mode } = await req.json()
+
+    // Inline mode: enrich without DB
+    if (mode === 'inline') {
+      let rawData: Record<string, unknown> | null = null
+      let method: 'phone' | 'email' = 'phone'
+
+      if (phone) {
+        const cleanPhone = phone.replace(/\D/g, '')
+        rawData = await callRetargetIQ('GetDataByPhone', { phone: cleanPhone, slug: 'high-performance-ads' }, RETARGETIQ_API_KEY)
+      }
+      if (!rawData && email) {
+        method = 'email'
+        rawData = await callRetargetIQ('GetDataByEmail', { email, slug: 'high-performance-ads' }, RETARGETIQ_API_KEY)
+      }
+      if (!rawData) {
+        return new Response(JSON.stringify({ status: 'no-match' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      const fields = extractEnrichmentFields(rawData)
+      const identityData = fields.identity as Record<string, string> | null
+      const matchType = identityData && name
+        ? compareNames(name, identityData.firstName, identityData.lastName)
+        : (identityData ? 'verified' : 'no-match')
+
+      if (matchType === 'no-match') {
+        return new Response(JSON.stringify({ status: 'no-match' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      const qual = calculateQualification(
+        fields.financial as Record<string, unknown> | null,
+        fields.investments as Record<string, unknown> | null
+      )
+
+      return new Response(JSON.stringify({
+        status: matchType,
+        score: qual.score,
+        tier: qual.tier,
+        financial: fields.financial,
+        identity: fields.identity,
+        address: fields.address,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     if (!leadId) {
       return new Response(JSON.stringify({ error: 'leadId required' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
