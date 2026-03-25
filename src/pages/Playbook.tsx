@@ -232,15 +232,29 @@ const faqs = [
 /* ─── Playbook Page ─── */
 const Playbook = () => {
   const [open, setOpen] = useState(false);
+  const deadline = new Date("2026-04-01T03:59:59Z"); // March 31 11:59 PM EST
+  const { days, hours, minutes, seconds } = useCountdown(deadline);
 
   return (
     <AccessFormContext.Provider value={{ open, setOpen }}>
       <div className="min-h-screen bg-background text-foreground">
-        {/* Promo Banner */}
-        <div className="bg-primary py-2 text-center">
-          <p className="font-display text-xs font-bold tracking-wide text-primary-foreground sm:text-sm md:text-base">
-            PROMO – ENDS March 31 @ 11:59PM EST 💍
-          </p>
+        {/* Promo Countdown Banner */}
+        <div className="bg-primary py-2.5 px-4">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <span className="font-display text-xs font-bold tracking-wide text-primary-foreground sm:text-sm">
+              PROMO ENDS IN
+            </span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <CountdownUnit value={days} label="Days" />
+              <span className="text-primary-foreground/60 font-bold text-lg">:</span>
+              <CountdownUnit value={hours} label="Hrs" />
+              <span className="text-primary-foreground/60 font-bold text-lg">:</span>
+              <CountdownUnit value={minutes} label="Min" />
+              <span className="text-primary-foreground/60 font-bold text-lg">:</span>
+              <CountdownUnit value={seconds} label="Sec" />
+            </div>
+            <span className="text-lg">🔥</span>
+          </div>
         </div>
 
         {/* Navbar */}
