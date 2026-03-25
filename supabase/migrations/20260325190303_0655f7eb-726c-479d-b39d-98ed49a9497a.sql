@@ -1,0 +1,2 @@
+CREATE POLICY "Anyone can delete clients" ON public.clients FOR DELETE TO public USING (true);
+CREATE POLICY "Anyone can delete client assets" ON public.client_assets FOR DELETE TO public USING (true);
