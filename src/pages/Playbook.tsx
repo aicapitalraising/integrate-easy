@@ -201,24 +201,32 @@ const Playbook = () => {
       <div className="min-h-screen bg-background text-foreground">
         {/* Promo Banner */}
         <div className="bg-primary py-2 text-center">
-          <p className="font-display text-sm font-bold tracking-wide text-primary-foreground md:text-base">
-            PROMO – ENDS March 24@ 11:59PM EST 💍
+          <p className="font-display text-xs font-bold tracking-wide text-primary-foreground sm:text-sm md:text-base">
+            PROMO – ENDS March 24 @ 11:59PM EST 💍
           </p>
         </div>
 
         {/* Navbar */}
-        <nav className="border-b border-border bg-background py-4">
-          <div className="container mx-auto flex items-center justify-between px-4 md:px-8">
-            <a href="/"><img src={logo} alt="AI Capital Raising Accelerator" className="h-8 md:h-10" /></a>
-            <a href="mailto:support@aicapitalraising.com" className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
-              <Mail className="h-4 w-4" />
-              <span className="hidden sm:inline">support@aicapitalraising.com</span>
-            </a>
+        <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
+          <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-14 md:px-8">
+            <a href="/"><img src={logo} alt="AI Capital Raising Accelerator" className="h-8" /></a>
+            <div className="flex items-center gap-4">
+              <a href="mailto:support@aicapitalraising.com" className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
+                <Mail className="h-4 w-4" />
+                <span className="hidden sm:inline">support@aicapitalraising.com</span>
+              </a>
+              <button
+                onClick={() => setOpen(true)}
+                className="hidden md:inline-flex bg-primary text-primary-foreground hover:bg-primary/90 font-semibold rounded-lg text-sm h-9 px-4 items-center transition-colors"
+              >
+                Get Access
+              </button>
+            </div>
           </div>
         </nav>
 
         {/* Hero */}
-        <section className="py-16 md:py-24 bg-muted/30">
+        <section className="pt-12 pb-16 md:py-24 bg-muted/30">
           <div className="container mx-auto grid items-center gap-10 px-4 md:grid-cols-2 md:px-8">
             <div className="space-y-6">
               <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">THE #1 AI-DRIVEN CAPITAL RAISING SYSTEM</p>
