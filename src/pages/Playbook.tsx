@@ -226,23 +226,23 @@ const Playbook = () => {
         </nav>
 
         {/* Hero */}
-        <section className="pt-12 pb-16 md:py-24 bg-muted/30">
-          <div className="container mx-auto grid items-center gap-10 px-4 md:grid-cols-2 md:px-8">
-            <div className="space-y-6">
-              <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">THE #1 AI-DRIVEN CAPITAL RAISING SYSTEM</p>
-              <h1 className="font-display text-4xl font-extrabold leading-tight text-foreground md:text-5xl lg:text-6xl">
+        <section className="pt-10 pb-14 md:py-24 bg-muted/30">
+          <div className="max-w-6xl mx-auto grid items-center gap-8 px-4 md:grid-cols-2 md:px-8">
+            <div className="space-y-5">
+              <p className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">THE #1 AI-DRIVEN CAPITAL RAISING SYSTEM</p>
+              <h1 className="font-display text-3xl font-extrabold leading-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
                 AI Capital Raising <span className="text-primary">Playbook</span>
               </h1>
-              <p className="text-lg leading-relaxed text-foreground md:text-xl">
+              <p className="text-base leading-relaxed text-foreground sm:text-lg md:text-xl">
                 How to Raise <span className="font-bold text-primary">$5M to $100M</span> Using an <span className="text-primary">AI-Driven System</span> That Attracts Accredited Investors on Autopilot
               </p>
-              <p className="text-muted-foreground">
+              <p className="text-sm text-muted-foreground sm:text-base">
                 Discover the <span className="underline">cutting-edge capital raising strategies</span> that top funds and startups are using to secure millions—without relying on personal networks, cold outreach, or expensive brokers.
               </p>
               <CTAButton />
             </div>
-            <div className="flex justify-center">
-              <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67ad6436773f0202312de872.png" alt="AI Capital Raising Playbook Book" className="w-full max-w-md drop-shadow-2xl md:max-w-lg" />
+            <div className="flex justify-center order-first md:order-last">
+              <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/ZcPPQTHBxBWlnM1WyjvU/media/67ad6436773f0202312de872.png" alt="AI Capital Raising Playbook Book" className="w-full max-w-[280px] drop-shadow-2xl sm:max-w-sm md:max-w-lg" />
             </div>
           </div>
         </section>
