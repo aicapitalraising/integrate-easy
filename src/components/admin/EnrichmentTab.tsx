@@ -3,6 +3,8 @@ import { Upload, Download, FileSpreadsheet, Loader2, CheckCircle, AlertCircle, T
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,6 +14,8 @@ interface UploadedContact {
   name: string;
   email: string;
   phone: string;
+  phone2: string;
+  email2: string;
   enrichmentStatus: 'pending' | 'enriching' | 'verified' | 'spouse' | 'no-match' | 'error';
   tier?: string;
   score?: number;
@@ -26,15 +30,19 @@ function parseCSV(text: string): UploadedContact[] {
   const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
 
   const nameIdx = headers.findIndex(h => h.includes('name'));
-  const emailIdx = headers.findIndex(h => h.includes('email'));
-  const phoneIdx = headers.findIndex(h => h.includes('phone'));
+  const emailIdx = headers.findIndex(h => h === 'email' || h === 'e-mail');
+  const phoneIdx = headers.findIndex(h => h === 'phone' || h === 'phone1' || h === 'phone 1');
+  const phone2Idx = headers.findIndex(h => h === 'phone2' || h === 'phone 2' || h === 'secondary phone');
+  const email2Idx = headers.findIndex(h => h === 'email2' || h === 'email 2' || h === 'secondary email');
 
   return lines.slice(1).filter(l => l.trim()).map(line => {
     const cols = line.split(',').map(c => c.trim().replace(/^['"]|['"]$/g, ''));
     return {
       name: cols[nameIdx] || '',
-      email: cols[emailIdx] || '',
-      phone: cols[phoneIdx] || '',
+      email: emailIdx >= 0 ? cols[emailIdx] || '' : '',
+      phone: phoneIdx >= 0 ? cols[phoneIdx] || '' : '',
+      phone2: phone2Idx >= 0 ? cols[phone2Idx] || '' : '',
+      email2: email2Idx >= 0 ? cols[email2Idx] || '' : '',
       enrichmentStatus: 'pending' as const,
     };
   }).filter(c => c.name || c.email || c.phone);
@@ -53,6 +61,7 @@ export function EnrichmentTab() {
   const [contacts, setContacts] = useState<UploadedContact[]>([]);
   const [enriching, setEnriching] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [fileName, setFileName] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +78,9 @@ export function EnrichmentTab() {
       }
       setContacts(parsed);
       setProgress(0);
+      // Default file name from uploaded file
+      const baseName = file.name.replace(/\.csv$/i, '');
+      setFileName(`${baseName}-enriched`);
       toast({ title: `${parsed.length} contacts loaded`, description: 'Ready to enrich.' });
     };
     reader.readAsText(file);
@@ -90,7 +102,7 @@ export function EnrichmentTab() {
 
       try {
         const { data, error } = await supabase.functions.invoke('retargetiq-enrich', {
-          body: { name: c.name, email: c.email, phone: c.phone, mode: 'inline' },
+          body: { name: c.name, email: c.email, phone: c.phone, phone2: c.phone2, email2: c.email2, mode: 'inline' },
         });
 
         if (error) throw error;
@@ -119,11 +131,13 @@ export function EnrichmentTab() {
   };
 
   const exportCSV = () => {
-    const headers = ['Name', 'Email', 'Phone', 'Status', 'Tier', 'Score', 'Net Worth', 'Income', 'Credit Range', 'City', 'State'];
+    const headers = ['Name', 'Email', 'Phone', 'Phone 2', 'Email 2', 'Status', 'Tier', 'Score', 'Net Worth', 'Income', 'Credit Range', 'City', 'State'];
     const rows = contacts.map(c => [
       c.name,
       c.email,
       c.phone,
+      c.phone2,
+      c.email2,
       c.enrichmentStatus,
       c.tier || '',
       c.score?.toString() || '',
@@ -139,13 +153,16 @@ export function EnrichmentTab() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `enriched-leads-${new Date().toISOString().split('T')[0]}.csv`;
+    const exportName = fileName.trim() || `enriched-leads-${new Date().toISOString().split('T')[0]}`;
+    a.download = `${exportName}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   const enrichedCount = contacts.filter(c => ['verified', 'spouse'].includes(c.enrichmentStatus)).length;
   const noMatchCount = contacts.filter(c => c.enrichmentStatus === 'no-match').length;
+  const processedCount = contacts.filter(c => !['pending', 'enriching'].includes(c.enrichmentStatus)).length;
+  const enrichmentPct = contacts.length > 0 ? Math.round((enrichedCount / contacts.length) * 100) : 0;
 
   return (
     <div className="space-y-6">
@@ -157,7 +174,7 @@ export function EnrichmentTab() {
           </div>
           <div>
             <h3 className="text-lg font-semibold">Upload Contact List</h3>
-            <p className="text-sm text-muted-foreground">CSV file with name, email, and/or phone columns</p>
+            <p className="text-sm text-muted-foreground">CSV with name, email, phone, phone2, email2 columns</p>
           </div>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
           <Button onClick={() => fileRef.current?.click()} variant="outline" className="gap-2">
@@ -171,7 +188,7 @@ export function EnrichmentTab() {
         <>
           {/* Stats & Actions */}
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               <Badge variant="outline" className="gap-1 py-1 px-3">
                 {contacts.length} Total
               </Badge>
@@ -181,16 +198,18 @@ export function EnrichmentTab() {
               <Badge variant="outline" className="gap-1 py-1 px-3 bg-destructive/10 text-destructive border-destructive/20">
                 <AlertCircle className="h-3 w-3" /> {noMatchCount} No Match
               </Badge>
+              {processedCount > 0 && (
+                <Badge variant="outline" className="gap-1 py-1 px-3 bg-primary/10 text-primary border-primary/20 font-semibold">
+                  {enrichmentPct}% Enriched
+                </Badge>
+              )}
             </div>
             <div className="flex gap-2">
               <Button onClick={enrichAll} disabled={enriching} className="gap-2">
                 {enriching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                 {enriching ? 'Enriching…' : 'Enrich All'}
               </Button>
-              <Button onClick={exportCSV} variant="outline" className="gap-2" disabled={enrichedCount === 0}>
-                <Download className="h-4 w-4" /> Export CSV
-              </Button>
-              <Button onClick={() => { setContacts([]); setProgress(0); }} variant="ghost" size="icon">
+              <Button onClick={() => { setContacts([]); setProgress(0); setFileName(''); }} variant="ghost" size="icon">
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -251,6 +270,35 @@ export function EnrichmentTab() {
                     })}
                   </TableBody>
                 </Table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Export Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Export Enriched List</CardTitle>
+              <CardDescription>
+                {processedCount > 0
+                  ? `${enrichmentPct}% of contacts were successfully enriched (${enrichedCount}/${contacts.length})`
+                  : 'Run enrichment first, then export your results'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-end gap-3">
+                <div className="flex-1 space-y-2">
+                  <Label htmlFor="file-name">File Name</Label>
+                  <Input
+                    id="file-name"
+                    value={fileName}
+                    onChange={(e) => setFileName(e.target.value)}
+                    placeholder="enriched-leads"
+                  />
+                </div>
+                <span className="text-sm text-muted-foreground pb-2">.csv</span>
+                <Button onClick={exportCSV} variant="outline" className="gap-2" disabled={processedCount === 0}>
+                  <Download className="h-4 w-4" /> Export CSV
+                </Button>
               </div>
             </CardContent>
           </Card>
