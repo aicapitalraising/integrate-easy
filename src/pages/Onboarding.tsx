@@ -101,6 +101,17 @@ export default function Onboarding() {
   const [cardExp, setCardExp] = useState('');
   const [cardCvv, setCardCvv] = useState('');
 
+  // Team members
+  const [teamMembers, setTeamMembers] = useState([{ name: '', email: '', phone: '', title: '' }]);
+
+  const addTeamMember = () => setTeamMembers([...teamMembers, { name: '', email: '', phone: '', title: '' }]);
+  const removeTeamMember = (index: number) => setTeamMembers(teamMembers.filter((_, i) => i !== index));
+  const updateTeamMember = (index: number, field: string, value: string) => {
+    const updated = [...teamMembers];
+    updated[index] = { ...updated[index], [field]: value };
+    setTeamMembers(updated);
+  };
+
   // Kickoff booking
   const [kickoffBooked, setKickoffBooked] = useState(false);
   const [selectedKickoffDate, setSelectedKickoffDate] = useState('');
