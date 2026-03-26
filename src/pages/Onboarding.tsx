@@ -1214,13 +1214,17 @@ export default function Onboarding() {
             )}
             <Button
               onClick={next}
-              disabled={!canProceed() || submitting || scraping}
+              disabled={!canProceed() || submitting || scraping || saving}
               size="lg"
               className="font-semibold gap-2 min-w-[160px]"
             >
               {scraping ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" /> Analyzing Website...
+                </>
+              ) : saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Saving...
                 </>
               ) : submitting ? (
                 <>
