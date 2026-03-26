@@ -406,8 +406,13 @@ export default function Onboarding() {
     if (currentStep === 0 && website.trim() && !scraped) {
       await scrapeWebsite();
     }
-    if (currentStep < steps.length - 1) setCurrentStep((s) => s + 1);
-    else handleSubmit();
+    if (currentStep < steps.length - 1) {
+      // Save progress on every step transition
+      await saveProgress(currentStep + 1);
+      setCurrentStep((s) => s + 1);
+    } else {
+      handleSubmit();
+    }
   };
 
   const prev = () => {
