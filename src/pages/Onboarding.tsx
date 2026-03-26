@@ -23,6 +23,8 @@ import {
   Clock,
   Video,
   Loader2,
+  Plus,
+  Trash2,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -98,6 +100,17 @@ export default function Onboarding() {
   const [cardNumber, setCardNumber] = useState('');
   const [cardExp, setCardExp] = useState('');
   const [cardCvv, setCardCvv] = useState('');
+
+  // Team members
+  const [teamMembers, setTeamMembers] = useState([{ name: '', email: '', phone: '', title: '' }]);
+
+  const addTeamMember = () => setTeamMembers([...teamMembers, { name: '', email: '', phone: '', title: '' }]);
+  const removeTeamMember = (index: number) => setTeamMembers(teamMembers.filter((_, i) => i !== index));
+  const updateTeamMember = (index: number, field: string, value: string) => {
+    const updated = [...teamMembers];
+    updated[index] = { ...updated[index], [field]: value };
+    setTeamMembers(updated);
+  };
 
   // Kickoff booking
   const [kickoffBooked, setKickoffBooked] = useState(false);
@@ -223,6 +236,22 @@ export default function Onboarding() {
         }
       } catch (e) {
         console.error('GHL sync failed:', e);
+      }
+
+      // Save team members
+      if (clientData?.id) {
+        const validMembers = teamMembers.filter(m => m.name.trim());
+        if (validMembers.length > 0) {
+          await supabase.from('team_members').insert(
+            validMembers.map(m => ({
+              client_id: clientData.id,
+              name: m.name.trim(),
+              email: m.email.trim() || null,
+              phone: m.phone.trim() || null,
+              title: m.title.trim() || null,
+            }))
+          );
+        }
       }
 
       // Trigger automatic asset generation pipeline
@@ -780,6 +809,80 @@ export default function Onboarding() {
                           </div>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Team Members */}
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                          <Users className="w-4 h-4 text-primary" /> Team Members
+                        </label>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Who should we add to the CRM / Slack or WhatsApp group?
+                        </p>
+                      </div>
+                      <div className="space-y-3">
+                        {teamMembers.map((member, index) => (
+                          <div key={index} className="rounded-xl border border-border bg-muted/20 p-4 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-semibold text-muted-foreground">Member {index + 1}</span>
+                              {teamMembers.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeTeamMember(index)}
+                                  className="text-muted-foreground hover:text-destructive transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              )}
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div className="space-y-1.5">
+                                <label className="text-xs font-medium text-muted-foreground">Name</label>
+                                <Input
+                                  value={member.name}
+                                  onChange={(e) => updateTeamMember(index, 'name', e.target.value)}
+                                  placeholder="John Smith"
+                                />
+                              </div>
+                              <div className="space-y-1.5">
+                                <label className="text-xs font-medium text-muted-foreground">Title</label>
+                                <Input
+                                  value={member.title}
+                                  onChange={(e) => updateTeamMember(index, 'title', e.target.value)}
+                                  placeholder="e.g. COO, Investor Relations"
+                                />
+                              </div>
+                              <div className="space-y-1.5">
+                                <label className="text-xs font-medium text-muted-foreground">Email</label>
+                                <Input
+                                  value={member.email}
+                                  onChange={(e) => updateTeamMember(index, 'email', e.target.value)}
+                                  placeholder="john@company.com"
+                                  type="email"
+                                />
+                              </div>
+                              <div className="space-y-1.5">
+                                <label className="text-xs font-medium text-muted-foreground">Phone</label>
+                                <Input
+                                  value={member.phone}
+                                  onChange={(e) => updateTeamMember(index, 'phone', e.target.value)}
+                                  placeholder="(555) 123-4567"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addTeamMember}
+                        className="gap-2"
+                      >
+                        <Plus className="w-4 h-4" /> Add another member
+                      </Button>
                     </div>
 
                     <div className="space-y-1.5">

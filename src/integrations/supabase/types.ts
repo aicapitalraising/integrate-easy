@@ -246,6 +246,44 @@ export type Database = {
         }
         Relationships: []
       }
+      team_members: {
+        Row: {
+          client_id: string
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          title: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          title?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
