@@ -885,6 +885,8 @@ export default function Onboarding() {
                       </Button>
                     </div>
 
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Brand guidelines or notes</label>
                       <Textarea
                         value={brandNotes}
                         onChange={(e) => setBrandNotes(e.target.value)}
