@@ -46,6 +46,7 @@ interface Client {
   kickoff_date: string | null;
   kickoff_time: string | null;
   status: string;
+  current_step: number;
   created_at: string;
   updated_at: string;
 }
