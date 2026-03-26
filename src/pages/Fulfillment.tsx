@@ -53,6 +53,7 @@ interface Client {
 
 const statusColors: Record<string, string> = {
   onboarding: 'bg-amber-500/10 text-amber-600 border-amber-200',
+  partial: 'bg-rose-500/10 text-rose-600 border-rose-200',
   researching: 'bg-blue-500/10 text-blue-600 border-blue-200',
   drafting: 'bg-purple-500/10 text-purple-600 border-purple-200',
   internal_review: 'bg-orange-500/10 text-orange-600 border-orange-200',
@@ -60,6 +61,8 @@ const statusColors: Record<string, string> = {
   approved: 'bg-emerald-500/10 text-emerald-600 border-emerald-200',
   launch_ready: 'bg-primary/10 text-primary border-primary/20',
 };
+
+const stepLabels = ['Company', 'Goals', 'Assets', 'Kickoff', 'Review'];
 
 function ClientOverview({ client }: { client: Client }) {
   const shareUrl = `${window.location.origin}/portal/${client.share_token}`;
