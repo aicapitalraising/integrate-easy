@@ -14,10 +14,6 @@ import {
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AllCopyView from '@/components/fulfillment/AllCopyView';
-import {
-  ResearchRenderer, AnglesRenderer, EmailsRenderer, SMSRenderer,
-  AdCopyRenderer, ScriptsRenderer, CreativesRenderer, ReportRenderer, FunnelRenderer, SetterRenderer,
-} from '@/components/fulfillment/renderers';
 import { Progress } from '@/components/ui/progress';
 import { Bot, RefreshCw } from 'lucide-react';
 
