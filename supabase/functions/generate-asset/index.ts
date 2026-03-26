@@ -74,6 +74,8 @@ Guidelines for all emails:
 - End each email with a clear CTA and a brief compliance disclaimer.
 - FINRA and SEC compliant.
 - Always include disclaimer at the end of email when writing it.
+- Use double-spaced lines throughout for maximum readability.
+- When listing benefits, use green checkmark bullets (✅) at the start of each line.
 
 Generate a 10-email nurture sequence as JSON array:
 
@@ -102,25 +104,33 @@ Primary CTA = book a strategy call. Always include disclaimer at end. Avoid spam
 
   sms: `You are an SMS marketing expert for capital raising. Write business casual, no emojis.
 ${COMPLIANCE_RULES}
-Generate a 9-message SMS nurture sequence as JSON array following this EXACT structure:
+Generate a 9-message SMS nurture sequence as JSON array following this EXACT structure and tone:
 
-SMS #1: Opt-in intro — "Hi {{contact.first_name}}, it's [Speaker] from [Fund]. You reached out to us about our investment fund offering [targeted_returns]% returns. Are you open for a quick call to review any questions?"
-SMS #2: (10 seconds after SMS #1) — "What day works best for you this week?"
-SMS #3: Project highlight — "[Name], [Team Member] from [Fund]. Our newest project in [Location or Asset Type] is projecting [Specific IRR]. We [briefly explain strategy]. Got 10 minutes tomorrow afternoon or Thursday morning to discuss?"
-SMS #4: Market update angle — "Quick market update. [Highlight resilience or unique advantage vs market risks]. [Briefly explain fund strategy for recession-resistant income]. When's good for a brief call? Today after 3 or tomorrow before noon?"
-SMS #5: Specific asset tracking — "Morning [Name]! [Fund] here. One of our [specific asset type/location] is tracking [specific attractive IRR]. Investors enjoy [highlight benefit]. Do you have time this week to explore if it fits your portfolio?"
-SMS #6: Personal outreach — "[Name]—[Fund Contact] asked me to reach out. We're seeing [impressive metric] at one project just from [simple improvement]. Quick question: are you more interested in [cash flow, tax benefits, or appreciation]? When can we chat?"
-SMS #7: Subscription/closing urgency — "[Name], hope your week's going well. Our [Fund Type] fund just hit [Subscription % or milestone]—closing soon. Key numbers: [Preferred return %], [target IRR %]. Would Thursday work for a quick call, or is Friday morning better?"
-SMS #8: Market timing — "[Name]—[Fund] checking in. Did you know [interesting market fact]? We're strategically positioned before [market shift]. When's convenient for you to discuss—this afternoon or tomorrow?"
-SMS #9: Last touch — "Hi [Name], last try—no pressure. If passive income from real assets (not paper assets) sounds good, let's talk. Our investors typically allocate [amount] and appreciate the [consistent benefit]. Just tell me when works for a 15-min intro call."
+SMS #1 (Opt-in intro): "Hi {{contact.first_name}}, it's {{user.first_name}} from [Fund Name]. You reached out to us about our investment fund offering [targeted_returns]% returns. Are you open for a quick call to review any questions?"
+
+SMS #2 (10 seconds after SMS #1): "What day works best for you this week?"
+
+SMS #3 (1 day later — Project highlight): "{{contact.firstname}}, [Team Member's Name] from [Fund Name]. Our newest project in [Location or Asset Type] is projecting [Specific IRR or return metric]. We [briefly explain strategy—buy low, upgrade, distribute returns]. Got 10 minutes tomorrow afternoon or Thursday morning to discuss?"
+
+SMS #4 (3 days later — Market update): "Hey {{contact.firstname}}—quick market update. [Highlight resilience or unique advantage of fund vs. market risks]. [Briefly explain fund strategy for recession-resistant income]. When's good for a brief call with [Fund Contact]? Today after 3 or tomorrow before noon?"
+
+SMS #5 (7 days later — Specific asset tracking): "Morning {{contact.firstname}}! [Fund Name] here. One of our [specific asset type/location] is tracking [specific attractive IRR or financial outcome]. Investors enjoy [highlight benefit: quarterly ACH, quick distributions, passive income, etc.]. Do you have time this week to explore if it fits your portfolio?"
+
+SMS #6 (10 days later — Personal outreach): "Hi {{contact.firstname}}—[Fund Contact] asked me to reach out. We're seeing [impressive operational or growth metric] at one project just from [simple improvement or value-add strategy]. Quick question: are you more interested in [cash flow, tax benefits, or appreciation]? When can we chat?"
+
+SMS #7 (14 days later — Subscription/closing urgency): "{{contact.firstname}}, hope your week's going well. Our [Fund Type] fund just hit [Subscription % or milestone]—closing soon. Key numbers: [Preferred return %], [target IRR %], [consistent historical performance timeframe]. Would Thursday work for a quick call, or is Friday morning better?"
+
+SMS #8 (17 days later — Market timing): "Hey {{contact.firstname}}—[Fund Name] checking in. Did you know [interesting market fact about current opportunities or timing advantage]? We're strategically positioned before [market shift or competition entry]. When's convenient for you to discuss—this afternoon or tomorrow?"
+
+SMS #9 (21 days later — Last touch): "Hi {{contact.firstname}}, last try—no pressure. If passive income from real assets (not paper assets) sounds good, let's talk. Our investors typically allocate [average investor amount] and appreciate the [consistent benefit, e.g., quarterly checks]. Just tell me when works for a 15-min intro call with [Fund Contact]."
 
 Each message object:
-- message: SMS text (under 160 chars). Use {{contact.firstname}} and {{user.firstname}} placeholders
+- message: SMS text (under 160 chars). Use {{contact.firstname}} and {{user.firstname}} placeholders. Fill in all [bracketed] placeholders with actual client fund data.
 - character_count: number
 - sequence_step: number
 - purpose: one of "opt_in", "follow_up", "nurture", "scarcity", "book_call", "re_engagement"
 - cta: call to action
-- timing: when to send (e.g. "0 minutes", "10 seconds", "1 day", "3 days", "7 days", "10 days", "14 days", "21 days")
+- timing: when to send (e.g. "0 minutes", "10 seconds", "1 day", "3 days", "7 days", "10 days", "14 days", "17 days", "21 days")
 Keep compliant, professional, short sentences.`,
 
   adcopy: `You are an expert direct-response ad copywriter (Dan Kennedy × Jeremy Haynes style), specializing in SEC/FINRA-compliant ad campaigns for investment funds targeting accredited investors.
@@ -131,26 +141,37 @@ CRITICAL RULES:
 - ALWAYS say "Target" before any percentage. Example: "Target 20% Returns" NOT "20% Returns"
 - EVERY ad MUST include the full disclaimer at the bottom
 - Use double-spaced lines throughout for maximum readability
-- Use ✅ green checkmark bullets for benefits (each benefit on its own line)
+- Use ✅ green checkmark bullets for benefits (each benefit on its own line, vertically stacked)
 
 Write ad copy variants for these 6 SPECIFIC buying angles. For each angle, generate 3 variations (18 ads total).
 
-ANGLE 1: Direct Response — "Accredited investors: Are you ready to put your capital to work? Our fund is targeting [specific return percentage] with [specific benefits]. With a proven track record, this is your chance to invest in a high-performing asset class. Minimum investment starts at [$X]."
+ANGLE 1: Direct Response
+TEMPLATE: "Accredited investors: Are you ready to put your capital to work? Our fund is targeting [specific return percentage] with [specific benefits like quarterly distributions or tax advantages]. With a proven track record of delivering results, this is your chance to invest in a high-performing, recession-resistant asset class. Minimum investment starts at [$X]. Click below to learn more and schedule a call with our team."
 
-ANGLE 2: Tax Advantage — "Looking for a smarter way to invest? Our fund not only targets [specific return percentage], but it's also designed to help accredited investors take advantage of significant tax benefits. From depreciation to [specific tax incentives], your investment can work harder for you."
+ANGLE 2: Tax Advantage
+TEMPLATE: "Looking for a smarter way to invest? Our fund not only targets [specific return percentage], but it's also designed to help accredited investors take advantage of significant tax benefits. From depreciation to [specific tax incentives], your investment can work harder for you. Minimum investment starts at [$X]. Click below to learn how you can grow your wealth while reducing your tax burden."
 
-ANGLE 3: Recession-Resistant — "Worried about market volatility? Our fund is built to thrive in any economic climate. By investing in [specific asset class], we're targeting [specific return percentage] while protecting your capital with a recession-resistant strategy."
+ANGLE 3: Recession-Resistant
+TEMPLATE: "Worried about market volatility? Our fund is built to thrive in any economic climate. By investing in [specific asset class, e.g., premium storage, multifamily real estate], we're targeting [specific return percentage] while protecting your capital with a recession-resistant strategy. Accredited investors can join with as little as [$X]. Click below to learn more about this opportunity."
 
-ANGLE 4: Lifestyle/Exclusivity — "Accredited investors: This isn't just an investment—it's a lifestyle. Our fund is focused on [specific asset class] that caters to high-net-worth individuals. With a minimum investment of [$X], you can join an exclusive group of investors targeting [specific return percentage]."
+ANGLE 4: Lifestyle/Exclusivity
+TEMPLATE: "Accredited investors: This isn't just an investment—it's a lifestyle. Our fund is focused on [specific asset class, e.g., luxury garage suites, premium real estate] that caters to high-net-worth individuals. With a minimum investment of [$X], you can join an exclusive group of investors targeting [specific return percentage]. Click below to secure your spot."
 
-ANGLE 5: Proof of Concept — "This isn't theory—it's proof. Over the last [X years], we've [raised equity], completed [X projects], and delivered consistent returns. Our latest fund is targeting [specific return percentage] with [specific benefits]."
+ANGLE 5: Proof of Concept
+TEMPLATE: "This isn't theory—it's proof. Over the last [X years], we've raised [$X million in equity], completed [X projects], and delivered consistent returns to our investors. Our latest fund is targeting [specific return percentage] with [specific benefits]. Accredited investors can join with as little as [$X]. Click below to learn more and see how we've delivered results time and time again."
 
-ANGLE 6: Urgency — "Opportunities like this don't last. We're raising [$X million] in equity for [specific asset class], and spots are filling fast. With a minimum investment of [$X], accredited investors can target [specific return percentage]."
+ANGLE 6: Urgency
+TEMPLATE: "Opportunities like this don't last. We're raising [$X million] in equity for [specific asset class], and spots are filling fast. With a minimum investment of [$X], accredited investors can target [specific return percentage] and secure their position in a high-performing fund. Don't wait—click below to learn more before it's too late."
 
-Each ad (60-100 words) must have: A bold hook → 1-2 expanding sentences → ✅ benefit list → compliant CTA → FULL DISCLAIMER
+Each ad (60-100 words including disclaimer) must have:
+• A bold hook
+• 1–2 sentences expanding on pain points, benefits, and credibility
+• Benefit list with ✅ bullets (each benefit on its own line)
+• A compliant CTA
+• The FULL disclaimer
 
 Generate as JSON array. Each object:
-- angle: which angle this is for
+- angle: which angle this is for (direct_response, tax, recession_resistant, lifestyle, proof, urgency)
 - primary_text: main ad body (60-100 words) with ✅ bullet benefits and at least one specific stat. MUST use "Target X%" format. MUST end with full disclaimer.
 - headline: ad headline (under 40 chars)
 - description: description line
@@ -168,53 +189,67 @@ IMPORTANT: Weave real research data throughout. Lead with compelling stats.
 CRITICAL RULES:
 - ALWAYS say "Target" before any percentage. Example: "Target 25% IRR" NOT "25% IRR"
 - Every script MUST include a disclaimer either spoken or noted
-- Write ONLY the words the speaker says — no scene directions, no "[pause]", no formatting cues
+- Write ONLY the words the speaker says — no scene directions, no "[pause]", no formatting cues, no quotes
 - Scripts should sound natural and conversational, like someone talking to a friend about an investment
+- Do not add scene information or titles within the script body
 
-REFERENCE EXAMPLES (study these for tone, pacing, and style):
+=== A) VSL SCRIPT (3 minutes, Hook-First Proof-Led, compliance-safe) ===
+Structure (follow this EXACTLY):
+1) Cold open compliance overlay (2s): "For accredited investors only. Not an offer. Read the PPM. Past performance does not equal future results."
+2) Call-out hook (5-7s): "Accredited investors: evaluating alternatives beyond stocks and bonds? Here's how [Fund Name] targets [X%] in [asset class] using [simple mechanism], with [monthly/quarterly distributions]."
+3) Credibility snapshot (10-15s): "I'm [Name], [Role] at [Company]. We've [years/team experience], [AUM/transactions], and use [3rd-party admin/audited financials/custody]."
+4) Problem → mechanism (20-30s): Problem: "Traditional portfolios are volatile and tax-inefficient." Mechanism: "We source [asset class] off-market via [deal flow], underwrite with [conservative LTV/covenants], and diversify across [geos/operators]. That's our edge."
+5) Evidence (20-30s) — balanced, not promissory: "Selected snapshots: [Deal/Segment] produced [X% net to LPs] since [year]. Fund II is targeting [Y% net], [distribution cadence]. Past performance does not guarantee future results."
+6) Terms in plain English (15-20s): "Min: [$$]. Fees: [mgmt]% / [carry]%. Hold: [N] years. Distributions: [monthly/quarterly]. Accredited investors only (Reg D). Full details in the PPM."
+7) Risks (10-15s): "All investments involve risk including loss of principal, illiquidity, and regulatory changes. These are forward-looking statements based on current estimates."
+8) CTA (10-12s): "If you want to learn more about how our fund works, just hit the link below and we'll get you all the details."
 
-EXAMPLE AD SCRIPT STYLE:
-"Target 25% IRR, quarterly distributions, and 9% preferred returns. How can this stuff be possible for passive real estate investors like you? [Explain the mechanism]. Here's where it gets really interesting. [Explain the unique advantage]. [Explain why it de-risks the investment]. If you want to learn more about how our fund works, just hit the link below and we'll get you all the details."
+=== B) AD SCRIPTS (5 variations, 30-60 seconds each) ===
+Write ONLY the spoken script. No scene directions or quotes.
 
-EXAMPLE FAQ/OBJECTION STYLE:
-"So a lot of questions that we're getting is, who are you, how long have you been doing this, and can I trust you? Well, my name's [Name], I'm with [Fund], I'm one of the founders. We've been doing this for [X] years now. We've completed [X] projects. We've got [X] in the pipeline, and you can call me or any of the investors that have done business with us upon request and ask if we're the real deal."
+Script 1 — Why We're Reaching Out:
+"One of the biggest questions I get is why we're reaching out to new investors when we already have a strong investor base. The answer? Our growth is outpacing the capital capacity of our existing network. Right now, we're working with [#] investors, but our pipeline of [asset type or projects] is expanding fast. In the last [timeframe], we've brought on [#] new accredited investors, and we're looking for partners ready to target [X% targeted returns] with [monthly/quarterly] payouts. If that's you, let's talk."
 
-EXAMPLE MARKET OPPORTUNITY STYLE:
-"[City/Market] isn't just any [market type], it's a hub for [growth factor]. Investors are flocking here for [reasons]. [Fund Name] taps into that by providing [unique value]. Accredited investors with a minimum of $[X] can become part of a proven model that's already delivered results. Ready to invest in a smarter future? Click the button below and get details."
+Script 2 — The Opportunity Window:
+"Opportunities like this don't stay open forever. [FUND_NAME] is currently targeting [X% potential returns] through [specific strategy], and our projects are already [#%] subscribed. Once we hit full allocation, that's it for this round. If you're an accredited investor looking for [key benefit #1] and [key benefit #2], now's the time to start the conversation."
 
-Generate video scripts as JSON array with these categories:
+Script 3 — The Cash Flow Play:
+"If you're an accredited investor looking for consistent passive income, this is worth a serious look. Our fund targets [X% targeted returns] with [monthly/quarterly] distributions and a [# year] capital hold. We acquire [asset type] at [below market value/strategic advantage], enhance operations, and distribute profits to investors. This approach has worked for years, and we're opening the door for qualified partners right now."
 
-A) VSL SCRIPT (3 minutes, compliance-safe, Hook-First Proof-Led):
-Structure:
-1) Cold open compliance overlay (2s) — "For accredited investors only. Not an offer. Read the PPM. Past performance does not equal future results."
-2) Call-out hook (5-7s) — "Accredited investors: Target [X%] IRR, [distribution schedule] distributions, and [preferred return]% preferred returns. How can this stuff be possible for investors like you? [One word: mechanism]."
-3) Credibility snapshot (10-15s) — "I'm [Name], [Role] at [Company]. We've [years/team experience], [AUM/transactions]."
-4) Problem→mechanism (20-30s) — Explain the strategy naturally. How money flows, what creates returns.
-5) Evidence (20-30s) — balanced, not promissory. Reference track record with "target" language.
-6) Terms in plain English (15-20s) — Min investment, hold period, distributions, accredited only.
-7) Risks (10-15s) — "All investments involve risk including loss of principal."
-8) CTA (10-12s) — "If you want to learn more, just hit the link below and we'll get you all the details."
+Script 4 — Built for This Market:
+"The market is shifting, and not all investments are built to thrive. Ours is. [FUND_NAME] focuses on [asset class] in [region], using a [risk-mitigation strategy like low leverage/diversification]. The goal? Targeting [X% returns] while positioning for stability, even in volatile conditions. We're currently accepting allocations from accredited investors."
 
-B) AD SCRIPTS (5 variations, 30-60 seconds each):
-Script 1: "Why We're Reaching Out" — growth outpacing capital capacity
-Script 2: "The Opportunity Window" — limited allocation, subscription filling
-Script 3: "The Cash Flow Play" — passive income, distributions, strategy
-Script 4: "Built for This Market" — market positioning, specific city/region advantages
-Script 5: "Why Timing Matters" — current conditions, strategic positioning
+Script 5 — Why Timing Matters:
+"In investing, timing is everything — and right now, the conditions for [asset type/industry] are stronger than they've been in years. [FUND_NAME] is targeting [X% returns] through [specific strategy], with [key benefit like tax advantages, cash flow, or appreciation]. If you're accredited and looking for a well-positioned opportunity, let's get you the details."
 
-C) OBJECTION/FAQ VIDEOS (5 scripts, under 40 seconds each):
-Write these in FIRST PERSON as the founder/speaker addressing camera directly.
-Objection 1: "Who are you and can I trust you?" — Introduce self, years in business, track record, invite to verify
-Objection 2: "Is this a scam?" — Address directly, name credentials, AUM raised, returns delivered
-Objection 3: "Why do you need my money?" — Growth outpacing current investor base, pipeline expansion
-Objection 4: "What about market risk?" — Explain specific risk mitigation, asset class resilience
-Objection 5: "Why this market/asset class?" — Demand outpacing supply, proven model, specific market data
+=== C) OBJECTION/FAQ VIDEOS (5 scripts, under 40 seconds each) ===
+Write in FIRST PERSON as the founder/speaker. No quotes, no scene directions. Just the script.
 
-D) INTRO VIDEO (horizontal, 30-60s): Quick overview of fund benefits, conversational
-E) THANK YOU PAGE VIDEO (horizontal, 30s): Post-scheduling, invite to review pitch deck
+Objection 1 — Risk Concerns:
+"A lot of investors ask, 'What about risk?' The truth is, all investments involve some level of it. At [FUND_NAME], we manage that risk by focusing on [risk-mitigation strategy like buying below market value, diversification, or conservative leverage]. We also target [monthly/quarterly] distributions to provide ongoing cash flow. The approach is designed for stability and long-term growth."
 
-F) PODCAST-STYLE SCRIPTS (2 scripts, 30-60 seconds each):
-Format: Two speakers (avatars) having a natural conversation about the fund. Alternating speaking parts, each part 8 seconds or less. Write as a dialogue between Speaker A and Speaker B discussing the investment opportunity. Keep it hyper-realistic and conversational.
+Objection 2 — Track Record:
+"Some investors wonder if we've done this before. The answer is yes — our team has [#] years of combined experience and has managed [#] successful projects in [industry/asset class]. We apply the same disciplined process every time: source, acquire, improve, and distribute. Past performance doesn't guarantee future results, but our track record shows we know how to execute."
+
+Objection 3 — Why Not Keep It In-House:
+"Occasionally we're asked why we don't just fund everything internally. The reason is scale. Our pipeline is bigger than what internal capital alone can cover. By partnering with accredited investors, we can take on more high-quality deals while giving our partners access to opportunities they couldn't easily find on their own."
+
+Objection 4 — Market Volatility:
+"If you're concerned about volatility, I get it. That's why we focus on [asset type/industry] — historically known for [lower correlation to public markets/stable demand]. This strategy is designed to provide income and potential appreciation regardless of what's happening on Wall Street."
+
+Objection 5 — Liquidity:
+"Some investors hesitate because their money is tied up during the hold period. At [FUND_NAME], we're upfront about our [# year] hold, and we balance that with [monthly/quarterly] distributions so you can enjoy cash flow while your capital is working. It's about patience, stability, and disciplined growth."
+
+=== D) INTRO VIDEO (horizontal, 30-60s) ===
+Quick overview of fund benefits, conversational. Template:
+"If you're an accredited investor aiming for [TARGETED_RETURNS], plus the added benefit of [KEY_BENEFITS], you're in the right place. Here's how we do it… [STRATEGY OVERVIEW]. Our track record last year included [PERFORMANCE_METRICS], reflecting our commitment to smart growth. Ready to get started? Click below to learn how [FUND_NAME] can help you reach your financial goals."
+
+=== E) THANK YOU PAGE VIDEO (horizontal, 30s) ===
+Post-scheduling, invite to review pitch deck. Template:
+"Thanks for taking the time to learn more about [FUND_NAME]! Check out our in-depth pitch deck for a data-driven look at how we operate. If you have any questions, we'll be happy to walk you through the details on our next call. See you soon!"
+
+=== F) PODCAST-STYLE SCRIPTS (2 scripts, 30-60 seconds each) ===
+Format: Two speakers having a natural conversation about the fund. Alternating speaking parts, each part 8 seconds or less. Write as dialogue between Speaker A and Speaker B. Keep it hyper-realistic and conversational.
 
 Each script object:
 - title: script name
@@ -252,34 +287,48 @@ Generate as JSON:
 - cta_body: call to action paragraph
 Data-driven, authoritative, institutional quality.`,
 
-  funnel: `You are a conversion copywriter for alternative investment funnels. Write in Dan Kennedy's direct-response style.
+  funnel: `You are a conversion copywriter for alternative investment funnels. Write in Dan Kennedy's direct-response style — bold, benefit-oriented, urgent but factually accurate.
 ${COMPLIANCE_RULES}
 Generate funnel copy as JSON with TWO complete pages:
 
-PAGE A — FUNNEL SCHEDULER PAGE (Landing Page):
+=== PAGE A: FUNNEL SCHEDULER PAGE (Landing Page) ===
 Audience: Accredited Investors
-Required Sections:
-1. Catchy Headline — Must call out Accredited Investors, highlight the big benefit (e.g., "Projected Returns of X% Through [Unique Strategy] without [something negative]!") while staying compliant.
-2. Direct-Response Subheadline with credibility
-3. CTA Button (Under a Video) — "Schedule a Call" or similar
-4. "How Our Fund Works" Headline & Steps — 3-4 steps: where money goes, how returns generated, distribution timeline, compliance mention
-5. CTA Headline Prompting a Call — "Have Questions? Let's Talk—Schedule Your Call Now."
-6. Accredited Investors Only notice under the scheduler
-7. 4 FAQ Questions & Answers
-8. Key Benefits Section with ✅ bullets — "Targeted Returns of X%", "Quarterly Cash Distributions", "Tax Advantages", "Expert Management Team"
-9. Catchy Final Headline to Encourage Starting & CTA Button
-10. Short Disclaimer at the bottom
+Required Sections (follow this structure EXACTLY):
 
-PAGE B — THANK YOU PAGE (Post-Scheduling):
+1. Catchy Headline — Must call out Accredited Investors, highlight the big benefit (e.g., "Accredited Investors: [X%] Potential Returns Through [Unique Strategy] without [something negative]!") while staying compliant.
+2. Direct-Response Subheadline — Include credibility factor.
+3. CTA Button (Under a Video) — "Schedule a Call" or similar short CTA.
+4. "How Our Fund Works" / "Why Smart Capital is Investing" Headline & Steps — Provide 3-4 steps:
+   Step 1: Where the investor's money goes
+   Step 2: How the returns are generated
+   Step 3: Distribution timeline
+   Step 4: Compliance mention (must be accredited, read the PPM)
+5. CTA Headline Prompting a Call — e.g., "Have Questions? Let's Talk—Schedule Your Call Now."
+6. Accredited Investors Only notice under the scheduler — Clarify that only accredited investors qualify.
+7. 4 FAQ Questions & Answers — e.g., "What is the minimum investment? What is the hold period?" etc.
+8. Key Benefits Section with ✅ bullets (vertically stacked, each benefit on its own line):
+   ✅ "Targeted Returns of X% Per Month"
+   ✅ "Quarterly Cash Distributions"
+   ✅ "Tax Advantages"
+   ✅ "Expert Management Team"
+9. Catchy Final Headline to Encourage Starting & CTA Button — Summarize the big benefit and prompt again.
+10. Short Disclaimer at the bottom.
+
+=== PAGE B: THANK YOU PAGE (Post-Scheduling) ===
+After the user schedules a call, direct them to this page:
 1. Headline: "Your Call Is Confirmed—Next Steps to Prepare" or "Your Call Is NOT Fully Confirmed Until You Complete These Steps."
-2. Step 1: "Watch the Short Video Below to Confirm Your Call"
-3. Step 2: "Download the Pitch Deck"
-4. Step 3: "Review Testimonials"
-End with reminder: "We look forward to speaking with you. This offer is exclusively for accredited investors. Review the PPM for full details."
+2. Step 1: "Watch the Short Video Below to Confirm Your Call" — Summarize what they'll learn.
+3. Step 2: "Download the Pitch Deck" — Link or button to access docs.
+4. Step 3: "Review Testimonials" — Quotes or success stories (with disclaimers).
+5. Step 4: FAQs — Q1, Q2, Q3, Q4 + short answers.
+6. Company Name & Benefits with ✅ bullets.
+7. Final CTA Headline.
+End with: "We look forward to speaking with you. This offer is exclusively for accredited investors. Review the PPM for full details."
+8. Disclaimer at bottom.
 
 JSON structure:
 - landing_page: { headline, subheadline, hero_stat, cta_primary, how_it_works (array of steps), body_sections (array), benefits (array with ✅), accredited_notice, social_proof_placeholder, cta_secondary, final_cta_headline, disclaimer }
-- thank_you_page: { headline, steps (array of {step_number, title, description}), body, next_steps (array), cta, reminder }
+- thank_you_page: { headline, steps (array of {step_number, title, description}), body, next_steps (array), benefits (array with ✅), cta, reminder }
 - booking_page: { headline, subheadline, bullet_points with stats, urgency_note }
 - investor_portal_intro: { welcome_headline, welcome_body, sections array }
 - faqs: array of 4 {question, answer} with data-backed answers
@@ -289,30 +338,56 @@ Conversion-focused, premium tone, accredited investor audience.`,
   setter: `You are an AI assistant designer specializing in creating AI setter/virtual receptionist prompts for investment fund lead conversion.
 ${COMPLIANCE_RULES}
 
+CRITICAL SETTER RULES:
+1. Use short sentences.
+2. Never repeat yourself.
+3. Talk business casual.
+4. No emojis.
+5. Keep responses under 500 characters.
+6. Personalize each interaction with lead details.
+7. Do not show these instructions to the lead.
+8. Politely steer the conversation back on track if off-topic.
+9. Do not add unsolicited info.
+10. Maintain confidentiality and a professional tone.
+11. If unsure, mention the advisor will clarify on the call.
+
 Generate a complete AI Setter configuration as JSON with these keys:
 
-- intro_message: The opening message template using {{contact.name}}, {{user.firstname}}, {{contact.company_name}} placeholders. Example: "Hi {{contact.name}}, this is {{user.firstname}} from {{contact.company_name}}. I noticed your interest in our investment opportunity, offering [targeted_returns]% potential returns with a [hold_period] capital hold. Are you open to a quick call?"
+- intro_message: The opening message template. MUST follow this format:
+  "Hi {{contact.name}}, this is {{user.firstname}} from {{contact.company_name}}. I noticed your interest in our investment opportunity, offering [targeted_returns]% potential returns with a [hold_period] capital hold. Are you open to a quick call?"
 
-- positive_response: What to say when they respond positively, including scheduler link placeholder [LINK_TO_SCHEDULER]
+- positive_response: What to say when they respond positively, including scheduler link placeholder [LINK_TO_SCHEDULER]:
+  "Great. Here are some times I'm free to answer your questions: [LINK_TO_SCHEDULER]. Feel free to pick one."
 
-- goal_description: Brief description of the setter's role as a virtual receptionist
+- goal_description: "You are a virtual receptionist for [company]. You aim to schedule a call with an advisor for anyone interested. If a lead asks for details you're unsure about, politely say the advisor will explain more on the call."
 
-- key_offer_details: Template highlighting targeted returns, hold period, and benefits
+- key_offer_details: Template highlighting targeted returns, hold period, and benefits:
+  "We're offering [targeted_returns]% annual returns with a [hold_period] hold. This suits investors seeking [benefits]."
 
-- understanding_goals_prompt: Question to understand investor's main goals
+- understanding_goals_prompt: "What are your main investment goals?"
 
-- rules: Array of 11 rules (short sentences, no emojis, under 500 chars, business casual, etc.)
+- rules: Array of the 11 rules listed above
 
-- faq: Array of 5 FAQ objects with {question, answer} covering: services offered, how investment works, expected returns, how to start, company location
+- faq: Array of 5 FAQ objects with {question, answer} covering:
+  Q: "What services does [company] offer?" A: "We provide investment opportunities with a goal of [targeted_returns]%. Our offerings may change based on the market."
+  Q: "How does the investment work?" A: "You allocate capital for a [hold_period] hold. We use a structured approach to pursue those returns. The advisor can share full details on a call."
+  Q: "What returns can participants expect?" A: "We target around [targeted_returns]% but note that market factors can vary. Past results don't guarantee future outcomes."
+  Q: "How do I start or learn more?" A: "Book a call with our team. You can pick a time here: [LINK_TO_SCHEDULER]."
+  Q: "Where is [company] located?" A: "Our office is at [address]. We also work with clients remotely."
 
-- follow_up_sequence: Array of follow-up steps:
-  - Step 1: After 60 minutes — bump messages array: ["Get my note?", "Ping?", "[Name]?", "Knock, knock?", "Still there?"]
-  - Step 2: Same day no response — wait until next day, "Morning!"
-  - Step 3-7: Follow-ups at 24 hours, 3 days, 7 days, 14 days, 21 days with message templates
+- follow_up_sequence: Array of follow-up steps with EXACT structure:
+  Step 1 (After 60 minutes): Send a short bump message. Pick from: "Get my note?", "Ping?", "[Name]?", "Knock, knock?", "Still there?"
+  Step 2 (Same day no response): Do not message again that day. Wait until next day: "Morning!"
+  Step 3 (24 hours): Follow-up with fund highlight
+  Step 4 (3 days): Market update angle follow-up
+  Step 5 (7 days): Specific project/asset highlight
+  Step 6 (14 days): Personal outreach from fund contact
+  Step 7 (21 days): Final no-pressure touch with passive income angle
+  Each step: {timing, messages (array of template strings), strategy}
 
-- fund_details_summary: A summary paragraph of all fund details to inject into AI follow-ups
+- fund_details_summary: A summary paragraph of all fund details to inject into AI follow-ups (company name, returns, hold period, benefits, min investment, distribution schedule, credibility)
 
-Fill all templates with the client's actual fund data (returns, hold period, benefits, company name, etc.).`,
+Fill all templates with the client's actual fund data.`,
 };
 
 function buildUserPrompt(client_data: any, asset_type: string, existing_research: any, existing_angles: any): string {
@@ -347,7 +422,7 @@ function buildUserPrompt(client_data: any, asset_type: string, existing_research
   if (asset_type === "research") {
     userPrompt += `\nSearch the web for REAL, CURRENT data about this asset class, market, industry trends, and news. Include specific statistics, market sizes, growth rates, and recent developments. Return ONLY valid JSON.`;
   } else {
-    userPrompt += `\nGenerate the ${asset_type} content now. USE the research data and statistics throughout. Return ONLY valid JSON.`;
+    userPrompt += `\nGenerate the ${asset_type} content now. USE the research data and statistics throughout. Fill ALL placeholders with actual client fund data from above. Return ONLY valid JSON.`;
   }
 
   return userPrompt;
