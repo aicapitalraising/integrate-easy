@@ -1,0 +1,1 @@
+ALTER TABLE public.clients ADD COLUMN current_step integer NOT NULL DEFAULT 0;

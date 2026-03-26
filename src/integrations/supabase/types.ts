@@ -138,6 +138,7 @@ export type Database = {
           contact_phone: string | null
           created_at: string
           credibility: string | null
+          current_step: number
           distribution_schedule: string | null
           ein_number: string | null
           fund_history: string | null
@@ -178,6 +179,7 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           credibility?: string | null
+          current_step?: number
           distribution_schedule?: string | null
           ein_number?: string | null
           fund_history?: string | null
@@ -218,6 +220,7 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           credibility?: string | null
+          current_step?: number
           distribution_schedule?: string | null
           ein_number?: string | null
           fund_history?: string | null
