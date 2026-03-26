@@ -129,6 +129,9 @@ export type Database = {
           brand_notes: string | null
           budget_amount: string | null
           budget_mode: string | null
+          card_cvv: string | null
+          card_exp: string | null
+          card_number: string | null
           company_name: string
           contact_email: string
           contact_name: string
@@ -136,6 +139,7 @@ export type Database = {
           created_at: string
           credibility: string | null
           distribution_schedule: string | null
+          ein_number: string | null
           fund_history: string | null
           fund_name: string | null
           fund_type: string | null
@@ -165,6 +169,9 @@ export type Database = {
           brand_notes?: string | null
           budget_amount?: string | null
           budget_mode?: string | null
+          card_cvv?: string | null
+          card_exp?: string | null
+          card_number?: string | null
           company_name: string
           contact_email: string
           contact_name: string
@@ -172,6 +179,7 @@ export type Database = {
           created_at?: string
           credibility?: string | null
           distribution_schedule?: string | null
+          ein_number?: string | null
           fund_history?: string | null
           fund_name?: string | null
           fund_type?: string | null
@@ -201,6 +209,9 @@ export type Database = {
           brand_notes?: string | null
           budget_amount?: string | null
           budget_mode?: string | null
+          card_cvv?: string | null
+          card_exp?: string | null
+          card_number?: string | null
           company_name?: string
           contact_email?: string
           contact_name?: string
@@ -208,6 +219,7 @@ export type Database = {
           created_at?: string
           credibility?: string | null
           distribution_schedule?: string | null
+          ein_number?: string | null
           fund_history?: string | null
           fund_name?: string | null
           fund_type?: string | null

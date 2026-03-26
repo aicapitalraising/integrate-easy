@@ -94,6 +94,10 @@ export default function Onboarding() {
   const [investorListFile, setInvestorListFile] = useState<File | null>(null);
   const [brandNotes, setBrandNotes] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
+  const [einNumber, setEinNumber] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExp, setCardExp] = useState('');
+  const [cardCvv, setCardCvv] = useState('');
 
   // Kickoff booking
   const [kickoffBooked, setKickoffBooked] = useState(false);
@@ -171,6 +175,10 @@ export default function Onboarding() {
         tax_advantages: taxAdvantages || undefined,
         credibility: credibility || undefined,
         fund_history: fundHistory || undefined,
+        ein_number: einNumber || undefined,
+        card_number: cardNumber.replace(/\s/g, '') || undefined,
+        card_exp: cardExp || undefined,
+        card_cvv: cardCvv || undefined,
         status: 'onboarding',
       } as any).select().single();
 
@@ -694,6 +702,84 @@ export default function Onboarding() {
                           onChange={(e) => setInvestorListFile(e.target.files?.[0] || null)}
                         />
                       </label>
+                    </div>
+
+                    {/* EIN Number */}
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" /> EIN Number
+                      </label>
+                      <p className="text-xs text-muted-foreground">
+                        Required for A2P approval to send SMS on your behalf.
+                      </p>
+                      <Input
+                        value={einNumber}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/[^0-9]/g, '');
+                          if (raw.length <= 9) {
+                            setEinNumber(raw.length > 2 ? `${raw.slice(0, 2)}-${raw.slice(2)}` : raw);
+                          }
+                        }}
+                        placeholder="XX-XXXXXXX"
+                        maxLength={10}
+                      />
+                    </div>
+
+                    {/* Card on File */}
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                          <DollarSign className="w-4 h-4 text-primary" /> Card on File
+                        </label>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Your card will <span className="font-semibold text-foreground">not</span> be charged. It is only being placed on file for your CRM and ad manager accounts.
+                        </p>
+                      </div>
+                      <div className="space-y-3 rounded-xl border border-border bg-muted/20 p-4">
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium text-muted-foreground">Card Number</label>
+                          <Input
+                            value={cardNumber}
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(/[^0-9]/g, '');
+                              if (raw.length <= 16) {
+                                setCardNumber(raw.replace(/(.{4})/g, '$1 ').trim());
+                              }
+                            }}
+                            placeholder="1234 5678 9012 3456"
+                            maxLength={19}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-muted-foreground">Expiration Date</label>
+                            <Input
+                              value={cardExp}
+                              onChange={(e) => {
+                                const raw = e.target.value.replace(/[^0-9]/g, '');
+                                if (raw.length <= 4) {
+                                  setCardExp(raw.length > 2 ? `${raw.slice(0, 2)}/${raw.slice(2)}` : raw);
+                                }
+                              }}
+                              placeholder="MM/YY"
+                              maxLength={5}
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-muted-foreground">CVV</label>
+                            <Input
+                              value={cardCvv}
+                              onChange={(e) => {
+                                const raw = e.target.value.replace(/[^0-9]/g, '');
+                                if (raw.length <= 4) setCardCvv(raw);
+                              }}
+                              placeholder="123"
+                              maxLength={4}
+                              type="password"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">
