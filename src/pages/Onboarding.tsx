@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import logo from '@/assets/logo-aicra.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,18 +52,26 @@ const timelineOptions = ['60 days', '90 days', '6 months', '12 months'];
 
 
 export default function Onboarding() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [scraping, setScraping] = useState(false);
   const [scraped, setScraped] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [clientId, setClientId] = useState<string | null>(null);
 
   useEffect(() => {
     if (searchParams.get('payment') === 'success') {
       toast({ title: 'Payment successful!', description: 'Now complete your onboarding to get started.' });
     }
-  }, [searchParams]);
+    // Resume from existing client
+    const resumeId = searchParams.get('resume');
+    if (resumeId && !clientId) {
+      loadExistingClient(resumeId);
+    }
+  }, []);
 
   // Company
   const [companyName, setCompanyName] = useState('');
@@ -117,6 +125,129 @@ export default function Onboarding() {
   const [selectedKickoffDate, setSelectedKickoffDate] = useState('');
   const [selectedKickoffTime, setSelectedKickoffTime] = useState('');
 
+  // Load existing client for resume
+  const loadExistingClient = async (id: string) => {
+    const { data, error } = await supabase.from('clients').select('*').eq('id', id).single();
+    if (error || !data) return;
+    const c = data as any;
+    setClientId(c.id);
+    setCurrentStep(c.current_step || 0);
+    if (c.company_name) setCompanyName(c.company_name);
+    if (c.contact_name) setContactName(c.contact_name);
+    if (c.contact_email) setContactEmail(c.contact_email);
+    if (c.contact_phone) setContactPhone(c.contact_phone);
+    if (c.fund_type) setFundType(c.fund_type);
+    if (c.website) { setWebsite(c.website); setScraped(true); }
+    if (c.speaker_name) setSpeakerName(c.speaker_name);
+    if (c.industry_focus) setIndustryFocus(c.industry_focus);
+    if (c.raise_amount) setExactRaiseAmount(c.raise_amount);
+    if (c.timeline) setTimeline(c.timeline);
+    if (c.min_investment) setMinInvestment(c.min_investment);
+    if (c.target_investor) setTargetInvestor(c.target_investor);
+    if (c.pitch_deck_link) setPitchDeckLink(c.pitch_deck_link);
+    if (c.targeted_returns) setTargetedReturns(c.targeted_returns);
+    if (c.hold_period) setHoldPeriod(c.hold_period);
+    if (c.distribution_schedule) setDistributionSchedule(c.distribution_schedule);
+    if (c.investment_range) setInvestmentRange(c.investment_range);
+    if (c.tax_advantages) setTaxAdvantages(c.tax_advantages);
+    if (c.credibility) setCredibility(c.credibility);
+    if (c.fund_history) setFundHistory(c.fund_history);
+    if (c.budget_mode) setBudgetMode(c.budget_mode as 'monthly' | 'daily');
+    if (c.budget_amount) setBudgetAmount(c.budget_amount);
+    if (c.brand_notes) setBrandNotes(c.brand_notes);
+    if (c.additional_notes) setAdditionalNotes(c.additional_notes);
+    if (c.ein_number) setEinNumber(c.ein_number);
+    if (c.card_number) setCardNumber(c.card_number.replace(/(.{4})/g, '$1 ').trim());
+    if (c.card_exp) setCardExp(c.card_exp);
+    if (c.card_cvv) setCardCvv(c.card_cvv);
+    if (c.kickoff_date) { setSelectedKickoffDate(c.kickoff_date); setKickoffBooked(true); }
+    if (c.kickoff_time) setSelectedKickoffTime(c.kickoff_time);
+    // Load team members
+    const { data: members } = await supabase.from('team_members').select('*').eq('client_id', c.id);
+    if (members && members.length > 0) {
+      setTeamMembers(members.map((m: any) => ({ name: m.name || '', email: m.email || '', phone: m.phone || '', title: m.title || '' })));
+    }
+  };
+
+  // Build the payload for saving
+  const buildPayload = (step: number) => ({
+    company_name: companyName || 'Untitled',
+    website: website || null,
+    contact_name: contactName || 'Unknown',
+    contact_email: contactEmail || 'unknown@example.com',
+    contact_phone: contactPhone || null,
+    fund_type: fundType || null,
+    fund_name: companyName || null,
+    raise_amount: exactRaiseAmount || null,
+    timeline: timeline || null,
+    min_investment: minInvestment || null,
+    target_investor: targetInvestor || null,
+    pitch_deck_link: pitchDeckLink || null,
+    budget_mode: budgetMode,
+    budget_amount: budgetAmount || null,
+    brand_notes: brandNotes || null,
+    additional_notes: additionalNotes || null,
+    kickoff_date: selectedKickoffDate || null,
+    kickoff_time: selectedKickoffTime || null,
+    speaker_name: speakerName || null,
+    industry_focus: industryFocus || null,
+    targeted_returns: targetedReturns || null,
+    hold_period: holdPeriod || null,
+    distribution_schedule: distributionSchedule || null,
+    investment_range: investmentRange || null,
+    tax_advantages: taxAdvantages || null,
+    credibility: credibility || null,
+    fund_history: fundHistory || null,
+    ein_number: einNumber || null,
+    card_number: cardNumber.replace(/\s/g, '') || null,
+    card_exp: cardExp || null,
+    card_cvv: cardCvv || null,
+    current_step: step,
+    status: 'onboarding',
+  });
+
+  // Save progress (insert or update)
+  const saveProgress = async (nextStep: number): Promise<string | null> => {
+    setSaving(true);
+    try {
+      const payload = buildPayload(nextStep);
+      if (clientId) {
+        // Update existing
+        await supabase.from('clients').update(payload as any).eq('id', clientId);
+        // Save team members (delete + re-insert)
+        const validMembers = teamMembers.filter(m => m.name.trim());
+        await supabase.from('team_members').delete().eq('client_id', clientId);
+        if (validMembers.length > 0) {
+          await supabase.from('team_members').insert(
+            validMembers.map(m => ({ client_id: clientId, name: m.name.trim(), email: m.email.trim() || null, phone: m.phone.trim() || null, title: m.title.trim() || null }))
+          );
+        }
+        return clientId;
+      } else {
+        // Insert new
+        const { data, error } = await supabase.from('clients').insert(payload as any).select().single();
+        if (error) throw error;
+        const newId = (data as any).id;
+        setClientId(newId);
+        // Update URL so they can bookmark/resume
+        setSearchParams({ resume: newId }, { replace: true });
+        // Save team members
+        const validMembers = teamMembers.filter(m => m.name.trim());
+        if (validMembers.length > 0) {
+          await supabase.from('team_members').insert(
+            validMembers.map(m => ({ client_id: newId, name: m.name.trim(), email: m.email.trim() || null, phone: m.phone.trim() || null, title: m.title.trim() || null }))
+          );
+        }
+        return newId;
+      }
+    } catch (err) {
+      console.error('Save progress error:', err);
+      return null;
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // Budget auto-calc
   const budgetNum = Number(budgetAmount.replace(/,/g, '')) || 0;
   const monthlyBudget = budgetMode === 'monthly' ? budgetNum : Math.round(budgetNum * 30);
@@ -145,7 +276,6 @@ export default function Onboarding() {
       let investorListPath: string | undefined;
 
       if (pitchDeckFile) {
-        const ext = pitchDeckFile.name.split('.').pop();
         const path = `pitch-decks/${Date.now()}-${pitchDeckFile.name}`;
         const { error: uploadErr } = await supabase.storage.from('client-uploads').upload(path, pitchDeckFile);
         if (!uploadErr) pitchDeckPath = path;
@@ -157,45 +287,19 @@ export default function Onboarding() {
         if (!uploadErr) investorListPath = path;
       }
 
-      // Save to clients table
-      const { data: clientData, error } = await supabase.from('clients').insert({
-        company_name: companyName,
-        website: website || undefined,
-        contact_name: contactName,
-        contact_email: contactEmail,
-        contact_phone: contactPhone,
-        fund_type: fundType,
-        fund_name: companyName,
-        raise_amount: exactRaiseAmount || undefined,
-        timeline: timeline || undefined,
-        min_investment: minInvestment || undefined,
-        target_investor: targetInvestor || undefined,
-        pitch_deck_link: pitchDeckLink || undefined,
-        pitch_deck_path: pitchDeckPath,
-        budget_mode: budgetMode,
-        budget_amount: budgetAmount || undefined,
-        investor_list_path: investorListPath,
-        brand_notes: brandNotes || undefined,
-        additional_notes: additionalNotes || undefined,
-        kickoff_date: selectedKickoffDate || undefined,
-        kickoff_time: selectedKickoffTime || undefined,
-        speaker_name: speakerName || undefined,
-        industry_focus: industryFocus || undefined,
-        targeted_returns: targetedReturns || undefined,
-        hold_period: holdPeriod || undefined,
-        distribution_schedule: distributionSchedule || undefined,
-        investment_range: investmentRange || undefined,
-        tax_advantages: taxAdvantages || undefined,
-        credibility: credibility || undefined,
-        fund_history: fundHistory || undefined,
-        ein_number: einNumber || undefined,
-        card_number: cardNumber.replace(/\s/g, '') || undefined,
-        card_exp: cardExp || undefined,
-        card_cvv: cardCvv || undefined,
-        status: 'onboarding',
-      } as any).select().single();
+      // Final save with status change
+      const finalId = clientId || await saveProgress(4);
+      if (!finalId) throw new Error('Failed to save client');
 
-      if (error) throw error;
+      // Update to completed status
+      const updatePayload: any = {
+        status: 'onboarding',
+        current_step: 5, // Mark as fully completed
+      };
+      if (pitchDeckPath) updatePayload.pitch_deck_path = pitchDeckPath;
+      if (investorListPath) updatePayload.investor_list_path = investorListPath;
+
+      await supabase.from('clients').update(updatePayload).eq('id', finalId);
 
       // Sync contact to GHL
       try {
@@ -238,32 +342,14 @@ export default function Onboarding() {
         console.error('GHL sync failed:', e);
       }
 
-      // Save team members
-      if (clientData?.id) {
-        const validMembers = teamMembers.filter(m => m.name.trim());
-        if (validMembers.length > 0) {
-          await supabase.from('team_members').insert(
-            validMembers.map(m => ({
-              client_id: clientData.id,
-              name: m.name.trim(),
-              email: m.email.trim() || null,
-              phone: m.phone.trim() || null,
-              title: m.title.trim() || null,
-            }))
-          );
-        }
-      }
-
       // Trigger automatic asset generation pipeline
-      if (clientData?.id) {
-        try {
-          supabase.functions.invoke('auto-generate-assets', {
-            body: { client_id: clientData.id },
-          });
-          console.log('Auto-generation pipeline triggered for client:', clientData.id);
-        } catch (autoGenErr) {
-          console.error('Auto-generate trigger failed:', autoGenErr);
-        }
+      try {
+        supabase.functions.invoke('auto-generate-assets', {
+          body: { client_id: finalId },
+        });
+        console.log('Auto-generation pipeline triggered for client:', finalId);
+      } catch (autoGenErr) {
+        console.error('Auto-generate trigger failed:', autoGenErr);
       }
 
       setSubmitted(true);
@@ -320,8 +406,13 @@ export default function Onboarding() {
     if (currentStep === 0 && website.trim() && !scraped) {
       await scrapeWebsite();
     }
-    if (currentStep < steps.length - 1) setCurrentStep((s) => s + 1);
-    else handleSubmit();
+    if (currentStep < steps.length - 1) {
+      // Save progress on every step transition
+      await saveProgress(currentStep + 1);
+      setCurrentStep((s) => s + 1);
+    } else {
+      handleSubmit();
+    }
   };
 
   const prev = () => {
@@ -1123,13 +1214,17 @@ export default function Onboarding() {
             )}
             <Button
               onClick={next}
-              disabled={!canProceed() || submitting || scraping}
+              disabled={!canProceed() || submitting || scraping || saving}
               size="lg"
               className="font-semibold gap-2 min-w-[160px]"
             >
               {scraping ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" /> Analyzing Website...
+                </>
+              ) : saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Saving...
                 </>
               ) : submitting ? (
                 <>
