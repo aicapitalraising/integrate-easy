@@ -14,7 +14,7 @@ import {
   Plus, RefreshCw, Trash2, Sparkles,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import AssetGeneratorTab from '@/components/fulfillment/AssetGeneratorTab';
+import AllCopyView from '@/components/fulfillment/AllCopyView';
 import {
   ResearchRenderer, AnglesRenderer, EmailsRenderer, SMSRenderer,
   AdCopyRenderer, ScriptsRenderer, CreativesRenderer, ReportRenderer, FunnelRenderer, SetterRenderer,
@@ -251,48 +251,12 @@ function ClientWorkspace({ client }: { client: Client }) {
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="flex-wrap h-auto gap-1 bg-muted/50 p-1">
           <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-          <TabsTrigger value="research" className="text-xs">Research</TabsTrigger>
-          <TabsTrigger value="angles" className="text-xs">Angles</TabsTrigger>
-          <TabsTrigger value="emails" className="text-xs">Emails</TabsTrigger>
-          <TabsTrigger value="sms" className="text-xs">SMS</TabsTrigger>
-          <TabsTrigger value="adcopy" className="text-xs">Ad Copy</TabsTrigger>
-          <TabsTrigger value="scripts" className="text-xs">Scripts</TabsTrigger>
-          <TabsTrigger value="creatives" className="text-xs">Creatives</TabsTrigger>
-          <TabsTrigger value="report" className="text-xs">Report</TabsTrigger>
-          <TabsTrigger value="funnel" className="text-xs">Funnel</TabsTrigger>
-          <TabsTrigger value="setter" className="text-xs">AI Setter</TabsTrigger>
+          <TabsTrigger value="copy" className="text-xs">All Copy & Assets</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview"><ClientOverview client={client} /></TabsContent>
-        <TabsContent value="research">
-          <AssetGeneratorTab client={client} assetType="research" icon={BarChart3} title="Research Engine" description="AI-powered market research, industry analysis, and opportunity identification." renderContent={(c, edit, onEdit) => <ResearchRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="angles">
-          <AssetGeneratorTab client={client} assetType="angles" icon={Target} title="Marketing Angles" description="Generate 6-10 marketing angles with hooks, emotional drivers, and use cases." renderContent={(c, edit, onEdit) => <AnglesRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="emails">
-          <AssetGeneratorTab client={client} assetType="emails" icon={Mail} title="Email Sequences" description="Generate nurture email sequences with subject lines, preview text, and CTAs." renderContent={(c, edit, onEdit) => <EmailsRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="sms">
-          <AssetGeneratorTab client={client} assetType="sms" icon={MessageSquare} title="SMS Sequences" description="Generate SMS follow-up, reminder, and re-engagement sequences." renderContent={(c, edit, onEdit) => <SMSRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="adcopy">
-          <AssetGeneratorTab client={client} assetType="adcopy" icon={Megaphone} title="Ad Copy" description="Generate ad copy variations per angle — primary text, headlines, and descriptions." renderContent={(c, edit, onEdit) => <AdCopyRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="scripts">
-          <AssetGeneratorTab client={client} assetType="scripts" icon={Video} title="Video Scripts" description="Generate avatar, B-roll, UGC, and VSL scripts with hooks and CTAs." renderContent={(c, edit, onEdit) => <ScriptsRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="creatives">
-          <AssetGeneratorTab client={client} assetType="creatives" icon={Image} title="Creative Concepts" description="Static and video ad concepts with visual direction and layout ideas." renderContent={(c, edit, onEdit) => <CreativesRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="report">
-          <AssetGeneratorTab client={client} assetType="report" icon={FileText} title="Special Report" description="Generate a lead magnet report — cover page, executive summary, market opportunity." renderContent={(c, edit, onEdit) => <ReportRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="funnel">
-          <AssetGeneratorTab client={client} assetType="funnel" icon={Globe} title="Funnel Copy" description="Landing page, thank you page, booking page, and investor portal copy." renderContent={(c, edit, onEdit) => <FunnelRenderer content={c} editMode={edit} onEdit={onEdit} />} />
-        </TabsContent>
-        <TabsContent value="setter">
-          <AssetGeneratorTab client={client} assetType="setter" icon={Bot} title="AI Setter" description="Generate AI virtual receptionist prompt, FAQ, and follow-up sequences." renderContent={(c, edit, onEdit) => <SetterRenderer content={c} editMode={edit} onEdit={onEdit} />} />
+        <TabsContent value="copy">
+          <AllCopyView clientId={client.id} />
         </TabsContent>
       </Tabs>
     </div>
