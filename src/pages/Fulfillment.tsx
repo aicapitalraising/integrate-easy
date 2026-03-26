@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   Lock, Phone, Building2, Target, DollarSign, Globe, Calendar, Users,
   FileText, Palette, ExternalLink, Copy, CheckCircle2, Clock, Loader2,
-  ClipboardList, Sparkles, Trash2,
+  ClipboardList, Sparkles, Trash2, Plus,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AllCopyView from '@/components/fulfillment/AllCopyView';
