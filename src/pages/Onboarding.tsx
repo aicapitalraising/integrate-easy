@@ -238,6 +238,22 @@ export default function Onboarding() {
         console.error('GHL sync failed:', e);
       }
 
+      // Save team members
+      if (clientData?.id) {
+        const validMembers = teamMembers.filter(m => m.name.trim());
+        if (validMembers.length > 0) {
+          await supabase.from('team_members').insert(
+            validMembers.map(m => ({
+              client_id: clientData.id,
+              name: m.name.trim(),
+              email: m.email.trim() || null,
+              phone: m.phone.trim() || null,
+              title: m.title.trim() || null,
+            }))
+          );
+        }
+      }
+
       // Trigger automatic asset generation pipeline
       if (clientData?.id) {
         try {
