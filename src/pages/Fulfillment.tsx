@@ -416,40 +416,54 @@ export default function Fulfillment() {
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {clients.map((client) => (
-                  <Card
-                    key={client.id}
-                    className="border-border hover:border-primary/30 transition-all cursor-pointer"
-                    onClick={() => setSelectedClient(client)}
-                  >
-                    <CardContent className="p-5">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <Building2 className="w-5 h-5 text-primary" />
+                {clients.map((client) => {
+                  const isPartial = client.current_step < 5;
+                  const displayStatus = isPartial ? 'partial' : client.status;
+                  return (
+                    <Card
+                      key={client.id}
+                      className={`border-border hover:border-primary/30 transition-all cursor-pointer ${isPartial ? 'border-dashed' : ''}`}
+                      onClick={() => setSelectedClient(client)}
+                    >
+                      <CardContent className="p-5">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                              <Building2 className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="font-semibold text-foreground text-sm">{client.company_name}</p>
+                              <p className="text-xs text-muted-foreground">{client.fund_type || 'Fund'}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-semibold text-foreground text-sm">{client.company_name}</p>
-                            <p className="text-xs text-muted-foreground">{client.fund_type || 'Fund'}</p>
-                          </div>
+                          <Badge className={`text-[9px] ${statusColors[displayStatus] || statusColors.onboarding}`}>
+                            {isPartial ? `Step ${client.current_step + 1}/5 · ${stepLabels[client.current_step]}` : displayStatus.replace('_', ' ')}
+                          </Badge>
                         </div>
-                        <Badge className={`text-[9px] ${statusColors[client.status] || statusColors.onboarding}`}>
-                          {client.status.replace('_', ' ')}
-                        </Badge>
-                      </div>
-                      <div className="space-y-1 text-xs text-muted-foreground">
-                        <p>{client.contact_name} · {client.contact_email}</p>
-                        {client.raise_amount && <p className="text-foreground font-medium">Raise: ${client.raise_amount}</p>}
-                        <p>Added {new Date(client.created_at).toLocaleDateString()}</p>
-                      </div>
-                      <div className="flex justify-end pt-1">
-                        <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={(e) => deleteClient(e, client.id)}>
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                        <div className="space-y-1 text-xs text-muted-foreground">
+                          <p>{client.contact_name} · {client.contact_email}</p>
+                          {client.raise_amount && <p className="text-foreground font-medium">Raise: ${client.raise_amount}</p>}
+                          <p>Added {new Date(client.created_at).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex items-center justify-between pt-2">
+                          {isPartial && (
+                            <a
+                              href={`/onboarding?resume=${client.id}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-xs text-primary hover:underline font-medium"
+                            >
+                              Resume onboarding →
+                            </a>
+                          )}
+                          <div className="flex-1" />
+                          <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={(e) => deleteClient(e, client.id)}>
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </div>
