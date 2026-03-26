@@ -276,7 +276,6 @@ export default function Onboarding() {
       let investorListPath: string | undefined;
 
       if (pitchDeckFile) {
-        const ext = pitchDeckFile.name.split('.').pop();
         const path = `pitch-decks/${Date.now()}-${pitchDeckFile.name}`;
         const { error: uploadErr } = await supabase.storage.from('client-uploads').upload(path, pitchDeckFile);
         if (!uploadErr) pitchDeckPath = path;
@@ -288,45 +287,19 @@ export default function Onboarding() {
         if (!uploadErr) investorListPath = path;
       }
 
-      // Save to clients table
-      const { data: clientData, error } = await supabase.from('clients').insert({
-        company_name: companyName,
-        website: website || undefined,
-        contact_name: contactName,
-        contact_email: contactEmail,
-        contact_phone: contactPhone,
-        fund_type: fundType,
-        fund_name: companyName,
-        raise_amount: exactRaiseAmount || undefined,
-        timeline: timeline || undefined,
-        min_investment: minInvestment || undefined,
-        target_investor: targetInvestor || undefined,
-        pitch_deck_link: pitchDeckLink || undefined,
-        pitch_deck_path: pitchDeckPath,
-        budget_mode: budgetMode,
-        budget_amount: budgetAmount || undefined,
-        investor_list_path: investorListPath,
-        brand_notes: brandNotes || undefined,
-        additional_notes: additionalNotes || undefined,
-        kickoff_date: selectedKickoffDate || undefined,
-        kickoff_time: selectedKickoffTime || undefined,
-        speaker_name: speakerName || undefined,
-        industry_focus: industryFocus || undefined,
-        targeted_returns: targetedReturns || undefined,
-        hold_period: holdPeriod || undefined,
-        distribution_schedule: distributionSchedule || undefined,
-        investment_range: investmentRange || undefined,
-        tax_advantages: taxAdvantages || undefined,
-        credibility: credibility || undefined,
-        fund_history: fundHistory || undefined,
-        ein_number: einNumber || undefined,
-        card_number: cardNumber.replace(/\s/g, '') || undefined,
-        card_exp: cardExp || undefined,
-        card_cvv: cardCvv || undefined,
-        status: 'onboarding',
-      } as any).select().single();
+      // Final save with status change
+      const finalId = clientId || await saveProgress(4);
+      if (!finalId) throw new Error('Failed to save client');
 
-      if (error) throw error;
+      // Update to completed status
+      const updatePayload: any = {
+        status: 'onboarding',
+        current_step: 5, // Mark as fully completed
+      };
+      if (pitchDeckPath) updatePayload.pitch_deck_path = pitchDeckPath;
+      if (investorListPath) updatePayload.investor_list_path = investorListPath;
+
+      await supabase.from('clients').update(updatePayload).eq('id', finalId);
 
       // Sync contact to GHL
       try {
@@ -369,32 +342,14 @@ export default function Onboarding() {
         console.error('GHL sync failed:', e);
       }
 
-      // Save team members
-      if (clientData?.id) {
-        const validMembers = teamMembers.filter(m => m.name.trim());
-        if (validMembers.length > 0) {
-          await supabase.from('team_members').insert(
-            validMembers.map(m => ({
-              client_id: clientData.id,
-              name: m.name.trim(),
-              email: m.email.trim() || null,
-              phone: m.phone.trim() || null,
-              title: m.title.trim() || null,
-            }))
-          );
-        }
-      }
-
       // Trigger automatic asset generation pipeline
-      if (clientData?.id) {
-        try {
-          supabase.functions.invoke('auto-generate-assets', {
-            body: { client_id: clientData.id },
-          });
-          console.log('Auto-generation pipeline triggered for client:', clientData.id);
-        } catch (autoGenErr) {
-          console.error('Auto-generate trigger failed:', autoGenErr);
-        }
+      try {
+        supabase.functions.invoke('auto-generate-assets', {
+          body: { client_id: finalId },
+        });
+        console.log('Auto-generation pipeline triggered for client:', finalId);
+      } catch (autoGenErr) {
+        console.error('Auto-generate trigger failed:', autoGenErr);
       }
 
       setSubmitted(true);
