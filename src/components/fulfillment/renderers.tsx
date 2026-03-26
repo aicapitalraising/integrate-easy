@@ -20,17 +20,15 @@ export function ResearchRenderer({ content, editMode, onEdit }: RenderProps) {
   };
 
   const sections = [
+    { key: 'why_asset_class', label: '🎯 Why This Asset Class' },
+    { key: 'why_company', label: '🏢 Why This Company' },
+    { key: 'why_now', label: '⏰ Why Now' },
+    { key: 'why_location', label: '📍 Why This Location / Market' },
     { key: 'industry_overview', label: 'Industry Overview' },
-    { key: 'asset_class_trends', label: 'Asset Class Trends' },
-    { key: 'market_opportunity', label: 'Market Opportunity' },
     { key: 'supply_demand', label: 'Supply & Demand' },
-    { key: 'demographic_tailwinds', label: 'Demographic Tailwinds' },
     { key: 'competitive_landscape', label: 'Competitive Landscape' },
     { key: 'timing_factors', label: 'Timing Factors' },
-    { key: 'why_asset_class', label: 'Why This Asset Class' },
-    { key: 'why_market', label: 'Why This Market' },
-    { key: 'why_now', label: 'Why Now' },
-    { key: 'why_operator', label: 'Why This Operator' },
+    { key: 'deal_specifics', label: 'Deal Specifics' },
   ];
 
   const stats = content.key_statistics || [];
