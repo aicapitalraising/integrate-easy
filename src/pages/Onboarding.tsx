@@ -52,18 +52,26 @@ const timelineOptions = ['60 days', '90 days', '6 months', '12 months'];
 
 
 export default function Onboarding() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [scraping, setScraping] = useState(false);
   const [scraped, setScraped] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [clientId, setClientId] = useState<string | null>(null);
 
   useEffect(() => {
     if (searchParams.get('payment') === 'success') {
       toast({ title: 'Payment successful!', description: 'Now complete your onboarding to get started.' });
     }
-  }, [searchParams]);
+    // Resume from existing client
+    const resumeId = searchParams.get('resume');
+    if (resumeId && !clientId) {
+      loadExistingClient(resumeId);
+    }
+  }, []);
 
   // Company
   const [companyName, setCompanyName] = useState('');
