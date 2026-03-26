@@ -23,16 +23,25 @@ Standard Disclaimer: "All investments involve risk, including potential loss of 
 const SYSTEM_PROMPTS: Record<string, string> = {
   research: `You are an expert capital markets researcher for alternative investments. You have access to Google Search to find REAL, CURRENT market data.
 ${COMPLIANCE_RULES}
-Given a fund's details, conduct thorough research using web search and produce comprehensive research structured as JSON with these keys:
-- industry_overview: 2-3 paragraphs with real market data, recent news, current statistics
-- why_asset_class: compelling data-driven reason for this asset class
-- why_market: why this specific market/geography with real local market data
-- why_now: urgency and timing argument backed by current market conditions
-- why_operator: framework for why an experienced operator matters
+Given a fund's details and any scraped website content, conduct thorough research and produce comprehensive research structured as JSON answering FOUR CORE PILLARS:
+
+1. WHY THIS INVESTMENT / ASSET CLASS?
+2. WHY THIS COMPANY?
+3. WHY NOW?
+4. WHY THIS LOCATION / MARKET?
+
+JSON keys:
+- why_asset_class: 2-3 paragraphs on why this specific asset class (e.g. multifamily, self-storage, private credit) is compelling right now. Include real market data, growth rates, historical performance vs alternatives, risk-adjusted returns.
+- why_company: 2-3 paragraphs on why THIS specific company/operator. Their track record, team expertise, competitive advantages, deal flow, unique strategy. Reference any data from their website.
+- why_now: 2-3 paragraphs on market timing. Interest rate environment, supply/demand imbalance, demographic shifts, regulatory tailwinds, window of opportunity. Why waiting costs money.
+- why_location: 2-3 paragraphs on the specific geography/market. Population growth, job growth, rent growth, supply constraints, infrastructure development, comparable deal performance in this market.
+- industry_overview: broader industry context with real statistics
 - supply_demand: supply/demand dynamics with current data points
+- competitive_landscape: how this fund compares to alternatives
 - timing_factors: current interest rates, market conditions, regulatory environment
-- key_statistics: array of 8-10 objects with {stat, source, context}
+- key_statistics: array of 10-12 objects with {stat, source, context} — real numbers only
 - recent_news: array of 3-5 recent relevant headlines/developments
+- deal_specifics: any specific deal/project details extracted from the website (location, asset type, returns, structure)
 Each value should be detailed, data-informed analysis with real numbers and sources.`,
 
   angles: `You are a world-class direct response copywriter (Dan Kennedy × Jeremy Haynes style) specializing in alternative investment marketing to accredited investors.
@@ -447,10 +456,43 @@ serve(async (req) => {
     let groundingSources: any[] = [];
 
     if (isResearch) {
+      // Step 0: Scrape client website via Firecrawl for deal-specific data
+      let websiteContent = "";
+      const FIRECRAWL_API_KEY = Deno.env.get("FIRECRAWL_API_KEY");
+      if (client_data.website && FIRECRAWL_API_KEY) {
+        try {
+          let scrapeUrl = client_data.website.trim();
+          if (!scrapeUrl.startsWith("http")) scrapeUrl = `https://${scrapeUrl}`;
+          console.log("Scraping website via Firecrawl:", scrapeUrl);
+          
+          const scrapeResponse = await fetch("https://api.firecrawl.dev/v1/scrape", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${FIRECRAWL_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ url: scrapeUrl, formats: ["markdown"], onlyMainContent: true, waitFor: 3000 }),
+          });
+          
+          if (scrapeResponse.ok) {
+            const scrapeData = await scrapeResponse.json();
+            websiteContent = scrapeData.data?.markdown || scrapeData.markdown || "";
+            console.log(`Scraped ${websiteContent.length} chars from website`);
+          } else {
+            console.warn("Firecrawl scrape failed:", scrapeResponse.status);
+          }
+        } catch (e) {
+          console.warn("Firecrawl scrape error:", e);
+        }
+      }
+
+      // Enhance user prompt with scraped website data
+      let enhancedPrompt = userPrompt;
+      if (websiteContent) {
+        enhancedPrompt += `\n\n=== SCRAPED WEBSITE CONTENT (from ${client_data.website}) ===\n${websiteContent.substring(0, 15000)}\n=== END WEBSITE CONTENT ===\n\nUse this website content to extract deal-specific details: location, asset type, projected returns, fund structure, team bios, track record, and any specific projects or properties mentioned. Incorporate this into your research.`;
+      }
+
       // Step 1: Search with grounding (no JSON mode)
       const searchBody = {
-        system_instruction: { parts: [{ text: "You are an expert capital markets researcher. Search the web for real, current data about this fund's industry, asset class, market, and recent news. Provide comprehensive findings with specific statistics, market sizes, growth rates, and recent developments." }] },
-        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+        system_instruction: { parts: [{ text: "You are an expert capital markets researcher. Search the web for real, current data about this fund's industry, asset class, market, and recent news. Focus on answering: Why this asset class? Why this company? Why now? Why this location/market? Provide comprehensive findings with specific statistics, market sizes, growth rates, and recent developments." }] },
+        contents: [{ role: "user", parts: [{ text: enhancedPrompt }] }],
         tools: [{ googleSearch: {} }],
         generationConfig: { temperature: 0.3 },
       };
