@@ -459,9 +459,16 @@ export default function Fulfillment() {
                 <h1 className="font-display text-xl md:text-2xl font-bold text-foreground">{selectedClient.company_name}</h1>
                 <p className="text-xs text-muted-foreground">{selectedClient.fund_type} · {selectedClient.contact_name}</p>
               </div>
-              <Badge className={`text-[10px] ${statusColors[selectedClient.status] || statusColors.onboarding}`}>
-                {selectedClient.status.replace('_', ' ')}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge className={`text-[10px] ${statusColors[selectedClient.status] || statusColors.onboarding}`}>
+                  {selectedClient.status.replace('_', ' ')}
+                </Badge>
+                <Button variant="outline" size="sm" className="gap-1.5" asChild>
+                  <a href={`/portal/${selectedClient.share_token}`} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-3.5 h-3.5" /> Client Portal
+                  </a>
+                </Button>
+              </div>
             </div>
 
             <ClientWorkspace client={selectedClient} />
