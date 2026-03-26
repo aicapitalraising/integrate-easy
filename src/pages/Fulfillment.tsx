@@ -10,8 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   Lock, Phone, Building2, Target, DollarSign, Globe, Calendar, Users,
   FileText, Palette, ExternalLink, Copy, CheckCircle2, Clock, Loader2,
-  BarChart3, Mail, MessageSquare, Video, Image, Megaphone, ClipboardList,
-  Plus, RefreshCw, Trash2, Sparkles,
+  ClipboardList, Sparkles, Trash2,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AllCopyView from '@/components/fulfillment/AllCopyView';
@@ -20,7 +19,7 @@ import {
   AdCopyRenderer, ScriptsRenderer, CreativesRenderer, ReportRenderer, FunnelRenderer, SetterRenderer,
 } from '@/components/fulfillment/renderers';
 import { Progress } from '@/components/ui/progress';
-import { Bot } from 'lucide-react';
+import { Bot, RefreshCw } from 'lucide-react';
 
 interface Client {
   id: string;
