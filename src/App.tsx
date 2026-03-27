@@ -16,6 +16,7 @@ import Onboarding from "./pages/Onboarding";
 import Start from "./pages/Start";
 import Invest from "./pages/Invest";
 import Portal from "./pages/Portal";
+import ReviewCall from "./pages/ReviewCall";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
