@@ -49,6 +49,193 @@ export type Database = {
           },
         ]
       }
+      avatar_configs: {
+        Row: {
+          id: string
+          client_id: string
+          name: string
+          provider: string
+          avatar_id: string | null
+          voice_id: string | null
+          style: string
+          background: string
+          custom_background_url: string | null
+          is_default: boolean
+          settings: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          client_id: string
+          name: string
+          provider?: string
+          avatar_id?: string | null
+          voice_id?: string | null
+          style?: string
+          background?: string
+          custom_background_url?: string | null
+          is_default?: boolean
+          settings?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          client_id?: string
+          name?: string
+          provider?: string
+          avatar_id?: string | null
+          voice_id?: string | null
+          style?: string
+          background?: string
+          custom_background_url?: string | null
+          is_default?: boolean
+          settings?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avatar_configs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creative_generations: {
+        Row: {
+          id: string
+          client_id: string
+          asset_id: string | null
+          schedule_id: string | null
+          generation_type: string
+          creative_type: string
+          parent_generation_id: string | null
+          status: string
+          error_message: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          client_id: string
+          asset_id?: string | null
+          schedule_id?: string | null
+          generation_type: string
+          creative_type: string
+          parent_generation_id?: string | null
+          status?: string
+          error_message?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          client_id?: string
+          asset_id?: string | null
+          schedule_id?: string | null
+          generation_type?: string
+          creative_type?: string
+          parent_generation_id?: string | null
+          status?: string
+          error_message?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creative_generations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creative_generations_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "client_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creative_generations_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "creative_schedules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creative_generations_parent_generation_id_fkey"
+            columns: ["parent_generation_id"]
+            isOneToOne: false
+            referencedRelation: "creative_generations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creative_schedules: {
+        Row: {
+          id: string
+          client_id: string
+          schedule_type: string
+          frequency: string
+          day_of_week: number | null
+          variations_per_run: number
+          enabled: boolean
+          last_run_at: string | null
+          next_run_at: string | null
+          base_asset_id: string | null
+          style_notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          client_id: string
+          schedule_type?: string
+          frequency?: string
+          day_of_week?: number | null
+          variations_per_run?: number
+          enabled?: boolean
+          last_run_at?: string | null
+          next_run_at?: string | null
+          base_asset_id?: string | null
+          style_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          client_id?: string
+          schedule_type?: string
+          frequency?: string
+          day_of_week?: number | null
+          variations_per_run?: number
+          enabled?: boolean
+          last_run_at?: string | null
+          next_run_at?: string | null
+          base_asset_id?: string | null
+          style_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creative_schedules_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creative_schedules_base_asset_id_fkey"
+            columns: ["base_asset_id"]
+            isOneToOne: false
+            referencedRelation: "client_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calendar_mappings: {
         Row: {
           calendar_id: string
