@@ -277,8 +277,45 @@ Generate 15-18 scripts total mixing all types including 2 podcast scripts.`,
 ${COMPLIANCE_RULES}
 Generate creative concepts as JSON with keys:
 - static_concepts: array of 5 objects, each with: headline (include a stat), supporting_text, visual_direction, layout_idea, format ("1080x1080", "1080x1920", "1200x628"), data_callout
-- video_concepts: array of 3 objects, each with: style, setting, visual_scenes (array), caption_direction, hook_concept, format
+- video_concepts: array of 3 objects, each with: style, setting, visual_scenes (array), caption_direction, hook_concept, format, script (full spoken script for avatar delivery)
 Feature data prominently in designs. Premium, institutional aesthetic.`,
+
+  static_ads: `You are an elite creative director specializing in high-converting static ad campaigns for alternative investment funds targeting accredited investors.
+${COMPLIANCE_RULES}
+Generate static ad creative concepts as JSON with key:
+- static_concepts: array of 5 objects, each with:
+  - headline: attention-grabbing headline that includes a compelling stat or data point
+  - supporting_text: 1-2 sentences of persuasive body copy
+  - visual_direction: detailed description of the visual concept (imagery, colors, composition)
+  - layout_idea: specific layout description (text placement, hierarchy, focal point)
+  - format: one of "1080x1080" (feed), "1080x1920" (story/reel), "1200x628" (landscape)
+  - data_callout: the key stat or number to feature prominently
+  - platform: primary platform ("facebook", "instagram", "linkedin")
+  - cta_text: call-to-action button text
+  - color_scheme: suggested color palette description
+
+Mix formats across concepts. Feature data prominently. Premium, institutional aesthetic with clean typography.
+Each concept should use a different marketing angle for creative diversity.`,
+
+  video_ads: `You are an elite creative director and scriptwriter specializing in high-converting video ad content for alternative investment funds targeting accredited investors.
+${COMPLIANCE_RULES}
+Generate video ad concepts as JSON with key:
+- video_concepts: array of 5 objects, each with:
+  - style: video style (e.g., "Talking Head", "Kinetic Text", "Documentary", "Testimonial Style", "Data Visualization")
+  - setting: detailed background/environment description
+  - format: one of "9:16" (vertical/reel), "1:1" (square), "16:9" (landscape)
+  - hook_concept: opening 3-second hook that stops the scroll
+  - script: FULL spoken script for avatar delivery (60-90 seconds), written conversationally as if speaking directly to camera. Include [PAUSE] markers for pacing.
+  - caption_direction: on-screen text/caption overlay instructions
+  - visual_scenes: array of 4-6 scene descriptions with timing (e.g., "0-3s: Close-up of avatar, urgent expression")
+  - b_roll_notes: suggestions for b-roll footage or graphics to overlay
+  - music_direction: background music mood/tempo suggestion
+  - duration_seconds: target duration (30, 60, or 90)
+  - platform: primary platform ("facebook", "instagram", "youtube", "tiktok")
+
+Scripts must be written for avatar (AI spokesperson) delivery — natural, conversational, authoritative.
+Each concept should use a different hook strategy and marketing angle for testing.
+Include compliance disclaimer in each script's closing.`,
 
   report: `You are a financial content strategist creating a special report / lead magnet for accredited investors.
 ${COMPLIANCE_RULES}
@@ -424,7 +461,7 @@ function buildUserPrompt(client_data: any, asset_type: string, existing_research
   if (existing_research && asset_type !== "research") {
     userPrompt += `\n=== MARKET RESEARCH (use this data extensively — reference specific stats) ===\n${JSON.stringify(existing_research, null, 2)}\n`;
   }
-  if (existing_angles && ["emails", "sms", "adcopy", "scripts", "creatives", "funnel", "setter"].includes(asset_type)) {
+  if (existing_angles && ["emails", "sms", "adcopy", "scripts", "creatives", "static_ads", "video_ads", "funnel", "setter"].includes(asset_type)) {
     userPrompt += `\n=== MARKETING ANGLES (build on these) ===\n${JSON.stringify(existing_angles, null, 2)}\n`;
   }
 
@@ -441,7 +478,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { client_id, asset_type, client_data, existing_research, existing_angles } = await req.json();
+    const { client_id, asset_type, client_data, existing_research, existing_angles, variation_mode, style_notes, variations_count } = await req.json();
 
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
@@ -449,7 +486,17 @@ serve(async (req) => {
     const systemPrompt = SYSTEM_PROMPTS[asset_type];
     if (!systemPrompt) throw new Error(`Unknown asset type: ${asset_type}`);
 
-    const userPrompt = buildUserPrompt(client_data, asset_type, existing_research, existing_angles);
+    let userPrompt = buildUserPrompt(client_data, asset_type, existing_research, existing_angles);
+
+    // Add variation instructions if generating variations
+    if (variation_mode) {
+      userPrompt += `\n\nIMPORTANT: Generate FRESH VARIATIONS that are distinctly different from any previous concepts. `;
+      userPrompt += `Create ${variations_count || 3} unique concepts with diverse angles, hooks, and visual approaches. `;
+      if (style_notes) {
+        userPrompt += `\nStyle direction: ${style_notes}`;
+      }
+      userPrompt += `\nEnsure each concept tests a completely different creative hypothesis for maximum A/B testing value.`;
+    }
 
     const isResearch = asset_type === "research";
     let parsed: any;

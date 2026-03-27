@@ -350,68 +350,189 @@ export function ScriptsRenderer({ content, editMode, onEdit }: RenderProps) {
 }
 
 export function CreativesRenderer({ content, editMode, onEdit }: RenderProps) {
-  if (!content) return null;
+  if (!content) return (
+    <div className="text-center py-8 text-muted-foreground">
+      <p className="text-sm">No creative concepts generated yet.</p>
+      <p className="text-xs mt-1">Generate creatives to see static ad and video concepts here.</p>
+    </div>
+  );
+
+  if (content.raw) return (
+    <div className="text-center py-8">
+      <p className="text-sm text-destructive font-medium">Generation returned invalid format</p>
+      <pre className="text-xs text-muted-foreground mt-2 whitespace-pre-wrap max-h-40 overflow-auto bg-muted p-3 rounded">{content.raw}</pre>
+    </div>
+  );
+
   const statics = content.static_concepts || [];
   const videos = content.video_concepts || [];
 
   return (
     <div className="space-y-6">
-      <div>
-        <h4 className="font-display font-bold text-foreground mb-3">Static Ad Concepts</h4>
+      <StaticAdsSection statics={statics} content={content} editMode={editMode} onEdit={onEdit} />
+      <VideoAdsSection videos={videos} content={content} editMode={editMode} onEdit={onEdit} />
+    </div>
+  );
+}
+
+function StaticAdsSection({ statics, content, editMode, onEdit }: { statics: any[]; content: any; editMode?: boolean; onEdit?: (c: any) => void }) {
+  const updateStatic = (i: number, key: string, val: string) => {
+    const ns = [...statics];
+    ns[i] = { ...ns[i], [key]: val };
+    onEdit?.({ ...content, static_concepts: ns });
+  };
+
+  const formatDimensions: Record<string, string> = {
+    '1080x1080': '1:1 Square',
+    '1080x1920': '9:16 Story',
+    '1200x628': '1.91:1 Landscape',
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h4 className="font-display font-bold text-foreground">Static Ad Concepts</h4>
+        <Badge variant="outline" className="text-[10px]">{statics.length} concepts</Badge>
+      </div>
+      {statics.length === 0 ? (
+        <p className="text-sm text-muted-foreground py-4">No static ad concepts generated.</p>
+      ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {statics.map((c: any, i: number) => (
-            <Card key={i} className="border-border">
+            <Card key={i} className="border-border hover:border-primary/20 transition-colors">
               <CardContent className="p-4 space-y-2">
-                <div className="w-full aspect-square bg-muted rounded-lg flex items-center justify-center text-muted-foreground text-xs">
-                  {c.format}
+                <div className="flex items-center justify-between mb-1">
+                  <Badge variant="outline" className="text-[9px]">Ad {i + 1}</Badge>
+                  <span className="text-[10px] text-muted-foreground">{formatDimensions[c.format] || c.format}</span>
+                </div>
+                <div className="w-full aspect-[4/3] bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg flex flex-col items-center justify-center text-center p-3 border border-dashed border-primary/20">
+                  <span className="text-[10px] text-muted-foreground/70 mb-1">{c.format}</span>
+                  <span className="text-xs text-primary/60 font-medium">{c.visual_direction ? c.visual_direction.substring(0, 60) + '...' : 'Visual preview'}</span>
                 </div>
                 {editMode ? (
                   <>
-                    <EditField value={c.headline} onChange={(v) => { const ns = [...statics]; ns[i] = { ...ns[i], headline: v }; onEdit?.({ ...content, static_concepts: ns }); }} rows={1} />
-                    <EditField value={c.supporting_text} onChange={(v) => { const ns = [...statics]; ns[i] = { ...ns[i], supporting_text: v }; onEdit?.({ ...content, static_concepts: ns }); }} rows={2} />
+                    <EditField value={c.headline} onChange={(v) => updateStatic(i, 'headline', v)} rows={1} />
+                    <EditField value={c.supporting_text} onChange={(v) => updateStatic(i, 'supporting_text', v)} rows={2} />
+                    <EditField value={c.visual_direction} onChange={(v) => updateStatic(i, 'visual_direction', v)} rows={2} />
+                    <EditField value={c.layout_idea} onChange={(v) => updateStatic(i, 'layout_idea', v)} rows={1} />
                   </>
                 ) : (
                   <>
                     <p className="font-semibold text-sm text-foreground">{c.headline}</p>
                     <p className="text-xs text-muted-foreground">{c.supporting_text}</p>
+                    {c.data_callout && (
+                      <div className="bg-primary/5 border border-primary/20 rounded px-2 py-1">
+                        <p className="text-[10px] font-medium text-primary">{c.data_callout}</p>
+                      </div>
+                    )}
                   </>
                 )}
-                <p className="text-[10px] text-muted-foreground/70">Visual: {c.visual_direction}</p>
-                <p className="text-[10px] text-muted-foreground/70">Layout: {c.layout_idea}</p>
+                {!editMode && (
+                  <>
+                    <p className="text-[10px] text-muted-foreground/70">Visual: {c.visual_direction}</p>
+                    <p className="text-[10px] text-muted-foreground/70">Layout: {c.layout_idea}</p>
+                  </>
+                )}
               </CardContent>
             </Card>
           ))}
         </div>
-      </div>
+      )}
+    </div>
+  );
+}
 
-      <div>
-        <h4 className="font-display font-bold text-foreground mb-3">Video Concepts</h4>
+function VideoAdsSection({ videos, content, editMode, onEdit }: { videos: any[]; content: any; editMode?: boolean; onEdit?: (c: any) => void }) {
+  const updateVideo = (i: number, key: string, val: string) => {
+    const nv = [...videos];
+    nv[i] = { ...nv[i], [key]: val };
+    onEdit?.({ ...content, video_concepts: nv });
+  };
+
+  const updateScene = (videoIdx: number, sceneIdx: number, val: string) => {
+    const nv = [...videos];
+    const scenes = [...(nv[videoIdx].visual_scenes || [])];
+    scenes[sceneIdx] = val;
+    nv[videoIdx] = { ...nv[videoIdx], visual_scenes: scenes };
+    onEdit?.({ ...content, video_concepts: nv });
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h4 className="font-display font-bold text-foreground">Video Ad Concepts</h4>
+        <Badge variant="outline" className="text-[10px]">{videos.length} concepts</Badge>
+      </div>
+      {videos.length === 0 ? (
+        <p className="text-sm text-muted-foreground py-4">No video ad concepts generated.</p>
+      ) : (
         <div className="grid md:grid-cols-2 gap-4">
           {videos.map((v: any, i: number) => (
-            <Card key={i} className="border-border">
+            <Card key={i} className="border-border hover:border-primary/20 transition-colors">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm">{v.style}</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-[9px]">Video {i + 1}</Badge>
+                    <CardTitle className="text-sm">
+                      {editMode ? (
+                        <EditField value={v.style} onChange={(val) => updateVideo(i, 'style', val)} rows={1} />
+                      ) : v.style}
+                    </CardTitle>
+                  </div>
                   <Badge variant="outline" className="text-[9px]">{v.format}</Badge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Setting:</span> {v.setting}</p>
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Hook:</span> {v.hook_concept}</p>
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Caption:</span> {v.caption_direction}</p>
-                {v.visual_scenes && (
-                  <div>
-                    <p className="font-medium text-foreground/80 text-xs mb-1">Scenes:</p>
-                    {v.visual_scenes.map((s: string, j: number) => (
-                      <p key={j} className="text-xs text-muted-foreground">• {s}</p>
-                    ))}
-                  </div>
+                {editMode ? (
+                  <>
+                    <div>
+                      <p className="text-xs font-medium text-foreground/80 mb-1">Setting</p>
+                      <EditField value={v.setting} onChange={(val) => updateVideo(i, 'setting', val)} rows={1} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-foreground/80 mb-1">Hook</p>
+                      <EditField value={v.hook_concept} onChange={(val) => updateVideo(i, 'hook_concept', val)} rows={2} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-foreground/80 mb-1">Caption Direction</p>
+                      <EditField value={v.caption_direction} onChange={(val) => updateVideo(i, 'caption_direction', val)} rows={2} />
+                    </div>
+                    {v.visual_scenes && (
+                      <div>
+                        <p className="text-xs font-medium text-foreground/80 mb-1">Scenes</p>
+                        {v.visual_scenes.map((s: string, j: number) => (
+                          <div key={j} className="flex items-start gap-1 mb-1">
+                            <span className="text-[10px] text-muted-foreground mt-2">{j + 1}.</span>
+                            <EditField value={s} onChange={(val) => updateScene(i, j, val)} rows={1} />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Setting:</span> {v.setting}</p>
+                    <div className="bg-primary/5 border border-primary/20 rounded px-2 py-1.5">
+                      <p className="text-xs font-medium text-primary">Hook: {v.hook_concept}</p>
+                    </div>
+                    <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Caption:</span> {v.caption_direction}</p>
+                    {v.visual_scenes && (
+                      <div>
+                        <p className="font-medium text-foreground/80 text-xs mb-1">Scenes:</p>
+                        {v.visual_scenes.map((s: string, j: number) => (
+                          <p key={j} className="text-xs text-muted-foreground">
+                            <span className="font-medium text-foreground/60">{j + 1}.</span> {s}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -14,8 +14,9 @@ import {
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AllCopyView from '@/components/fulfillment/AllCopyView';
+import CreativesHub from '@/components/fulfillment/CreativesHub';
 import { Progress } from '@/components/ui/progress';
-import { Bot, RefreshCw } from 'lucide-react';
+import { Bot, RefreshCw, Image } from 'lucide-react';
 
 interface Client {
   id: string;
@@ -247,11 +248,17 @@ function ClientWorkspace({ client }: { client: Client }) {
         <TabsList className="flex-wrap h-auto gap-1 bg-muted/50 p-1">
           <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
           <TabsTrigger value="copy" className="text-xs">All Copy & Assets</TabsTrigger>
+          <TabsTrigger value="creatives" className="text-xs gap-1.5">
+            <Image className="w-3.5 h-3.5" /> Creatives
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview"><ClientOverview client={client} /></TabsContent>
         <TabsContent value="copy">
           <AllCopyView clientId={client.id} />
+        </TabsContent>
+        <TabsContent value="creatives">
+          <CreativesHub client={client} />
         </TabsContent>
       </Tabs>
     </div>
