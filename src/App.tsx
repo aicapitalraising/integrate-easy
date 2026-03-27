@@ -44,7 +44,7 @@ const App = () => {
             <Route path="/start" element={<Start />} />
             <Route path="/invest" element={<Invest />} />
             <Route path="/portal/:token" element={<Portal />} />
-            <Route path="/review-call" element={<ReviewCall />} />
+            <Route path="/review" element={<ReviewCall />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
