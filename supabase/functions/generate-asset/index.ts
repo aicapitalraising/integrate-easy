@@ -483,7 +483,15 @@ function buildUserPrompt(client_data: any, asset_type: string, existing_research
   if (client_data.brand_colors?.length > 0) userPrompt += `- Brand Colors: ${client_data.brand_colors.join(', ')} (USE THESE EXACT COLORS in all creative concepts — primary, secondary, accent)\n`;
   if (client_data.primary_offer) userPrompt += `- Primary Offer: ${sanitizeClientField(client_data.primary_offer)} (THIS is the core value proposition — lead with this in headlines and hooks)\n`;
   if (client_data.secondary_offers?.length > 0) userPrompt += `- Secondary Offers: ${client_data.secondary_offers.map((o: string) => sanitizeClientField(o)).join('; ')}\n`;
-  if (client_data.reference_ad_paths?.length > 0) userPrompt += `- Reference Ads: ${client_data.reference_ad_paths.length} best-performing ads uploaded. Model the style, tone, layout patterns, and visual approach after high-performing ad creative. Use similar headline structures, CTA placement, and visual hierarchy.\n`;
+  if (client_data.reference_ad_paths?.length > 0) {
+    userPrompt += `- Reference Ads: ${client_data.reference_ad_paths.length} best-performing ads are attached as images below. CAREFULLY ANALYZE each reference ad for:\n`;
+    userPrompt += `  * Headline structure and copy style\n`;
+    userPrompt += `  * Visual layout and composition patterns\n`;
+    userPrompt += `  * Color usage and typography hierarchy\n`;
+    userPrompt += `  * CTA placement and messaging\n`;
+    userPrompt += `  * Overall aesthetic and brand tone\n`;
+    userPrompt += `  Model ALL new creatives after these proven patterns. Maintain the same level of quality, similar layout structures, and consistent brand voice.\n`;
+  }
   if (client_data.additional_notes) userPrompt += `- Additional Notes: ${sanitizeClientField(client_data.additional_notes)}\n`;
 
   // Validate and embed research with grounding sources for downstream accuracy
@@ -642,9 +650,39 @@ serve(async (req) => {
 
     } else {
       // Non-research: single call with JSON mode
+      // Build multimodal parts: text prompt + any reference ad images
+      const userParts: any[] = [{ text: userPrompt }];
+
+      // Attach reference ad images for creative asset types
+      if (client_data.reference_ad_paths?.length > 0 && ["static_ads", "video_ads", "creatives", "adcopy"].includes(asset_type)) {
+        const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+
+        for (const adPath of client_data.reference_ad_paths.slice(0, 5)) {
+          const ext = adPath.toLowerCase().split('.').pop();
+          if (!imageExtensions.some(e => adPath.toLowerCase().endsWith(e))) continue;
+
+          try {
+            const publicUrl = `${supabaseUrl}/storage/v1/object/public/client-uploads/${adPath}`;
+            const imgResponse = await fetch(publicUrl);
+            if (imgResponse.ok) {
+              const buffer = await imgResponse.arrayBuffer();
+              const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+              const mimeType = ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
+              userParts.push({
+                inlineData: { mimeType, data: base64 },
+              });
+              console.log(`Attached reference ad: ${adPath} (${buffer.byteLength} bytes)`);
+            }
+          } catch (e) {
+            console.warn(`Failed to fetch reference ad ${adPath}:`, e);
+          }
+        }
+      }
+
       const requestBody = {
         system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+        contents: [{ role: "user", parts: userParts }],
         generationConfig: { responseMimeType: "application/json", temperature: 0.8 },
       };
 

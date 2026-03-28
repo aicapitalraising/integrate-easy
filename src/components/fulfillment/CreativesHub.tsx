@@ -261,13 +261,31 @@ export default function CreativesHub({ client }: CreativesHubProps) {
   };
 
   const colors = Array.isArray(client.brand_colors) ? client.brand_colors as string[] : [];
-  const refAds = Array.isArray(client.reference_ad_paths) ? client.reference_ad_paths as string[] : [];
+  const [refAds, setRefAds] = useState<string[]>(Array.isArray(client.reference_ad_paths) ? client.reference_ad_paths as string[] : []);
+  const [uploadingRef, setUploadingRef] = useState(false);
+
+  const uploadReferenceAds = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploadingRef(true);
+    const paths: string[] = [];
+    for (const file of Array.from(files)) {
+      const path = `reference-ads/${Date.now()}-${file.name}`;
+      const { error } = await supabase.storage.from('client-uploads').upload(path, file);
+      if (!error) paths.push(path);
+    }
+    if (paths.length > 0) {
+      const updated = [...refAds, ...paths];
+      setRefAds(updated);
+      await supabase.from('clients').update({ reference_ad_paths: updated }).eq('id', client.id);
+      toast({ title: `${paths.length} reference ad(s) uploaded`, description: 'These will be used as style references when generating new creatives.' });
+    }
+    setUploadingRef(false);
+  };
 
   return (
     <div className="space-y-6">
-      {/* Brand Context Bar */}
-      {(colors.length > 0 || client.primary_offer || refAds.length > 0) && (
-        <Card className="border-border bg-muted/30">
+      {/* Brand Context Bar — always show for reference ad uploads */}
+      <Card className="border-border bg-muted/30">
           <CardContent className="p-4">
             <div className="flex items-start gap-6 flex-wrap">
               {colors.length > 0 && (
@@ -286,16 +304,43 @@ export default function CreativesHub({ client }: CreativesHubProps) {
                   <p className="text-sm text-foreground font-medium">{client.primary_offer}</p>
                 </div>
               )}
-              {refAds.length > 0 && (
-                <div>
-                  <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Reference Ads</p>
-                  <Badge variant="outline" className="text-[10px]">{refAds.length} uploaded</Badge>
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">
+                  Reference Ads {refAds.length > 0 && `(${refAds.length})`}
+                </p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {refAds.map((path: string, i: number) => {
+                    const { data } = supabase.storage.from('client-uploads').getPublicUrl(path);
+                    const isVideo = /\.(mp4|mov|webm|avi)$/i.test(path);
+                    return isVideo ? (
+                      <div key={i} className="w-16 h-16 rounded border border-border bg-muted flex items-center justify-center" title={path.split('/').pop()}>
+                        <Video className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                    ) : (
+                      <img
+                        key={i}
+                        src={data.publicUrl}
+                        alt={`Reference ad ${i + 1}`}
+                        className="w-16 h-16 rounded border border-border object-cover"
+                        title={path.split('/').pop()}
+                      />
+                    );
+                  })}
+                  <label className="w-16 h-16 rounded border-2 border-dashed border-border hover:border-primary/40 bg-muted/50 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                    {uploadingRef ? <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" /> : (
+                      <>
+                        <span className="text-lg text-muted-foreground leading-none">+</span>
+                        <span className="text-[8px] text-muted-foreground">Upload</span>
+                      </>
+                    )}
+                    <input type="file" accept="image/*,video/*" multiple className="hidden" onChange={(e) => uploadReferenceAds(e.target.files)} disabled={uploadingRef} />
+                  </label>
                 </div>
-              )}
+                {refAds.length === 0 && <p className="text-[10px] text-muted-foreground mt-1">Upload your best performing ads — AI will model new creatives after them.</p>}
+              </div>
             </div>
           </CardContent>
         </Card>
-      )}
 
       <Tabs defaultValue="static" className="space-y-4">
         <TabsList className="h-auto gap-1 bg-muted/50 p-1">
