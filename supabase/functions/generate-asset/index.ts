@@ -292,12 +292,15 @@ Generate static ad creative concepts as JSON with key:
   - data_callout: the key stat or number to feature prominently
   - platform: primary platform ("facebook", "instagram", "linkedin")
   - cta_text: call-to-action button text
-  - color_scheme: suggested color palette description
+  - color_scheme: use the client's brand colors if provided, otherwise suggest a premium palette. Format as "Primary: #hex, Secondary: #hex, Accent: #hex"
   - data_source: source name for the data_callout stat (e.g., "CBRE 2025 Report", "NAR Q1 2025")
 
 Mix formats across concepts. Feature data prominently. Premium, institutional aesthetic with clean typography.
 Each concept should use a different marketing angle for creative diversity.
-IMPORTANT: Every data_callout MUST reference a real statistic from the provided research with its source. Do NOT fabricate statistics.`,
+IMPORTANT: Every data_callout MUST reference a real statistic from the provided research with its source. Do NOT fabricate statistics.
+If brand colors are provided, USE THEM in every concept's color_scheme. The color palette should be consistent with the client's existing brand identity.
+If a primary offer is provided, at least 3 of the 5 concepts should lead with or prominently feature that offer.
+If reference ads were uploaded, model the layout structure, headline style, and visual approach after proven high-performing ad patterns.`,
 
   video_ads: `You are an elite creative director and scriptwriter specializing in high-converting video ad content for alternative investment funds targeting accredited investors.
 ${COMPLIANCE_RULES}
@@ -477,6 +480,10 @@ function buildUserPrompt(client_data: any, asset_type: string, existing_research
   userPrompt += `- Website: ${client_data.website || "N/A"}\n`;
   if (client_data.fund_history) userPrompt += `- Fund History/Backstory: ${sanitizeClientField(client_data.fund_history)}\n`;
   if (client_data.brand_notes) userPrompt += `- Brand Notes: ${sanitizeClientField(client_data.brand_notes)}\n`;
+  if (client_data.brand_colors?.length > 0) userPrompt += `- Brand Colors: ${client_data.brand_colors.join(', ')} (USE THESE EXACT COLORS in all creative concepts — primary, secondary, accent)\n`;
+  if (client_data.primary_offer) userPrompt += `- Primary Offer: ${sanitizeClientField(client_data.primary_offer)} (THIS is the core value proposition — lead with this in headlines and hooks)\n`;
+  if (client_data.secondary_offers?.length > 0) userPrompt += `- Secondary Offers: ${client_data.secondary_offers.map((o: string) => sanitizeClientField(o)).join('; ')}\n`;
+  if (client_data.reference_ad_paths?.length > 0) userPrompt += `- Reference Ads: ${client_data.reference_ad_paths.length} best-performing ads uploaded. Model the style, tone, layout patterns, and visual approach after high-performing ad creative. Use similar headline structures, CTA placement, and visual hierarchy.\n`;
   if (client_data.additional_notes) userPrompt += `- Additional Notes: ${sanitizeClientField(client_data.additional_notes)}\n`;
 
   // Validate and embed research with grounding sources for downstream accuracy

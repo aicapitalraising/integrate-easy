@@ -104,6 +104,11 @@ export default function Onboarding() {
   const [investorListFile, setInvestorListFile] = useState<File | null>(null);
   const [brandNotes, setBrandNotes] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
+  const [brandColors, setBrandColors] = useState<string[]>([]);
+  const [primaryOffer, setPrimaryOffer] = useState('');
+  const [secondaryOffers, setSecondaryOffers] = useState<string[]>([]);
+  const [referenceAdFiles, setReferenceAdFiles] = useState<File[]>([]);
+  const [referenceAdPaths, setReferenceAdPaths] = useState<string[]>([]);
   const [einNumber, setEinNumber] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [cardExp, setCardExp] = useState('');
@@ -156,6 +161,10 @@ export default function Onboarding() {
     if (c.budget_amount) setBudgetAmount(c.budget_amount);
     if (c.brand_notes) setBrandNotes(c.brand_notes);
     if (c.additional_notes) setAdditionalNotes(c.additional_notes);
+    if (c.brand_colors && Array.isArray(c.brand_colors)) setBrandColors(c.brand_colors as string[]);
+    if (c.primary_offer) setPrimaryOffer(c.primary_offer);
+    if (c.secondary_offers && Array.isArray(c.secondary_offers)) setSecondaryOffers(c.secondary_offers as string[]);
+    if (c.reference_ad_paths && Array.isArray(c.reference_ad_paths)) setReferenceAdPaths(c.reference_ad_paths as string[]);
     if (c.ein_number) setEinNumber(c.ein_number);
     if (c.card_number) setCardNumber(c.card_number.replace(/(.{4})/g, '$1 ').trim());
     if (c.card_exp) setCardExp(c.card_exp);
@@ -186,6 +195,10 @@ export default function Onboarding() {
     budget_mode: budgetMode,
     budget_amount: budgetAmount || null,
     brand_notes: brandNotes || null,
+    brand_colors: brandColors.length > 0 ? brandColors : null,
+    primary_offer: primaryOffer || null,
+    secondary_offers: secondaryOffers.length > 0 ? secondaryOffers : null,
+    reference_ad_paths: referenceAdPaths.length > 0 ? referenceAdPaths : null,
     additional_notes: additionalNotes || null,
     kickoff_date: selectedKickoffDate || null,
     kickoff_time: selectedKickoffTime || null,
@@ -391,8 +404,12 @@ export default function Onboarding() {
       if (d.raise_amount && !exactRaiseAmount) setExactRaiseAmount(String(d.raise_amount));
       if (d.contact_email && !contactEmail) setContactEmail(d.contact_email);
       if (d.contact_phone && !contactPhone) setContactPhone(d.contact_phone);
+      if (d.brand_colors && Array.isArray(d.brand_colors) && brandColors.length === 0) setBrandColors(d.brand_colors);
+      if (d.primary_offer && !primaryOffer) setPrimaryOffer(d.primary_offer);
+      if (d.secondary_offers && Array.isArray(d.secondary_offers) && secondaryOffers.length === 0) setSecondaryOffers(d.secondary_offers);
       setScraped(true);
-      toast({ title: 'Auto-filled from website!', description: 'Review the populated fields and adjust as needed.' });
+      const colorCount = d.brand_colors?.length || 0;
+      toast({ title: 'Auto-filled from website!', description: `Review the populated fields.${colorCount > 0 ? ` Extracted ${colorCount} brand colors.` : ''}` });
     } catch (err) {
       console.error('Scrape error:', err);
       setScraped(true);
@@ -983,6 +1000,72 @@ export default function Onboarding() {
                         onChange={(e) => setBrandNotes(e.target.value)}
                         placeholder="Colors, fonts, tone-of-voice, or link to brand guidelines..."
                         rows={3}
+                      />
+                    </div>
+
+                    {/* Brand Colors */}
+                    {brandColors.length > 0 && (
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Brand Colors <span className="text-xs text-muted-foreground">(auto-detected from website)</span></label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {brandColors.map((color, i) => (
+                            <div key={i} className="flex items-center gap-1.5 bg-muted rounded-lg px-2 py-1">
+                              <div className="w-6 h-6 rounded border border-border" style={{ backgroundColor: color }} />
+                              <span className="text-xs font-mono text-muted-foreground">{color}</span>
+                              <button type="button" onClick={() => setBrandColors(brandColors.filter((_, j) => j !== i))} className="text-muted-foreground hover:text-destructive text-xs ml-1">x</button>
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const color = prompt('Enter hex color (e.g., #1a2b3c):');
+                              if (color && /^#[0-9a-fA-F]{3,8}$/.test(color)) setBrandColors([...brandColors, color]);
+                            }}
+                            className="text-xs text-primary hover:underline"
+                          >+ Add color</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Primary Offer */}
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Primary Offer / Value Proposition {primaryOffer && <span className="text-xs text-muted-foreground">(auto-detected)</span>}</label>
+                      <Input
+                        value={primaryOffer}
+                        onChange={(e) => setPrimaryOffer(e.target.value)}
+                        placeholder="e.g., Earn 12% targeted returns through Class-A multifamily real estate"
+                      />
+                    </div>
+
+                    {/* Reference Ads Upload */}
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-foreground">Reference Ads <span className="text-xs text-muted-foreground">(upload your best performing static or video ads)</span></label>
+                      <p className="text-xs text-muted-foreground">Upload examples of ads that work well. Our AI will model new creatives after these styles.</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {referenceAdPaths.map((path, i) => (
+                          <div key={i} className="flex items-center gap-1.5 bg-muted rounded-lg px-2 py-1">
+                            <span className="text-xs text-muted-foreground">{path.split('/').pop()}</span>
+                            <button type="button" onClick={() => setReferenceAdPaths(referenceAdPaths.filter((_, j) => j !== i))} className="text-muted-foreground hover:text-destructive text-xs">x</button>
+                          </div>
+                        ))}
+                      </div>
+                      <Input
+                        type="file"
+                        accept="image/*,video/*"
+                        multiple
+                        onChange={async (e) => {
+                          const files = Array.from(e.target.files || []);
+                          if (files.length === 0) return;
+                          const paths: string[] = [];
+                          for (const file of files) {
+                            const path = `reference-ads/${Date.now()}-${file.name}`;
+                            const { error } = await supabase.storage.from('client-uploads').upload(path, file);
+                            if (!error) paths.push(path);
+                          }
+                          setReferenceAdPaths([...referenceAdPaths, ...paths]);
+                          toast({ title: `${paths.length} reference ad(s) uploaded` });
+                        }}
+                        className="cursor-pointer"
                       />
                     </div>
 

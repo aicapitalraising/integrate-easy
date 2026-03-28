@@ -313,6 +313,7 @@ export type Database = {
       clients: {
         Row: {
           additional_notes: string | null
+          brand_colors: Json | null
           brand_notes: string | null
           budget_amount: string | null
           budget_mode: string | null
@@ -338,10 +339,14 @@ export type Database = {
           investor_list_path: string | null
           kickoff_date: string | null
           kickoff_time: string | null
+          logo_path: string | null
           min_investment: string | null
           pitch_deck_link: string | null
           pitch_deck_path: string | null
+          primary_offer: string | null
           raise_amount: string | null
+          reference_ad_paths: Json | null
+          secondary_offers: Json | null
           share_token: string
           speaker_name: string | null
           status: string
@@ -354,6 +359,7 @@ export type Database = {
         }
         Insert: {
           additional_notes?: string | null
+          brand_colors?: Json | null
           brand_notes?: string | null
           budget_amount?: string | null
           budget_mode?: string | null
@@ -379,10 +385,14 @@ export type Database = {
           investor_list_path?: string | null
           kickoff_date?: string | null
           kickoff_time?: string | null
+          logo_path?: string | null
           min_investment?: string | null
           pitch_deck_link?: string | null
           pitch_deck_path?: string | null
+          primary_offer?: string | null
           raise_amount?: string | null
+          reference_ad_paths?: Json | null
+          secondary_offers?: Json | null
           share_token?: string
           speaker_name?: string | null
           status?: string
@@ -395,6 +405,7 @@ export type Database = {
         }
         Update: {
           additional_notes?: string | null
+          brand_colors?: Json | null
           brand_notes?: string | null
           budget_amount?: string | null
           budget_mode?: string | null
@@ -420,10 +431,14 @@ export type Database = {
           investor_list_path?: string | null
           kickoff_date?: string | null
           kickoff_time?: string | null
+          logo_path?: string | null
           min_investment?: string | null
           pitch_deck_link?: string | null
           pitch_deck_path?: string | null
+          primary_offer?: string | null
           raise_amount?: string | null
+          reference_ad_paths?: Json | null
+          secondary_offers?: Json | null
           share_token?: string
           speaker_name?: string | null
           status?: string

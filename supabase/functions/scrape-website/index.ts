@@ -75,13 +75,22 @@ Deno.serve(async (req) => {
 
     const trimmedContent = cleanContent.substring(0, 12000)
 
+    // Also extract CSS color values from the raw HTML for brand colors
+    const colorMatches = htmlContent.match(/(#[0-9a-fA-F]{3,8}|rgb\([^)]+\)|hsl\([^)]+\))/g) || []
+    // Deduplicate and filter out common non-brand colors (pure white, black, greys)
+    const uniqueColors = [...new Set(colorMatches)]
+      .filter(c => !['#fff', '#ffffff', '#000', '#000000', '#333', '#333333', '#666', '#666666', '#999', '#ccc', '#eee', '#f5f5f5', '#fafafa'].includes(c.toLowerCase()))
+      .slice(0, 20)
+
     // Build prompt - always include the URL so the model can search for it
-    const prompt = `You are an expert at extracting investment fund information from websites.
+    const prompt = `You are an expert at extracting investment fund information and brand identity from websites.
 
 Research the website ${normalizedUrl} and combine with the following scraped content to extract ALL available information about this investment fund or company.
 
 Scraped website content (may be partial):
 ${trimmedContent || '(No content could be scraped - please use your knowledge of this website)'}
+
+${uniqueColors.length > 0 ? `CSS colors found on this website: ${uniqueColors.join(', ')}` : ''}
 
 Return a JSON object with these fields (use null for anything not found):
 
@@ -100,7 +109,10 @@ Return a JSON object with these fields (use null for anything not found):
   "fund_type": "e.g. Real Estate Fund, Private Equity, Private Credit",
   "raise_amount": "target raise amount if mentioned",
   "contact_email": "contact email if found",
-  "contact_phone": "phone number if found"
+  "contact_phone": "phone number if found",
+  "brand_colors": ["#hex1", "#hex2", "#hex3"] (pick 3-5 primary brand colors from the CSS colors and page design - the dominant accent, secondary, background, and text colors that define the brand. Convert rgb/hsl to hex. Exclude pure white/black/grey.),
+  "primary_offer": "the main investment offer or value proposition in one sentence (e.g. 'Earn 12% targeted returns through Class-A multifamily real estate')",
+  "secondary_offers": ["offer2", "offer3"] (additional selling points, benefits, or offers mentioned - max 3)
 }
 
 Only return valid JSON, no other text.`

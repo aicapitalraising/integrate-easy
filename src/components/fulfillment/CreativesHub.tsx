@@ -21,6 +21,10 @@ interface Client {
   target_investor: string | null;
   website: string | null;
   brand_notes: string | null;
+  brand_colors?: any;
+  primary_offer?: string | null;
+  secondary_offers?: any;
+  reference_ad_paths?: any;
   additional_notes: string | null;
   contact_name?: string;
   speaker_name?: string | null;
@@ -173,6 +177,10 @@ export default function CreativesHub({ client }: CreativesHubProps) {
             target_investor: client.target_investor,
             website: client.website,
             brand_notes: client.brand_notes,
+            brand_colors: client.brand_colors,
+            primary_offer: client.primary_offer,
+            secondary_offers: client.secondary_offers,
+            reference_ad_paths: client.reference_ad_paths,
             additional_notes: client.additional_notes,
             contact_name: client.contact_name,
             speaker_name: client.speaker_name,
@@ -251,8 +259,43 @@ export default function CreativesHub({ client }: CreativesHubProps) {
     return content?.video_concepts || [];
   };
 
+  const colors = Array.isArray(client.brand_colors) ? client.brand_colors as string[] : [];
+  const refAds = Array.isArray(client.reference_ad_paths) ? client.reference_ad_paths as string[] : [];
+
   return (
     <div className="space-y-6">
+      {/* Brand Context Bar */}
+      {(colors.length > 0 || client.primary_offer || refAds.length > 0) && (
+        <Card className="border-border bg-muted/30">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-6 flex-wrap">
+              {colors.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Brand Colors</p>
+                  <div className="flex items-center gap-1.5">
+                    {colors.map((c: string, i: number) => (
+                      <div key={i} className="w-7 h-7 rounded border border-border" style={{ backgroundColor: c }} title={c} />
+                    ))}
+                  </div>
+                </div>
+              )}
+              {client.primary_offer && (
+                <div className="flex-1 min-w-48">
+                  <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Primary Offer</p>
+                  <p className="text-sm text-foreground font-medium">{client.primary_offer}</p>
+                </div>
+              )}
+              {refAds.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Reference Ads</p>
+                  <Badge variant="outline" className="text-[10px]">{refAds.length} uploaded</Badge>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Tabs defaultValue="static" className="space-y-4">
         <TabsList className="h-auto gap-1 bg-muted/50 p-1">
           <TabsTrigger value="static" className="text-xs gap-1.5">
