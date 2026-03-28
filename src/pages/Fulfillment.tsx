@@ -195,19 +195,27 @@ function ClientWorkspace({ client }: { client: Client }) {
   const [generatingAll, setGeneratingAll] = useState(false);
   const [genProgress, setGenProgress] = useState(0);
   const [genStatus, setGenStatus] = useState('');
+  const [genStartTime, setGenStartTime] = useState<number | null>(null);
   const ASSET_TYPES = ['research', 'angles', 'emails', 'sms', 'adcopy', 'scripts', 'creatives', 'report', 'funnel', 'setter'];
+  const ASSET_LABELS: Record<string, string> = {
+    research: 'Research', angles: 'Angles', emails: 'Emails', sms: 'SMS',
+    adcopy: 'Ad Copy', scripts: 'Scripts', creatives: 'Creatives',
+    report: 'Report', funnel: 'Funnel', setter: 'AI Setter',
+  };
 
   const generateAll = async () => {
+    if (!confirm('Generate all 10 assets for this client? This may take 3-5 minutes.')) return;
     setGeneratingAll(true);
     setGenProgress(0);
+    setGenStartTime(Date.now());
     setGenStatus('Starting generation pipeline...');
     try {
-      // Fire-and-forget the auto-generate call, then poll for assets
       supabase.functions.invoke('auto-generate-assets', {
         body: { client_id: client.id },
       });
 
-      // Poll for completed assets
+      let lastCount = 0;
+      let stallCount = 0;
       for (let i = 0; i < 60; i++) {
         await new Promise(r => setTimeout(r, 5000));
         const { data } = await supabase
@@ -218,28 +226,41 @@ function ClientWorkspace({ client }: { client: Client }) {
         const count = ASSET_TYPES.filter(t => completed.has(t)).length;
         setGenProgress(Math.round((count / ASSET_TYPES.length) * 100));
         const current = ASSET_TYPES.find(t => !completed.has(t));
-        setGenStatus(current ? `Generating ${current}...` : 'Complete!');
+        setGenStatus(current ? `Generating ${ASSET_LABELS[current] || current}... (${count}/${ASSET_TYPES.length} done)` : 'Complete!');
+
+        if (count === lastCount) {
+          stallCount++;
+          if (stallCount >= 12) {
+            // 60 seconds with no progress
+            setGenStatus(`Still working on ${ASSET_LABELS[current || ''] || current}... (complex content takes longer)`);
+          }
+        } else {
+          stallCount = 0;
+          lastCount = count;
+        }
+
         if (count >= ASSET_TYPES.length) break;
       }
-      toast({ title: 'All assets generated!', description: 'Review each tab to see the results.' });
+      toast({ title: 'All assets generated!', description: 'Switch to "All Copy & Assets" to review everything.' });
     } catch (e: any) {
-      toast({ title: 'Generation error', description: e.message, variant: 'destructive' });
+      toast({ title: 'Generation error', description: 'Some assets may have failed. Check each tab for details.', variant: 'destructive' });
     }
     setGeneratingAll(false);
+    setGenStartTime(null);
   };
 
   return (
     <div className="space-y-4">
       {/* Generate All Button */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <Button onClick={generateAll} disabled={generatingAll} className="gap-2">
           {generatingAll ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
           {generatingAll ? 'Generating All...' : 'Generate All Assets'}
         </Button>
         {generatingAll && (
-          <div className="flex-1 max-w-xs space-y-1">
+          <div className="flex-1 min-w-48 max-w-xs space-y-1">
             <Progress value={genProgress} className="h-2" />
-            <p className="text-xs text-muted-foreground">{genStatus} ({genProgress}%)</p>
+            <p className="text-xs text-muted-foreground">{genStatus}</p>
           </div>
         )}
       </div>
@@ -310,12 +331,16 @@ export default function Fulfillment() {
 
   const deleteClient = async (e: React.MouseEvent, clientId: string) => {
     e.stopPropagation();
-    if (!confirm('Delete this client and all their assets? This cannot be undone.')) return;
-    
-    // Delete assets first, then the client
+    const clientName = clients.find(c => c.id === clientId)?.company_name || 'this client';
+    if (!confirm(`Permanently delete "${clientName}" and all their campaign assets?\n\nThis action cannot be undone.`)) return;
+
+    // Delete related data first, then the client
+    await supabase.from('creative_generations').delete().eq('client_id', clientId);
+    await supabase.from('creative_schedules').delete().eq('client_id', clientId);
+    await supabase.from('avatar_configs').delete().eq('client_id', clientId);
     await supabase.from('client_assets').delete().eq('client_id', clientId);
     await supabase.from('clients').delete().eq('id', clientId);
-    toast({ title: 'Client deleted' });
+    toast({ title: 'Client deleted', description: `${clientName} and all assets have been removed.` });
     setClients((prev) => prev.filter((c) => c.id !== clientId));
   };
 

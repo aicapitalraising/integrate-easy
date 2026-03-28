@@ -72,9 +72,12 @@ export default function AllCopyView({ clientId }: AllCopyViewProps) {
   };
 
   const updateStatus = async (assetId: string, status: string) => {
+    const label = status.replace('_', ' ');
+    if (status === 'approved' && !confirm(`Mark this asset as approved? This signals it's ready for launch.`)) return;
+    if (status === 'client_review' && !confirm(`Send this asset to the client for review?`)) return;
     await supabase.from('client_assets').update({ status }).eq('id', assetId);
     await loadAllAssets();
-    toast({ title: `Status updated to ${status.replace('_', ' ')}` });
+    toast({ title: `Status: ${label}`, description: status === 'approved' ? 'Asset is approved and ready.' : `Asset moved to ${label}.` });
   };
 
   const startEdit = (type: string) => {
@@ -126,20 +129,33 @@ export default function AllCopyView({ clientId }: AllCopyViewProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-sm text-muted-foreground">
-          {generatedTypes.length}/{SECTION_CONFIG.length} assets generated
+        <span className="text-sm font-medium text-foreground">
+          {generatedTypes.length}/{SECTION_CONFIG.length} assets
         </span>
         {Object.values(assets).filter(a => a.status === 'approved').length > 0 && (
           <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-200 text-[10px]">
             {Object.values(assets).filter(a => a.status === 'approved').length} approved
           </Badge>
         )}
-        {missingTypes.length > 0 && (
-          <span className="text-xs text-muted-foreground">
-            Missing: {missingTypes.map(m => m.label).join(', ')}
-          </span>
+        {Object.values(assets).filter(a => a.status === 'draft').length > 0 && (
+          <Badge className="bg-amber-500/10 text-amber-600 border-amber-200 text-[10px]">
+            {Object.values(assets).filter(a => a.status === 'draft').length} drafts
+          </Badge>
         )}
       </div>
+
+      {missingTypes.length > 0 && (
+        <div className="bg-muted/50 border border-border rounded-lg px-4 py-3">
+          <p className="text-xs font-medium text-foreground mb-1">Not yet generated ({missingTypes.length})</p>
+          <p className="text-xs text-muted-foreground">
+            {missingTypes.map(m => m.label).join(' → ')}
+          </p>
+          <p className="text-[10px] text-muted-foreground/70 mt-1">
+            Use "Generate All Assets" above or generate individually from each asset tab.
+            {!assets['research'] && ' Start with Research for best results.'}
+          </p>
+        </div>
+      )}
 
       {SECTION_CONFIG.map(({ type, label, renderer: Renderer }) => {
         const asset = assets[type];

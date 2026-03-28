@@ -159,9 +159,11 @@ export default function AssetGeneratorTab({ client, assetType, icon: Icon, title
   };
 
   const updateStatus = async (assetId: string, status: string) => {
+    if (status === 'approved' && !confirm('Mark this asset as approved? This signals it\'s ready for launch.')) return;
+    if (status === 'client_review' && !confirm('Send this asset to the client for review?')) return;
     await supabase.from('client_assets').update({ status }).eq('id', assetId);
     await loadAssets();
-    toast({ title: `Status updated to ${status.replace('_', ' ')}` });
+    toast({ title: `Status: ${status.replace('_', ' ')}` });
   };
 
   const startEditing = () => {

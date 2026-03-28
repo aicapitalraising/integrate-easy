@@ -220,9 +220,11 @@ export default function CreativesHub({ client }: CreativesHubProps) {
   };
 
   const updateStatus = async (assetId: string, status: string) => {
+    if (status === 'approved' && !confirm('Mark these creatives as approved?')) return;
+    if (status === 'client_review' && !confirm('Send these creatives to the client for review?')) return;
     await supabase.from('client_assets').update({ status }).eq('id', assetId);
     await loadAll();
-    toast({ title: `Status updated to ${status.replace('_', ' ')}` });
+    toast({ title: `Status: ${status.replace('_', ' ')}` });
   };
 
   if (loading) {
