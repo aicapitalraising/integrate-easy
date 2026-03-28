@@ -376,6 +376,7 @@ export default function CreativesHub({ client }: CreativesHubProps) {
                               {c.data_callout && (
                                 <div className="bg-primary/5 border border-primary/20 rounded px-2 py-1">
                                   <p className="text-[10px] font-medium text-primary">{c.data_callout}</p>
+                                  {c.data_source && <p className="text-[9px] text-muted-foreground/60">Source: {c.data_source}</p>}
                                 </div>
                               )}
                               <p className="text-[10px] text-muted-foreground/70">Visual: {c.visual_direction}</p>

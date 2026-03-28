@@ -13,7 +13,16 @@ function EditField({ value, onChange, rows = 3, className = '' }: { value: strin
 }
 
 export function ResearchRenderer({ content, editMode, onEdit }: RenderProps) {
-  if (!content || content.raw) return <pre className="text-sm text-muted-foreground whitespace-pre-wrap">{content?.raw || 'No content'}</pre>;
+  if (!content) return <p className="text-sm text-muted-foreground py-4">No research content generated yet.</p>;
+  if (content.raw || content._parse_error) return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-200 rounded-lg px-3 py-2">
+        <span className="text-amber-600 text-xs font-medium">Data Quality Warning</span>
+        <span className="text-amber-600/70 text-[10px]">Research returned unstructured data. Statistics may not be source-verified. Please regenerate for better accuracy.</span>
+      </div>
+      <pre className="text-sm text-muted-foreground whitespace-pre-wrap bg-muted/50 p-4 rounded-lg max-h-96 overflow-auto">{content.raw || JSON.stringify(content, null, 2)}</pre>
+    </div>
+  );
 
   const updateField = (key: string, val: string) => {
     if (onEdit) onEdit({ ...content, [key]: val });
@@ -357,10 +366,13 @@ export function CreativesRenderer({ content, editMode, onEdit }: RenderProps) {
     </div>
   );
 
-  if (content.raw) return (
-    <div className="text-center py-8">
-      <p className="text-sm text-destructive font-medium">Generation returned invalid format</p>
-      <pre className="text-xs text-muted-foreground mt-2 whitespace-pre-wrap max-h-40 overflow-auto bg-muted p-3 rounded">{content.raw}</pre>
+  if (content.raw || content._parse_error) return (
+    <div className="space-y-3 py-4">
+      <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-200 rounded-lg px-3 py-2">
+        <span className="text-amber-600 text-xs font-medium">Data Quality Warning</span>
+        <span className="text-amber-600/70 text-[10px]">Creative generation returned unstructured data. Please regenerate for properly formatted concepts.</span>
+      </div>
+      <pre className="text-xs text-muted-foreground whitespace-pre-wrap max-h-60 overflow-auto bg-muted p-3 rounded">{content.raw}</pre>
     </div>
   );
 
@@ -423,6 +435,7 @@ function StaticAdsSection({ statics, content, editMode, onEdit }: { statics: any
                     {c.data_callout && (
                       <div className="bg-primary/5 border border-primary/20 rounded px-2 py-1">
                         <p className="text-[10px] font-medium text-primary">{c.data_callout}</p>
+                        {c.data_source && <p className="text-[9px] text-muted-foreground/60">Source: {c.data_source}</p>}
                       </div>
                     )}
                   </>

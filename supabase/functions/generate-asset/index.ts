@@ -293,9 +293,11 @@ Generate static ad creative concepts as JSON with key:
   - platform: primary platform ("facebook", "instagram", "linkedin")
   - cta_text: call-to-action button text
   - color_scheme: suggested color palette description
+  - data_source: source name for the data_callout stat (e.g., "CBRE 2025 Report", "NAR Q1 2025")
 
 Mix formats across concepts. Feature data prominently. Premium, institutional aesthetic with clean typography.
-Each concept should use a different marketing angle for creative diversity.`,
+Each concept should use a different marketing angle for creative diversity.
+IMPORTANT: Every data_callout MUST reference a real statistic from the provided research with its source. Do NOT fabricate statistics.`,
 
   video_ads: `You are an elite creative director and scriptwriter specializing in high-converting video ad content for alternative investment funds targeting accredited investors.
 ${COMPLIANCE_RULES}
@@ -315,7 +317,8 @@ Generate video ad concepts as JSON with key:
 
 Scripts must be written for avatar (AI spokesperson) delivery — natural, conversational, authoritative.
 Each concept should use a different hook strategy and marketing angle for testing.
-Include compliance disclaimer in each script's closing.`,
+Include compliance disclaimer in each script's closing.
+IMPORTANT: Every statistic referenced in scripts MUST come from the provided research. When citing a number, include the source name naturally (e.g., "According to CBRE's latest report, the market has grown 25%"). Do NOT fabricate statistics.`,
 
   report: `You are a financial content strategist creating a special report / lead magnet for accredited investors.
 ${COMPLIANCE_RULES}
@@ -436,6 +439,24 @@ Generate a complete AI Setter configuration as JSON with these keys:
 Fill all templates with the client's actual fund data.`,
 };
 
+// Sanitize client-provided fields to prevent non-compliant claims from entering prompts
+function sanitizeClientField(value: string | null | undefined): string {
+  if (!value) return "";
+  const NON_COMPLIANT_TERMS = [
+    { pattern: /\bguarantee[ds]?\b/gi, replacement: "targeted" },
+    { pattern: /\brisk[- ]?free\b/gi, replacement: "risk-managed" },
+    { pattern: /\bsecure[d]?\s+returns?\b/gi, replacement: "targeted returns" },
+    { pattern: /\bno[- ]?risk\b/gi, replacement: "risk-managed" },
+    { pattern: /\bsure[- ]?thing\b/gi, replacement: "compelling opportunity" },
+    { pattern: /\b100%\s+safe\b/gi, replacement: "carefully managed" },
+  ];
+  let sanitized = value;
+  for (const term of NON_COMPLIANT_TERMS) {
+    sanitized = sanitized.replace(term.pattern, term.replacement);
+  }
+  return sanitized;
+}
+
 function buildUserPrompt(client_data: any, asset_type: string, existing_research: any, existing_angles: any): string {
   let userPrompt = `FUND INFORMATION:\n`;
   userPrompt += `- Fund/Company Name: ${client_data.company_name}\n`;
@@ -445,30 +466,48 @@ function buildUserPrompt(client_data: any, asset_type: string, existing_research
   userPrompt += `- Fund Type: ${client_data.fund_type || "Alternative Investment"}\n`;
   userPrompt += `- Raise Amount: $${client_data.raise_amount || "TBD"}\n`;
   userPrompt += `- Minimum Investment: $${client_data.min_investment || "TBD"}\n`;
-  userPrompt += `- Targeted Returns: ${client_data.targeted_returns || "TBD"}\n`;
+  userPrompt += `- Targeted Returns: ${sanitizeClientField(client_data.targeted_returns) || "TBD"}\n`;
   userPrompt += `- Capital Hold Period: ${client_data.hold_period || "TBD"}\n`;
   userPrompt += `- Distribution Schedule: ${client_data.distribution_schedule || "TBD"}\n`;
   userPrompt += `- Investment Range: ${client_data.investment_range || "$25K - $1,000,000"}\n`;
-  userPrompt += `- Tax Advantages: ${client_data.tax_advantages || "TBD"}\n`;
-  userPrompt += `- Credibility/Track Record: ${client_data.credibility || "TBD"}\n`;
+  userPrompt += `- Tax Advantages: ${sanitizeClientField(client_data.tax_advantages) || "TBD"}\n`;
+  userPrompt += `- Credibility/Track Record: ${sanitizeClientField(client_data.credibility) || "TBD"}\n`;
   userPrompt += `- Timeline: ${client_data.timeline || "TBD"}\n`;
   userPrompt += `- Target Investor: ${client_data.target_investor || "Accredited investors"}\n`;
   userPrompt += `- Website: ${client_data.website || "N/A"}\n`;
-  if (client_data.fund_history) userPrompt += `- Fund History/Backstory: ${client_data.fund_history}\n`;
-  if (client_data.brand_notes) userPrompt += `- Brand Notes: ${client_data.brand_notes}\n`;
-  if (client_data.additional_notes) userPrompt += `- Additional Notes: ${client_data.additional_notes}\n`;
+  if (client_data.fund_history) userPrompt += `- Fund History/Backstory: ${sanitizeClientField(client_data.fund_history)}\n`;
+  if (client_data.brand_notes) userPrompt += `- Brand Notes: ${sanitizeClientField(client_data.brand_notes)}\n`;
+  if (client_data.additional_notes) userPrompt += `- Additional Notes: ${sanitizeClientField(client_data.additional_notes)}\n`;
 
+  // Validate and embed research with grounding sources for downstream accuracy
   if (existing_research && asset_type !== "research") {
-    userPrompt += `\n=== MARKET RESEARCH (use this data extensively — reference specific stats) ===\n${JSON.stringify(existing_research, null, 2)}\n`;
+    const hasStructuredData = existing_research.key_statistics || existing_research.why_asset_class || existing_research.why_company;
+    const isRawFallback = existing_research.raw && !hasStructuredData;
+
+    if (isRawFallback) {
+      userPrompt += `\n=== MARKET RESEARCH (WARNING: unstructured — verify all claims) ===\n${existing_research.raw.substring(0, 8000)}\n`;
+      userPrompt += `\nIMPORTANT: The above research is unstructured. Do NOT cite specific statistics from it unless they include a named source. If a stat has no source, omit it or use qualitative language instead.\n`;
+    } else {
+      userPrompt += `\n=== MARKET RESEARCH (use this data extensively — reference specific stats WITH their sources) ===\n${JSON.stringify(existing_research, null, 2)}\n`;
+
+      // Embed grounding sources so downstream generators know what's verified
+      if (existing_research._grounding_sources?.length > 0) {
+        userPrompt += `\n=== VERIFIED RESEARCH SOURCES ===\n`;
+        for (const src of existing_research._grounding_sources) {
+          userPrompt += `- ${src.title || "Source"}: ${src.uri}\n`;
+        }
+        userPrompt += `\nIMPORTANT: When referencing statistics from the research above, prefer data that can be traced to these verified sources. For any statistic you use, include the source name in parentheses where possible (e.g., "25% growth (CBRE 2025 Report)").\n`;
+      }
+    }
   }
   if (existing_angles && ["emails", "sms", "adcopy", "scripts", "creatives", "static_ads", "video_ads", "funnel", "setter"].includes(asset_type)) {
     userPrompt += `\n=== MARKETING ANGLES (build on these) ===\n${JSON.stringify(existing_angles, null, 2)}\n`;
   }
 
   if (asset_type === "research") {
-    userPrompt += `\nSearch the web for REAL, CURRENT data about this asset class, market, industry trends, and news. Include specific statistics, market sizes, growth rates, and recent developments. Return ONLY valid JSON.`;
+    userPrompt += `\nSearch the web for REAL, CURRENT data about this asset class, market, industry trends, and news. Include specific statistics, market sizes, growth rates, and recent developments. For EVERY statistic include the source name. Return ONLY valid JSON.`;
   } else {
-    userPrompt += `\nGenerate the ${asset_type} content now. USE the research data and statistics throughout. Fill ALL placeholders with actual client fund data from above. Return ONLY valid JSON.`;
+    userPrompt += `\nGenerate the ${asset_type} content now. USE the research data and statistics throughout. Fill ALL placeholders with actual client fund data from above. For any market statistic used, include the source in parentheses. Do NOT fabricate statistics — only use data from the research provided or clearly label projections as "projected" or "estimated". Return ONLY valid JSON.`;
   }
 
   return userPrompt;
@@ -588,7 +627,10 @@ serve(async (req) => {
       let content = structureResult.candidates?.[0]?.content?.parts?.[0]?.text || "";
       content = content.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
 
-      try { parsed = JSON.parse(content); } catch { parsed = { raw: content }; }
+      try { parsed = JSON.parse(content); } catch {
+        console.warn("Research JSON parse failed, storing raw content");
+        parsed = { raw: content, _parse_error: true };
+      }
       if (groundingSources.length > 0) parsed._grounding_sources = groundingSources;
 
     } else {
@@ -621,8 +663,11 @@ serve(async (req) => {
 
       try { parsed = JSON.parse(content); } catch {
         const jsonMatch = content.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
-        if (jsonMatch) { try { parsed = JSON.parse(jsonMatch[0]); } catch { parsed = { raw: content }; } }
-        else { parsed = { raw: content }; }
+        if (jsonMatch) { try { parsed = JSON.parse(jsonMatch[0]); } catch { parsed = { raw: content, _parse_error: true }; } }
+        else { parsed = { raw: content, _parse_error: true }; }
+      }
+      if (parsed._parse_error) {
+        console.warn(`JSON parse failed for ${asset_type}, storing raw content with quality warning`);
       }
     }
 
