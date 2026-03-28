@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
 Research the website ${normalizedUrl} and combine with the following scraped content to extract ALL available information about this investment fund or company.
 
 Scraped website content (may be partial):
-${trimmedContent || '(No content could be scraped - please use your knowledge of this website)'}
+${trimmedContent || '(No content could be scraped from this website. Only extract data that can be found at the URL. Return null for any fields you cannot verify from the actual website content. Do NOT guess or fabricate any information.)'}
 
 ${uniqueColors.length > 0 ? `CSS colors found on this website: ${uniqueColors.join(', ')}` : ''}
 

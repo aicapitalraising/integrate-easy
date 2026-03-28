@@ -1252,8 +1252,20 @@ export default function Onboarding() {
                         {budgetAmount && <div><span className="text-muted-foreground">Budget:</span> <span className="text-foreground font-medium">${budgetAmount}/{budgetMode === 'monthly' ? 'mo' : 'day'} {budgetMode === 'monthly' ? `(≈ $${dailyBudget.toLocaleString()}/day)` : `(≈ $${monthlyBudget.toLocaleString()}/mo)`}</span></div>}
                         {investorListFile && <div><span className="text-muted-foreground">Investor List:</span> <span className="text-foreground font-medium">{investorListFile.name}</span></div>}
                         {brandNotes && <div className="sm:col-span-2"><span className="text-muted-foreground">Brand Notes:</span> <span className="text-foreground font-medium">{brandNotes}</span></div>}
+                        {brandColors.length > 0 && (
+                          <div className="sm:col-span-2">
+                            <span className="text-muted-foreground">Brand Colors:</span>{' '}
+                            <span className="inline-flex items-center gap-1 ml-1">
+                              {brandColors.map((c, i) => (
+                                <span key={i} className="inline-block w-4 h-4 rounded border border-border" style={{ backgroundColor: c }} title={c} />
+                              ))}
+                            </span>
+                          </div>
+                        )}
+                        {primaryOffer && <div className="sm:col-span-2"><span className="text-muted-foreground">Primary Offer:</span> <span className="text-foreground font-medium">{primaryOffer}</span></div>}
+                        {referenceAdPaths.length > 0 && <div><span className="text-muted-foreground">Reference Ads:</span> <span className="text-foreground font-medium">{referenceAdPaths.length} uploaded</span></div>}
                         {additionalNotes && <div className="sm:col-span-2"><span className="text-muted-foreground">Notes:</span> <span className="text-foreground font-medium">{additionalNotes}</span></div>}
-                        {!budgetAmount && !investorListFile && !brandNotes && !additionalNotes && (
+                        {!budgetAmount && !investorListFile && !brandNotes && !additionalNotes && brandColors.length === 0 && !primaryOffer && referenceAdPaths.length === 0 && (
                           <p className="text-muted-foreground text-xs italic">No additional info provided</p>
                         )}
                       </div>

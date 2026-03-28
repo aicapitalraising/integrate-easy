@@ -19,6 +19,10 @@ interface Client {
   target_investor: string | null;
   website: string | null;
   brand_notes: string | null;
+  brand_colors?: any;
+  primary_offer?: string | null;
+  secondary_offers?: any;
+  reference_ad_paths?: any;
   additional_notes: string | null;
   contact_name?: string;
   speaker_name?: string | null;
@@ -131,6 +135,10 @@ export default function AssetGeneratorTab({ client, assetType, icon: Icon, title
             target_investor: client.target_investor,
             website: client.website,
             brand_notes: client.brand_notes,
+            brand_colors: client.brand_colors,
+            primary_offer: client.primary_offer,
+            secondary_offers: client.secondary_offers,
+            reference_ad_paths: client.reference_ad_paths,
             additional_notes: client.additional_notes,
             contact_name: client.contact_name,
             speaker_name: client.speaker_name,

@@ -38,6 +38,10 @@ interface Client {
   budget_amount: string | null;
   investor_list_path: string | null;
   brand_notes: string | null;
+  brand_colors: any;
+  primary_offer: string | null;
+  secondary_offers: any;
+  reference_ad_paths: any;
   additional_notes: string | null;
   kickoff_date: string | null;
   kickoff_time: string | null;
