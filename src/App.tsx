@@ -17,6 +17,7 @@ import Start from "./pages/Start";
 import Invest from "./pages/Invest";
 import Portal from "./pages/Portal";
 import ReviewCall from "./pages/ReviewCall";
+import SalesLetter from "./pages/SalesLetter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => {
             <Route path="/invest" element={<Invest />} />
             <Route path="/portal/:token" element={<Portal />} />
             <Route path="/review" element={<ReviewCall />} />
+            <Route path="/lp" element={<SalesLetter />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
