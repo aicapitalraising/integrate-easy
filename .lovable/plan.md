@@ -1,21 +1,33 @@
 
 
-## Plan: Add EIN Number and Card-on-File Fields to Onboarding Step 3
+## Plan: Fix OG Preview Image for /deck Page
 
-### What Changes
+### Problem
+When the /deck link is shared (e.g. via iMessage), the preview shows a blank/white image. The current global OG image in `index.html` appears broken or doesn't represent the deck content well.
 
-Add two new sections to the "Brand & Assets" step (Step 3) of the onboarding form:
+### Approach
 
-1. **EIN Number field** — text input with label explaining it's needed for A2P approval to send SMS
-2. **Card on File section** — card number, expiration date, and CVV fields with a clear notice: "Your card will not be charged. It is only being placed on file for your CRM and ad manager accounts."
+Since this is an SPA, social/messaging crawlers (iMessage, Facebook, Twitter) read the static `index.html` and don't execute JavaScript. This means client-side solutions like `react-helmet` won't fix iMessage previews.
 
-### Technical Details
+**Two changes:**
+
+1. **Create a proper OG image for the deck page** — Design a 1200x630 PNG with the deck headline ("Raise $5M–$100M From Accredited Investors") and branding on a dark background, saved to `public/og-deck.png`.
+
+2. **Add a server-side redirect/prerender for /deck meta tags** — Since we can't do SSR in this stack, the practical solution is to create a dedicated `public/deck.html` with deck-specific OG tags that redirects to the SPA, OR update the global OG image in `index.html` to be more representative.
+
+**Recommended approach:** Generate a branded OG image (1200x630) using an edge function or manually, and update `index.html`'s OG image. Additionally, install `react-helmet-async` so the deck page sets its own meta tags (helps with crawlers that execute JS like Facebook/Twitter, though not iMessage).
+
+### Files to Change
 
 | File | Change |
-|---|---|
-| `src/pages/Onboarding.tsx` | Add state variables (`einNumber`, `cardNumber`, `cardExp`, `cardCvv`). Add two new UI sections between the investor list upload and brand notes fields. Include the fields in the submission payload to `clients` table. |
-| Database migration | Add columns `ein_number`, `card_number`, `card_exp`, `card_cvv` (all nullable text) to the `clients` table. Card data stored as-is for internal use (not processed for payments). |
+|------|--------|
+| `index.html` | Update the default OG image URL to a better branded image |
+| `src/main.tsx` | Wrap app in `HelmetProvider` |
+| `src/pages/Deck.tsx` | Add `<Helmet>` with deck-specific title, description, and OG image |
+| `public/og-deck.png` | Generate a branded 1200x630 OG image with deck headline |
 
-### Security Note
-Card details will be stored in the database for the sole purpose of adding to CRM and Facebook Ad Manager on behalf of the client. A clear disclaimer will be shown on the form. The fields will use appropriate input masks (card number grouped in 4s, MM/YY for expiration, 3-4 digits for CVV).
+### Technical Detail
+- Install `react-helmet-async` package
+- The `<Helmet>` on Deck.tsx will set `og:title`, `og:description`, `og:image` with deck-specific content
+- Generate the OG image using canvas in an edge function or create a static one with the logo + headline text on dark background
 
