@@ -1,33 +1,48 @@
 
 
-## Plan: Fix OG Preview Image for /deck Page
+## Plan: Create Branded Sales Letter Landing Page
 
-### Problem
-When the /deck link is shared (e.g. via iMessage), the preview shows a blank/white image. The current global OG image in `index.html` appears broken or doesn't represent the deck content well.
+### Overview
+Convert the uploaded HTML sales letter into a new React page at `/lp` using the existing brand system (Space Grotesk headings, Inter body, green primary color, clean light theme with subtle borders/cards).
 
-### Approach
+### Content Structure (from the HTML)
+The page is a long-form direct response sales letter with these sections:
+1. **Header** — Logo + quote subline
+2. **Hero** — Bold headline + subtext + first CTA
+3. **Letter body** — "Dear fund manager" problem/solution narrative
+4. **Qualification box** — 3 criteria with accent border
+5. **4-step process** — Step cards with labels
+6. **Funnel diagram** — Visual flow: AI Ads → Funnel → Call → Commitment
+7. **Checklist** — "Perfect for you if..." items
+8. **Testimonials** — 3 fund testimonials (RE, O&G, PE)
+9. **Closing letter** — Sign-off from Zac Tavenner
+10. **Apply form** — Name, email, phone → CTA button
+11. **Footer** — Links + copyright
 
-Since this is an SPA, social/messaging crawlers (iMessage, Facebook, Twitter) read the static `index.html` and don't execute JavaScript. This means client-side solutions like `react-helmet` won't fix iMessage previews.
+Multiple "Apply Now" CTAs scattered throughout that scroll to the form.
 
-**Two changes:**
-
-1. **Create a proper OG image for the deck page** — Design a 1200x630 PNG with the deck headline ("Raise $5M–$100M From Accredited Investors") and branding on a dark background, saved to `public/og-deck.png`.
-
-2. **Add a server-side redirect/prerender for /deck meta tags** — Since we can't do SSR in this stack, the practical solution is to create a dedicated `public/deck.html` with deck-specific OG tags that redirects to the SPA, OR update the global OG image in `index.html` to be more representative.
-
-**Recommended approach:** Generate a branded OG image (1200x630) using an edge function or manually, and update `index.html`'s OG image. Additionally, install `react-helmet-async` so the deck page sets its own meta tags (helps with crawlers that execute JS like Facebook/Twitter, though not iMessage).
+### Branding Adaptation
+- Replace red (#c0392b) accent with `primary` green throughout
+- Use `Space Grotesk` for headings, `Inter` for body (matching existing site)
+- Step cards and testimonial blocks use `glass-card` or `border border-border bg-card` styling
+- Qualify box uses `border-l-4 border-primary bg-primary/5`
+- CTA buttons use the existing `<Button>` component with primary styling
+- Funnel diagram uses primary-tinted boxes
+- Keep the long-form editorial feel but with clean, modern spacing
+- Logo from `@/assets/logo-aicra.png`
+- Responsive via Tailwind (max-w-3xl centered layout)
 
 ### Files to Change
 
 | File | Change |
 |------|--------|
-| `index.html` | Update the default OG image URL to a better branded image |
-| `src/main.tsx` | Wrap app in `HelmetProvider` |
-| `src/pages/Deck.tsx` | Add `<Helmet>` with deck-specific title, description, and OG image |
-| `public/og-deck.png` | Generate a branded 1200x630 OG image with deck headline |
+| `src/pages/SalesLetter.tsx` | **Create** — New page component with all sections |
+| `src/App.tsx` | Add route `<Route path="/lp" element={<SalesLetter />} />` |
 
 ### Technical Detail
-- Install `react-helmet-async` package
-- The `<Helmet>` on Deck.tsx will set `og:title`, `og:description`, `og:image` with deck-specific content
-- Generate the OG image using canvas in an edge function or create a static one with the logo + headline text on dark background
+- Single-file page component (no sub-components needed for a letter-style page)
+- Form fields are presentational — the "Apply Now" CTA scrolls to `#apply` section
+- Form submit scrolls to `/start` or opens the onboarding flow (matching existing pattern)
+- Framer Motion fade-in animations on scroll for each section
+- `react-helmet-async` for OG metadata on this page
 
