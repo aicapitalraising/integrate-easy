@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import DeckHero from '@/components/deck/DeckHero';
 import ChallengeSection from '@/components/deck/ChallengeSection';
 import OpportunitySection from '@/components/deck/OpportunitySection';
@@ -19,6 +20,18 @@ import DeckCTA from '@/components/deck/DeckCTA';
 const Deck = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <Helmet>
+        <title>AI Capital Raising — Raise $5M–$100M+ From Accredited Investors</title>
+        <meta name="description" content="AI-powered accredited investor acquisition for funds raising $5M–$100M+. Over $600M+ raised across 47+ funds." />
+        <meta property="og:title" content="AI Capital Raising — Raise $5M–$100M+ From Accredited Investors" />
+        <meta property="og:description" content="AI-powered accredited investor acquisition for funds raising $5M–$100M+. Over $600M+ raised across 47+ funds." />
+        <meta property="og:image" content="https://existing-repo-hugger.lovable.app/og-deck.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Capital Raising — Raise $5M–$100M+ From Accredited Investors" />
+        <meta name="twitter:description" content="AI-powered accredited investor acquisition for funds raising $5M–$100M+." />
+        <meta name="twitter:image" content="https://existing-repo-hugger.lovable.app/og-deck.png" />
+      </Helmet>
       <DeckHero />
       <ChallengeSection />
       <OpportunitySection />
