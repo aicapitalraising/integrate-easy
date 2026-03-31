@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import DeckHero from '@/components/deck/DeckHero';
 import ChallengeSection from '@/components/deck/ChallengeSection';
 import OpportunitySection from '@/components/deck/OpportunitySection';
