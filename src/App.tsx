@@ -17,6 +17,7 @@ import Start from "./pages/Start";
 import Invest from "./pages/Invest";
 import Portal from "./pages/Portal";
 import ReviewCall from "./pages/ReviewCall";
+import SalesLetter from "./pages/SalesLetter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
