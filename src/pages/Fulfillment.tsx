@@ -405,7 +405,7 @@ function ClientOverview({ client, onClientUpdate }: { client: Client; onClientUp
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-foreground">{label}</p>
-                      <p className="text-xs text-muted-foreground truncate">{String(localClient[key])}</p>
+                      <FieldValue fieldKey={key} value={String(localClient[key])} />
                     </div>
                     <Edit3 className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
