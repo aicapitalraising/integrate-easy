@@ -742,7 +742,10 @@ export default function Fulfillment() {
               </div>
             </div>
 
-            <ClientWorkspace client={selectedClient} />
+            <ClientWorkspace client={selectedClient} onClientUpdate={(updated) => {
+              setSelectedClient(updated);
+              setClients(prev => prev.map(c => c.id === updated.id ? updated : c));
+            }} />
           </div>
         )}
       </div>
