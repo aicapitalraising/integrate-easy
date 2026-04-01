@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import logo from '@/assets/logo-aicra.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -10,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   Lock, Phone, Building2, Target, DollarSign, Globe, Calendar, Users,
   FileText, Palette, ExternalLink, Copy, CheckCircle2, Clock, Loader2,
-  ClipboardList, Sparkles, Trash2, Plus, LayoutGrid, List, AlertCircle,
+  ClipboardList, Sparkles, Trash2, Plus, LayoutGrid, List, AlertCircle, Edit3, Save,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AllCopyView from '@/components/fulfillment/AllCopyView';
@@ -117,13 +118,57 @@ const statusColors: Record<string, string> = {
 
 const stepLabels = ['Company', 'Goals', 'Assets', 'Kickoff', 'Review'];
 
-function ClientOverview({ client }: { client: Client }) {
+function ClientOverview({ client, onClientUpdate }: { client: Client; onClientUpdate: (updated: Client) => void }) {
   const shareUrl = `${window.location.origin}/portal/${client.share_token}`;
+  const [editingField, setEditingField] = useState<keyof Client | null>(null);
+  const [editValue, setEditValue] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [localClient, setLocalClient] = useState<Client>(client);
+
+  useEffect(() => { setLocalClient(client); }, [client]);
 
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl);
     toast({ title: 'Link copied!', description: 'Shareable client portal link copied to clipboard.' });
   };
+
+  const startEdit = (key: keyof Client) => {
+    setEditingField(key);
+    setEditValue(String(localClient[key] || ''));
+  };
+
+  const saveField = async () => {
+    if (!editingField) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from('clients')
+      .update({ [editingField]: editValue || null })
+      .eq('id', localClient.id);
+    if (error) {
+      toast({ title: 'Save failed', description: error.message, variant: 'destructive' });
+    } else {
+      const updated = { ...localClient, [editingField]: editValue || null } as Client;
+      setLocalClient(updated);
+      onClientUpdate(updated);
+      toast({ title: 'Saved!' });
+    }
+    setEditingField(null);
+    setEditValue('');
+    setSaving(false);
+  };
+
+  const cancelEdit = () => {
+    setEditingField(null);
+    setEditValue('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveField(); }
+    if (e.key === 'Escape') cancelEdit();
+  };
+
+  const missing = getMissingFields(localClient);
+  const answered = getAnsweredFields(localClient);
 
   return (
     <div className="space-y-6">
@@ -137,15 +182,15 @@ function ClientOverview({ client }: { client: Client }) {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Company</p>
-                <p className="font-semibold text-foreground">{client.company_name}</p>
+                <p className="font-semibold text-foreground">{localClient.company_name}</p>
               </div>
             </div>
             <div className="space-y-1.5 text-sm">
-              <p className="text-muted-foreground">{client.contact_name} · {client.contact_email}</p>
-              {client.contact_phone && <p className="text-muted-foreground">{client.contact_phone}</p>}
-              {client.website && (
-                <a href={client.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1 text-xs">
-                  <Globe className="w-3 h-3" /> {client.website}
+              <p className="text-muted-foreground">{localClient.contact_name} · {localClient.contact_email}</p>
+              {localClient.contact_phone && <p className="text-muted-foreground">{localClient.contact_phone}</p>}
+              {localClient.website && (
+                <a href={localClient.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1 text-xs">
+                  <Globe className="w-3 h-3" /> {localClient.website}
                 </a>
               )}
             </div>
@@ -160,13 +205,13 @@ function ClientOverview({ client }: { client: Client }) {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Capital Raise</p>
-                <p className="font-semibold text-foreground">{client.raise_amount ? `$${client.raise_amount}` : '—'}</p>
+                <p className="font-semibold text-foreground">{localClient.raise_amount ? `$${localClient.raise_amount}` : '—'}</p>
               </div>
             </div>
             <div className="space-y-1.5 text-sm text-muted-foreground">
-              <p>Fund: {client.fund_type || '—'}</p>
-              <p>Timeline: {client.timeline || '—'}</p>
-              <p>Min Investment: {client.min_investment ? `$${client.min_investment}` : '—'}</p>
+              <p>Fund: {localClient.fund_type || '—'}</p>
+              <p>Timeline: {localClient.timeline || '—'}</p>
+              <p>Min Investment: {localClient.min_investment ? `$${localClient.min_investment}` : '—'}</p>
             </div>
           </CardContent>
         </Card>
@@ -180,13 +225,13 @@ function ClientOverview({ client }: { client: Client }) {
               <div>
                 <p className="text-xs text-muted-foreground">Kickoff</p>
                 <p className="font-semibold text-foreground">
-                  {client.kickoff_date ? new Date(client.kickoff_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
-                  {client.kickoff_time && ` at ${client.kickoff_time}`}
+                  {localClient.kickoff_date ? new Date(localClient.kickoff_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
+                  {localClient.kickoff_time && ` at ${localClient.kickoff_time}`}
                 </p>
               </div>
             </div>
-            <Badge className={`text-[10px] ${statusColors[client.status] || statusColors.onboarding}`}>
-              {client.status.replace('_', ' ')}
+            <Badge className={`text-[10px] ${statusColors[localClient.status] || statusColors.onboarding}`}>
+              {localClient.status.replace('_', ' ')}
             </Badge>
           </CardContent>
         </Card>
@@ -206,49 +251,133 @@ function ClientOverview({ client }: { client: Client }) {
         </CardContent>
       </Card>
 
-      {/* Details Grid */}
-      <div className="grid md:grid-cols-2 gap-4">
-        {client.budget_amount && (
-          <Card className="border-border">
-            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><DollarSign className="w-4 h-4 text-primary" /> Ad Budget</CardTitle></CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              <p>${client.budget_amount}/{client.budget_mode || 'monthly'}</p>
-            </CardContent>
-          </Card>
-        )}
-        {client.target_investor && (
-          <Card className="border-border">
-            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Users className="w-4 h-4 text-primary" /> Target Investor</CardTitle></CardHeader>
-            <CardContent className="text-sm text-muted-foreground"><p>{client.target_investor}</p></CardContent>
-          </Card>
-        )}
-        {(client.pitch_deck_link || client.pitch_deck_path) && (
-          <Card className="border-border">
-            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><FileText className="w-4 h-4 text-primary" /> Pitch Deck</CardTitle></CardHeader>
-            <CardContent className="text-sm">
-              {client.pitch_deck_link && <a href={client.pitch_deck_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{client.pitch_deck_link}</a>}
-              {client.pitch_deck_path && <p className="text-muted-foreground">Uploaded file</p>}
-            </CardContent>
-          </Card>
-        )}
-        {client.brand_notes && (
-          <Card className="border-border">
-            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Palette className="w-4 h-4 text-primary" /> Brand Notes</CardTitle></CardHeader>
-            <CardContent className="text-sm text-muted-foreground"><p>{client.brand_notes}</p></CardContent>
-          </Card>
-        )}
-        {client.additional_notes && (
-          <Card className="border-border">
-            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><ClipboardList className="w-4 h-4 text-primary" /> Additional Notes</CardTitle></CardHeader>
-            <CardContent className="text-sm text-muted-foreground"><p>{client.additional_notes}</p></CardContent>
-          </Card>
-        )}
-      </div>
+      {/* Unanswered Fields Section */}
+      {missing.length > 0 && (
+        <Card className="border-amber-200 bg-amber-500/5">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-500" />
+              Unanswered Questions ({missing.length})
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">Click any field to fill it in. Press Enter to save or Escape to cancel.</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-3">
+              {missing.map(({ key, label, step }) => (
+                <div key={key} className="group">
+                  {editingField === key ? (
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-foreground">{label} <span className="text-muted-foreground">({step})</span></label>
+                      {['brand_notes', 'additional_notes', 'credibility', 'fund_history', 'tax_advantages'].includes(key) ? (
+                        <Textarea
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onKeyDown={handleKeyDown}
+                          placeholder={`Enter ${label.toLowerCase()}...`}
+                          className="text-sm min-h-[60px]"
+                          autoFocus
+                        />
+                      ) : (
+                        <Input
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onKeyDown={handleKeyDown}
+                          placeholder={`Enter ${label.toLowerCase()}...`}
+                          className="text-sm"
+                          autoFocus
+                        />
+                      )}
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={saveField} disabled={saving} className="gap-1 text-xs h-7">
+                          {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />} Save
+                        </Button>
+                        <Button size="sm" variant="ghost" onClick={cancelEdit} className="text-xs h-7">Cancel</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => startEdit(key)}
+                      className="flex items-center gap-2 p-3 rounded-lg border border-dashed border-amber-300 hover:border-primary hover:bg-primary/5 cursor-pointer transition-all"
+                    >
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-foreground">{label}</p>
+                        <p className="text-[10px] text-muted-foreground">{step} · Click to add</p>
+                      </div>
+                      <Edit3 className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* All Answered Fields */}
+      <Card className="border-border">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+            Completed Fields ({answered.length}/{ONBOARDING_FIELDS.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-3">
+            {answered.map(({ key, label, step }) => (
+              <div key={key} className="group">
+                {editingField === key ? (
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-foreground">{label} <span className="text-muted-foreground">({step})</span></label>
+                    {['brand_notes', 'additional_notes', 'credibility', 'fund_history', 'tax_advantages'].includes(key) ? (
+                      <Textarea
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder={`Enter ${label.toLowerCase()}...`}
+                        className="text-sm min-h-[60px]"
+                        autoFocus
+                      />
+                    ) : (
+                      <Input
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder={`Enter ${label.toLowerCase()}...`}
+                        className="text-sm"
+                        autoFocus
+                      />
+                    )}
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={saveField} disabled={saving} className="gap-1 text-xs h-7">
+                        {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />} Save
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={cancelEdit} className="text-xs h-7">Cancel</Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => startEdit(key)}
+                    className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary/30 cursor-pointer transition-all"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-foreground">{label}</p>
+                      <p className="text-xs text-muted-foreground truncate">{String(localClient[key])}</p>
+                    </div>
+                    <Edit3 className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
-function ClientWorkspace({ client }: { client: Client }) {
+function ClientWorkspace({ client, onClientUpdate }: { client: Client; onClientUpdate: (updated: Client) => void }) {
   const [generatingAll, setGeneratingAll] = useState(false);
   const [genProgress, setGenProgress] = useState(0);
   const [genStatus, setGenStatus] = useState('');
@@ -259,12 +388,10 @@ function ClientWorkspace({ client }: { client: Client }) {
     setGenProgress(0);
     setGenStatus('Starting generation pipeline...');
     try {
-      // Fire-and-forget the auto-generate call, then poll for assets
       supabase.functions.invoke('auto-generate-assets', {
         body: { client_id: client.id },
       });
 
-      // Poll for completed assets
       for (let i = 0; i < 60; i++) {
         await new Promise(r => setTimeout(r, 5000));
         const { data } = await supabase
@@ -287,7 +414,6 @@ function ClientWorkspace({ client }: { client: Client }) {
 
   return (
     <div className="space-y-4">
-      {/* Generate All Button */}
       <div className="flex items-center gap-3">
         <Button onClick={generateAll} disabled={generatingAll} className="gap-2">
           {generatingAll ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
@@ -307,7 +433,7 @@ function ClientWorkspace({ client }: { client: Client }) {
           <TabsTrigger value="copy" className="text-xs">All Copy & Assets</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview"><ClientOverview client={client} /></TabsContent>
+        <TabsContent value="overview"><ClientOverview client={client} onClientUpdate={onClientUpdate} /></TabsContent>
         <TabsContent value="copy">
           <AllCopyView clientId={client.id} />
         </TabsContent>
@@ -616,7 +742,10 @@ export default function Fulfillment() {
               </div>
             </div>
 
-            <ClientWorkspace client={selectedClient} />
+            <ClientWorkspace client={selectedClient} onClientUpdate={(updated) => {
+              setSelectedClient(updated);
+              setClients(prev => prev.map(c => c.id === updated.id ? updated : c));
+            }} />
           </div>
         )}
       </div>
