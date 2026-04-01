@@ -747,7 +747,7 @@ export default function Fulfillment() {
                                 <div className="min-w-0">
                                   <span className={`font-medium ${hasValue ? 'text-foreground' : 'text-amber-600'}`}>{label}</span>
                                   {hasValue ? (
-                                    <p className="text-muted-foreground truncate">{String(val)}</p>
+                                    <FieldValue fieldKey={key} value={String(val)} />
                                   ) : (
                                     <p className="text-amber-500 italic">Not provided</p>
                                   )}
