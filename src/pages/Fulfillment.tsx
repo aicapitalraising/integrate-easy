@@ -800,6 +800,9 @@ export default function Fulfillment() {
                 <Badge className={`text-[10px] ${statusColors[selectedClient.status] || statusColors.onboarding}`}>
                   {selectedClient.status.replace('_', ' ')}
                 </Badge>
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => downloadOnboardingCSV(selectedClient)}>
+                  <Download className="w-3.5 h-3.5" /> Download Form
+                </Button>
                 <Button variant="outline" size="sm" className="gap-1.5" asChild>
                   <a href={`/portal/${selectedClient.share_token}`} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="w-3.5 h-3.5" /> Client Portal
