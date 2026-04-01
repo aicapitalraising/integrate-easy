@@ -280,6 +280,7 @@ serve(async (req) => {
             startTime: start.toISOString(),
             endTime: params.endTime || end.toISOString(),
             title: params.title || "Strategy Call - AI Capital Raising",
+            guests: params.guests || [],
           });
         }
 
