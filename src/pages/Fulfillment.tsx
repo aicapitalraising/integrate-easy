@@ -590,7 +590,7 @@ export default function Fulfillment() {
                       </CardContent>
                     </Card>
                   );
-                })}
+              </div>
             )}
           </div>
         ) : (
