@@ -310,7 +310,7 @@ export default function Onboarding() {
             email: contactEmail,
             phone: contactPhone,
             company: companyName,
-            tags: [`fund-type:${fundType}`, `raise:$${exactRaiseAmount}`, `timeline:${timeline}`, 'source:onboarding'],
+            tags: ['lovable-onboarding', `fund-type:${fundType}`, `raise:$${exactRaiseAmount}`, `timeline:${timeline}`, 'source:onboarding'],
           },
         });
 
