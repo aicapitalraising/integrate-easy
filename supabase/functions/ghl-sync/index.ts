@@ -148,6 +148,7 @@ async function createAppointment(payload: {
   startTime: string;
   endTime: string;
   title?: string;
+  guests?: string[];
 }) {
   const locationId = Deno.env.get("GHL_LOCATION_ID");
   if (!locationId) throw new Error("GHL_LOCATION_ID not configured");
@@ -161,6 +162,12 @@ async function createAppointment(payload: {
     title: payload.title || "Strategy Call",
     appointmentStatus: "confirmed",
   };
+
+  // Add guests if provided
+  if (payload.guests && payload.guests.length > 0) {
+    body.guests = payload.guests.map((email: string) => ({ email }));
+  }
+
   logStep("Creating appointment", body);
 
   const result = await ghlFetch("/calendars/events/appointments", "POST", body);
