@@ -8,6 +8,14 @@ interface RenderProps {
   onEdit?: (content: any) => void;
 }
 
+/** Safely convert any value to a renderable string */
+function safe(val: any): string {
+  if (val === null || val === undefined) return '';
+  if (typeof val === 'string') return val;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  return JSON.stringify(val, null, 2);
+}
+
 function EditField({ value, onChange, rows = 3, className = '' }: { value: string; onChange: (v: string) => void; rows?: number; className?: string }) {
   return <Textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={rows} className={`text-sm ${className}`} />;
 }
