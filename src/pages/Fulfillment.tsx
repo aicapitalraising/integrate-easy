@@ -11,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   Lock, Phone, Building2, Target, DollarSign, Globe, Calendar, Users,
   FileText, Palette, ExternalLink, Copy, CheckCircle2, Clock, Loader2,
-  ClipboardList, Sparkles, Trash2, Plus, LayoutGrid, List, AlertCircle, Edit3, Save,
+  ClipboardList, Sparkles, Trash2, Plus, LayoutGrid, List, AlertCircle, Edit3, Save, Download,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AllCopyView from '@/components/fulfillment/AllCopyView';
@@ -97,6 +97,28 @@ function getMissingFields(client: Client) {
     const val = client[f.key];
     return val === null || val === undefined || val === '';
   });
+}
+
+function downloadOnboardingCSV(client: Client) {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const rows = ONBOARDING_FIELDS.map(f => {
+    let val = client[f.key] ?? '';
+    // For file fields, turn into full URL
+    if ((f.key === 'pitch_deck_path' || f.key === 'investor_list_path') && val) {
+      val = `${supabaseUrl}/storage/v1/object/public/client-uploads/${val}`;
+    }
+    // Escape quotes for CSV
+    const escaped = String(val).replace(/"/g, '""');
+    return `"${f.label}","${f.step}","${escaped}"`;
+  });
+  const csv = `"Field","Step","Value"\n${rows.join('\n')}`;
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${client.company_name.replace(/[^a-zA-Z0-9]/g, '_')}_onboarding.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function getAnsweredFields(client: Client) {
@@ -778,6 +800,9 @@ export default function Fulfillment() {
                 <Badge className={`text-[10px] ${statusColors[selectedClient.status] || statusColors.onboarding}`}>
                   {selectedClient.status.replace('_', ' ')}
                 </Badge>
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => downloadOnboardingCSV(selectedClient)}>
+                  <Download className="w-3.5 h-3.5" /> Download Form
+                </Button>
                 <Button variant="outline" size="sm" className="gap-1.5" asChild>
                   <a href={`/portal/${selectedClient.share_token}`} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="w-3.5 h-3.5" /> Client Portal
