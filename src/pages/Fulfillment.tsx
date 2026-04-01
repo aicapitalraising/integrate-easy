@@ -147,6 +147,7 @@ function FieldValue({ fieldKey, value }: { fieldKey: keyof Client; value: string
   return <p className="text-xs text-muted-foreground truncate">{value}</p>;
 }
 
+const statusColors: Record<string, string> = {
   onboarding: 'bg-amber-500/10 text-amber-600 border-amber-200',
   partial: 'bg-rose-500/10 text-rose-600 border-rose-200',
   researching: 'bg-blue-500/10 text-blue-600 border-blue-200',
