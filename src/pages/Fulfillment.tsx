@@ -44,6 +44,64 @@ interface Client {
   current_step: number;
   created_at: string;
   updated_at: string;
+  speaker_name: string | null;
+  industry_focus: string | null;
+  targeted_returns: string | null;
+  hold_period: string | null;
+  distribution_schedule: string | null;
+  investment_range: string | null;
+  tax_advantages: string | null;
+  fund_history: string | null;
+  credibility: string | null;
+  ein_number: string | null;
+  card_number: string | null;
+  card_exp: string | null;
+  card_cvv: string | null;
+}
+
+const ONBOARDING_FIELDS: { key: keyof Client; label: string; step: string }[] = [
+  { key: 'company_name', label: 'Company Name', step: 'Company' },
+  { key: 'fund_name', label: 'Fund Name', step: 'Company' },
+  { key: 'website', label: 'Website', step: 'Company' },
+  { key: 'contact_name', label: 'Contact Name', step: 'Company' },
+  { key: 'contact_email', label: 'Contact Email', step: 'Company' },
+  { key: 'contact_phone', label: 'Phone', step: 'Company' },
+  { key: 'fund_type', label: 'Fund Type', step: 'Goals' },
+  { key: 'raise_amount', label: 'Raise Amount', step: 'Goals' },
+  { key: 'timeline', label: 'Timeline', step: 'Goals' },
+  { key: 'min_investment', label: 'Min Investment', step: 'Goals' },
+  { key: 'target_investor', label: 'Target Investor', step: 'Goals' },
+  { key: 'industry_focus', label: 'Industry Focus', step: 'Goals' },
+  { key: 'targeted_returns', label: 'Targeted Returns', step: 'Goals' },
+  { key: 'hold_period', label: 'Hold Period', step: 'Goals' },
+  { key: 'distribution_schedule', label: 'Distribution Schedule', step: 'Goals' },
+  { key: 'investment_range', label: 'Investment Range', step: 'Goals' },
+  { key: 'tax_advantages', label: 'Tax Advantages', step: 'Goals' },
+  { key: 'fund_history', label: 'Fund History', step: 'Goals' },
+  { key: 'credibility', label: 'Credibility', step: 'Goals' },
+  { key: 'pitch_deck_link', label: 'Pitch Deck Link', step: 'Assets' },
+  { key: 'pitch_deck_path', label: 'Pitch Deck Upload', step: 'Assets' },
+  { key: 'budget_amount', label: 'Ad Budget', step: 'Assets' },
+  { key: 'brand_notes', label: 'Brand Notes', step: 'Assets' },
+  { key: 'ein_number', label: 'EIN Number', step: 'Assets' },
+  { key: 'speaker_name', label: 'Speaker Name', step: 'Assets' },
+  { key: 'kickoff_date', label: 'Kickoff Date', step: 'Kickoff' },
+  { key: 'kickoff_time', label: 'Kickoff Time', step: 'Kickoff' },
+  { key: 'additional_notes', label: 'Additional Notes', step: 'Kickoff' },
+];
+
+function getMissingFields(client: Client) {
+  return ONBOARDING_FIELDS.filter(f => {
+    const val = client[f.key];
+    return val === null || val === undefined || val === '';
+  });
+}
+
+function getAnsweredFields(client: Client) {
+  return ONBOARDING_FIELDS.filter(f => {
+    const val = client[f.key];
+    return val !== null && val !== undefined && val !== '';
+  });
 }
 
 const statusColors: Record<string, string> = {
