@@ -459,9 +459,9 @@ export function ReportRenderer({ content, editMode, onEdit }: RenderProps) {
           <CardHeader className="pb-2"><CardTitle className="text-sm">{label}</CardTitle></CardHeader>
           <CardContent>
             {editMode ? (
-              <EditField value={content[key]} onChange={(v) => updateField(key, v)} rows={5} />
+              <EditField value={safe(content[key])} onChange={(v) => updateField(key, v)} rows={5} />
             ) : (
-              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{content[key]}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{safe(content[key])}</p>
             )}
           </CardContent>
         </Card>
