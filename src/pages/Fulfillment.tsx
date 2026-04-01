@@ -388,9 +388,10 @@ function ClientWorkspace({ client, onClientUpdate }: { client: Client; onClientU
     setGenProgress(0);
     setGenStatus('Starting generation pipeline...');
     try {
-      supabase.functions.invoke('auto-generate-assets', {
+      const { error: invokeErr } = await supabase.functions.invoke('auto-generate-assets', {
         body: { client_id: client.id },
       });
+      if (invokeErr) throw invokeErr;
 
       for (let i = 0; i < 60; i++) {
         await new Promise(r => setTimeout(r, 5000));
