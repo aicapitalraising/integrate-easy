@@ -441,11 +441,13 @@ export default function Fulfillment() {
                 <p className="text-sm text-muted-foreground mb-4">Clients will appear here after they complete onboarding.</p>
                 <Link to="/onboarding"><Button className="gap-2"><Plus className="w-4 h-4" /> Onboard a Client</Button></Link>
               </div>
-            ) : (
+            ) : viewMode === 'grid' ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {clients.map((client) => {
                   const isPartial = client.current_step < 5;
                   const displayStatus = isPartial ? 'partial' : client.status;
+                  const missing = getMissingFields(client);
+                  const answered = getAnsweredFields(client);
                   return (
                     <Card
                       key={client.id}
@@ -472,6 +474,21 @@ export default function Fulfillment() {
                           {client.raise_amount && <p className="text-foreground font-medium">Raise: ${client.raise_amount}</p>}
                           <p>Added {new Date(client.created_at).toLocaleDateString()}</p>
                         </div>
+                        {/* Field completion indicator */}
+                        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                              <span className="text-muted-foreground">{answered.length}/{ONBOARDING_FIELDS.length} fields</span>
+                            </div>
+                            {missing.length > 0 && (
+                              <p className="text-[10px] text-amber-600 mt-1 flex items-center gap-1">
+                                <AlertCircle className="w-3 h-3" />
+                                {missing.length} unanswered
+                              </p>
+                            )}
+                          </div>
+                        </div>
                         <div className="flex items-center justify-between pt-2">
                           {isPartial && (
                             <a
@@ -489,6 +506,92 @@ export default function Fulfillment() {
                         </div>
                       </CardContent>
                     </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              /* List View */
+              <div className="space-y-3">
+                {clients.map((client) => {
+                  const isPartial = client.current_step < 5;
+                  const displayStatus = isPartial ? 'partial' : client.status;
+                  const missing = getMissingFields(client);
+                  const answered = getAnsweredFields(client);
+                  return (
+                    <Card
+                      key={client.id}
+                      className={`border-border hover:border-primary/30 transition-all cursor-pointer ${isPartial ? 'border-dashed' : ''}`}
+                      onClick={() => setSelectedClient(client)}
+                    >
+                      <CardContent className="p-5">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                              <Building2 className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="font-semibold text-foreground">{client.company_name}</p>
+                              <p className="text-xs text-muted-foreground">{client.contact_name} · {client.contact_email} · Added {new Date(client.created_at).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 shrink-0">
+                            <div className="text-right text-xs">
+                              <div className="flex items-center gap-1.5 text-muted-foreground">
+                                <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                                {answered.length}/{ONBOARDING_FIELDS.length} fields
+                              </div>
+                              {missing.length > 0 && (
+                                <p className="text-amber-600 flex items-center gap-1 justify-end mt-0.5">
+                                  <AlertCircle className="w-3 h-3" /> {missing.length} unanswered
+                                </p>
+                              )}
+                            </div>
+                            <Badge className={`text-[9px] ${statusColors[displayStatus] || statusColors.onboarding}`}>
+                              {isPartial ? `Step ${client.current_step + 1}/5` : displayStatus.replace('_', ' ')}
+                            </Badge>
+                            {isPartial && (
+                              <a
+                                href={`/onboarding?resume=${client.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-xs text-primary hover:underline font-medium whitespace-nowrap"
+                              >
+                                Resume →
+                              </a>
+                            )}
+                            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={(e) => deleteClient(e, client.id)}>
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+                        {/* All form fields in a grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2 text-xs">
+                          {ONBOARDING_FIELDS.map(({ key, label }) => {
+                            const val = client[key];
+                            const hasValue = val !== null && val !== undefined && val !== '';
+                            return (
+                              <div key={key} className="flex items-start gap-1.5">
+                                {hasValue ? (
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-500 mt-0.5 shrink-0" />
+                                ) : (
+                                  <AlertCircle className="w-3 h-3 text-amber-500 mt-0.5 shrink-0" />
+                                )}
+                                <div className="min-w-0">
+                                  <span className={`font-medium ${hasValue ? 'text-foreground' : 'text-amber-600'}`}>{label}</span>
+                                  {hasValue ? (
+                                    <p className="text-muted-foreground truncate">{String(val)}</p>
+                                  ) : (
+                                    <p className="text-amber-500 italic">Not provided</p>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
                   );
                 })}
               </div>
