@@ -653,9 +653,9 @@ export function SetterRenderer({ content, editMode, onEdit }: RenderProps) {
           <CardHeader className="pb-2"><CardTitle className="text-sm">Key Offer Details</CardTitle></CardHeader>
           <CardContent>
             {editMode ? (
-              <EditField value={content.key_offer_details} onChange={(v) => updateField('key_offer_details', v)} rows={3} />
+              <EditField value={safe(content.key_offer_details)} onChange={(v) => updateField('key_offer_details', v)} rows={3} />
             ) : (
-              <p className="text-sm text-muted-foreground">{content.key_offer_details}</p>
+              <p className="text-sm text-muted-foreground">{safe(content.key_offer_details)}</p>
             )}
           </CardContent>
         </Card>
