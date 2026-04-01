@@ -197,6 +197,7 @@ serve(async (req) => {
           name: params.name,
           email: params.email,
           phone: params.phone,
+          company: params.company,
           source: params.source,
           tags: params.tags || ["AI Capital Raising", "New Lead"],
         });
