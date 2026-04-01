@@ -591,10 +591,6 @@ export default function Fulfillment() {
                     </Card>
                   );
                 })}
-              </div>
-                  );
-                })}
-              </div>
             )}
           </div>
         ) : (
