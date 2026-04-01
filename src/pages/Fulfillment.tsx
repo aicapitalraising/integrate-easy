@@ -105,7 +105,48 @@ function getAnsweredFields(client: Client) {
   });
 }
 
-const statusColors: Record<string, string> = {
+const FILE_FIELDS: (keyof Client)[] = ['pitch_deck_path', 'investor_list_path'];
+const LINK_FIELDS: (keyof Client)[] = ['pitch_deck_link', 'website'];
+
+function getStorageUrl(path: string): string {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  return `${supabaseUrl}/storage/v1/object/public/client-uploads/${path}`;
+}
+
+function FieldValue({ fieldKey, value }: { fieldKey: keyof Client; value: string }) {
+  if (FILE_FIELDS.includes(fieldKey) && value) {
+    const url = getStorageUrl(value);
+    const fileName = value.split('/').pop() || value;
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="text-xs text-primary hover:underline flex items-center gap-1 truncate"
+      >
+        <FileText className="w-3 h-3 shrink-0" />
+        {fileName.replace(/^\d+-/, '')}
+      </a>
+    );
+  }
+  if (LINK_FIELDS.includes(fieldKey) && value) {
+    const href = value.startsWith('http') ? value : `https://${value}`;
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="text-xs text-primary hover:underline truncate"
+      >
+        {value}
+      </a>
+    );
+  }
+  return <p className="text-xs text-muted-foreground truncate">{value}</p>;
+}
+
   onboarding: 'bg-amber-500/10 text-amber-600 border-amber-200',
   partial: 'bg-rose-500/10 text-rose-600 border-rose-200',
   researching: 'bg-blue-500/10 text-blue-600 border-blue-200',
