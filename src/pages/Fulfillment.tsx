@@ -99,6 +99,28 @@ function getMissingFields(client: Client) {
   });
 }
 
+function downloadOnboardingCSV(client: Client) {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const rows = ONBOARDING_FIELDS.map(f => {
+    let val = client[f.key] ?? '';
+    // For file fields, turn into full URL
+    if ((f.key === 'pitch_deck_path' || f.key === 'investor_list_path') && val) {
+      val = `${supabaseUrl}/storage/v1/object/public/client-uploads/${val}`;
+    }
+    // Escape quotes for CSV
+    const escaped = String(val).replace(/"/g, '""');
+    return `"${f.label}","${f.step}","${escaped}"`;
+  });
+  const csv = `"Field","Step","Value"\n${rows.join('\n')}`;
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${client.company_name.replace(/[^a-zA-Z0-9]/g, '_')}_onboarding.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function getAnsweredFields(client: Client) {
   return ONBOARDING_FIELDS.filter(f => {
     const val = client[f.key];
