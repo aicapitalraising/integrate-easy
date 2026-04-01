@@ -100,6 +100,7 @@ async function syncContact(payload: {
       lastName,
       email: payload.email || undefined,
       phone: payload.phone || undefined,
+      companyName: payload.company || undefined,
       source: payload.source || "AI Capital Raising",
       tags: payload.tags || [],
     };
