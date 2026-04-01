@@ -324,6 +324,7 @@ export default function Fulfillment() {
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
