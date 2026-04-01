@@ -639,9 +639,9 @@ export function SetterRenderer({ content, editMode, onEdit }: RenderProps) {
           <CardHeader className="pb-2"><CardTitle className="text-sm">Positive Response</CardTitle></CardHeader>
           <CardContent>
             {editMode ? (
-              <EditField value={content.positive_response} onChange={(v) => updateField('positive_response', v)} rows={2} />
+              <EditField value={safe(content.positive_response)} onChange={(v) => updateField('positive_response', v)} rows={2} />
             ) : (
-              <p className="text-sm text-muted-foreground">{content.positive_response}</p>
+              <p className="text-sm text-muted-foreground">{safe(content.positive_response)}</p>
             )}
           </CardContent>
         </Card>
