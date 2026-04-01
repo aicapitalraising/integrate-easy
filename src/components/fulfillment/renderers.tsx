@@ -626,9 +626,9 @@ export function SetterRenderer({ content, editMode, onEdit }: RenderProps) {
         <CardHeader className="pb-2"><CardTitle className="text-sm">Intro Message</CardTitle></CardHeader>
         <CardContent>
           {editMode ? (
-            <EditField value={content.intro_message} onChange={(v) => updateField('intro_message', v)} rows={3} />
+            <EditField value={safe(content.intro_message)} onChange={(v) => updateField('intro_message', v)} rows={3} />
           ) : (
-            <p className="text-sm text-foreground bg-muted/50 p-3 rounded-lg whitespace-pre-line">{content.intro_message}</p>
+            <p className="text-sm text-foreground bg-muted/50 p-3 rounded-lg whitespace-pre-line">{safe(content.intro_message)}</p>
           )}
         </CardContent>
       </Card>
