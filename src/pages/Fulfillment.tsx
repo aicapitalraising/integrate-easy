@@ -83,6 +83,7 @@ const ONBOARDING_FIELDS: { key: keyof Client; label: string; step: string }[] = 
   { key: 'pitch_deck_link', label: 'Pitch Deck Link', step: 'Assets' },
   { key: 'pitch_deck_path', label: 'Pitch Deck Upload', step: 'Assets' },
   { key: 'budget_amount', label: 'Ad Budget', step: 'Assets' },
+  { key: 'investor_list_path', label: 'Investor List Upload', step: 'Assets' },
   { key: 'brand_notes', label: 'Brand Notes', step: 'Assets' },
   { key: 'ein_number', label: 'EIN Number', step: 'Assets' },
   { key: 'speaker_name', label: 'Speaker Name', step: 'Assets' },
