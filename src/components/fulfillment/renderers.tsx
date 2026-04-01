@@ -146,10 +146,10 @@ export function AnglesRenderer({ content, editMode, onEdit }: RenderProps) {
               </>
             ) : (
               <>
-                <p className="font-medium text-foreground">"{angle.hook}"</p>
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Emotion:</span> {angle.emotional_driver}</p>
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Why it works:</span> {angle.why_it_works}</p>
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Use case:</span> {angle.use_case}</p>
+                <p className="font-medium text-foreground">"{safe(angle.hook)}"</p>
+                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Emotion:</span> {safe(angle.emotional_driver)}</p>
+                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Why it works:</span> {safe(angle.why_it_works)}</p>
+                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Use case:</span> {safe(angle.use_case)}</p>
               </>
             )}
             {!editMode && angle.ad_hooks && (
