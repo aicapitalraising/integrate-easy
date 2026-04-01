@@ -49,6 +49,7 @@ async function syncContact(payload: {
   name: string;
   email?: string;
   phone?: string;
+  company?: string;
   source?: string;
   tags?: string[];
   customFields?: Record<string, string>;
