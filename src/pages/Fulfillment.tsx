@@ -83,6 +83,7 @@ const ONBOARDING_FIELDS: { key: keyof Client; label: string; step: string }[] = 
   { key: 'pitch_deck_link', label: 'Pitch Deck Link', step: 'Assets' },
   { key: 'pitch_deck_path', label: 'Pitch Deck Upload', step: 'Assets' },
   { key: 'budget_amount', label: 'Ad Budget', step: 'Assets' },
+  { key: 'investor_list_path', label: 'Investor List Upload', step: 'Assets' },
   { key: 'brand_notes', label: 'Brand Notes', step: 'Assets' },
   { key: 'ein_number', label: 'EIN Number', step: 'Assets' },
   { key: 'speaker_name', label: 'Speaker Name', step: 'Assets' },
@@ -103,6 +104,48 @@ function getAnsweredFields(client: Client) {
     const val = client[f.key];
     return val !== null && val !== undefined && val !== '';
   });
+}
+
+const FILE_FIELDS: (keyof Client)[] = ['pitch_deck_path', 'investor_list_path'];
+const LINK_FIELDS: (keyof Client)[] = ['pitch_deck_link', 'website'];
+
+function getStorageUrl(path: string): string {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  return `${supabaseUrl}/storage/v1/object/public/client-uploads/${path}`;
+}
+
+function FieldValue({ fieldKey, value }: { fieldKey: keyof Client; value: string }) {
+  if (FILE_FIELDS.includes(fieldKey) && value) {
+    const url = getStorageUrl(value);
+    const fileName = value.split('/').pop() || value;
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="text-xs text-primary hover:underline flex items-center gap-1 truncate"
+      >
+        <FileText className="w-3 h-3 shrink-0" />
+        {fileName.replace(/^\d+-/, '')}
+      </a>
+    );
+  }
+  if (LINK_FIELDS.includes(fieldKey) && value) {
+    const href = value.startsWith('http') ? value : `https://${value}`;
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="text-xs text-primary hover:underline truncate"
+      >
+        {value}
+      </a>
+    );
+  }
+  return <p className="text-xs text-muted-foreground truncate">{value}</p>;
 }
 
 const statusColors: Record<string, string> = {
@@ -363,7 +406,7 @@ function ClientOverview({ client, onClientUpdate }: { client: Client; onClientUp
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-foreground">{label}</p>
-                      <p className="text-xs text-muted-foreground truncate">{String(localClient[key])}</p>
+                      <FieldValue fieldKey={key} value={String(localClient[key])} />
                     </div>
                     <Edit3 className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
@@ -705,7 +748,7 @@ export default function Fulfillment() {
                                 <div className="min-w-0">
                                   <span className={`font-medium ${hasValue ? 'text-foreground' : 'text-amber-600'}`}>{label}</span>
                                   {hasValue ? (
-                                    <p className="text-muted-foreground truncate">{String(val)}</p>
+                                    <FieldValue fieldKey={key} value={String(val)} />
                                   ) : (
                                     <p className="text-amber-500 italic">Not provided</p>
                                   )}
