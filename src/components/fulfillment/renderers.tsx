@@ -8,6 +8,14 @@ interface RenderProps {
   onEdit?: (content: any) => void;
 }
 
+/** Safely convert any value to a renderable string */
+function safe(val: any): string {
+  if (val === null || val === undefined) return '';
+  if (typeof val === 'string') return val;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  return JSON.stringify(val, null, 2);
+}
+
 function EditField({ value, onChange, rows = 3, className = '' }: { value: string; onChange: (v: string) => void; rows?: number; className?: string }) {
   return <Textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={rows} className={`text-sm ${className}`} />;
 }
@@ -71,9 +79,9 @@ export function ResearchRenderer({ content, editMode, onEdit }: RenderProps) {
             </CardHeader>
             <CardContent>
               {editMode ? (
-                <EditField value={content[key]} onChange={(v) => updateField(key, v)} rows={5} />
+                <EditField value={safe(content[key])} onChange={(v) => updateField(key, v)} rows={5} />
               ) : (
-                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{content[key]}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{safe(content[key])}</p>
               )}
             </CardContent>
           </Card>
@@ -138,10 +146,10 @@ export function AnglesRenderer({ content, editMode, onEdit }: RenderProps) {
               </>
             ) : (
               <>
-                <p className="font-medium text-foreground">"{angle.hook}"</p>
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Emotion:</span> {angle.emotional_driver}</p>
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Why it works:</span> {angle.why_it_works}</p>
-                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Use case:</span> {angle.use_case}</p>
+                <p className="font-medium text-foreground">"{safe(angle.hook)}"</p>
+                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Emotion:</span> {safe(angle.emotional_driver)}</p>
+                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Why it works:</span> {safe(angle.why_it_works)}</p>
+                <p className="text-muted-foreground"><span className="font-medium text-foreground/80">Use case:</span> {safe(angle.use_case)}</p>
               </>
             )}
             {!editMode && angle.ad_hooks && (
@@ -451,9 +459,9 @@ export function ReportRenderer({ content, editMode, onEdit }: RenderProps) {
           <CardHeader className="pb-2"><CardTitle className="text-sm">{label}</CardTitle></CardHeader>
           <CardContent>
             {editMode ? (
-              <EditField value={content[key]} onChange={(v) => updateField(key, v)} rows={5} />
+              <EditField value={safe(content[key])} onChange={(v) => updateField(key, v)} rows={5} />
             ) : (
-              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{content[key]}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{safe(content[key])}</p>
             )}
           </CardContent>
         </Card>
@@ -618,9 +626,9 @@ export function SetterRenderer({ content, editMode, onEdit }: RenderProps) {
         <CardHeader className="pb-2"><CardTitle className="text-sm">Intro Message</CardTitle></CardHeader>
         <CardContent>
           {editMode ? (
-            <EditField value={content.intro_message} onChange={(v) => updateField('intro_message', v)} rows={3} />
+            <EditField value={safe(content.intro_message)} onChange={(v) => updateField('intro_message', v)} rows={3} />
           ) : (
-            <p className="text-sm text-foreground bg-muted/50 p-3 rounded-lg whitespace-pre-line">{content.intro_message}</p>
+            <p className="text-sm text-foreground bg-muted/50 p-3 rounded-lg whitespace-pre-line">{safe(content.intro_message)}</p>
           )}
         </CardContent>
       </Card>
@@ -631,9 +639,9 @@ export function SetterRenderer({ content, editMode, onEdit }: RenderProps) {
           <CardHeader className="pb-2"><CardTitle className="text-sm">Positive Response</CardTitle></CardHeader>
           <CardContent>
             {editMode ? (
-              <EditField value={content.positive_response} onChange={(v) => updateField('positive_response', v)} rows={2} />
+              <EditField value={safe(content.positive_response)} onChange={(v) => updateField('positive_response', v)} rows={2} />
             ) : (
-              <p className="text-sm text-muted-foreground">{content.positive_response}</p>
+              <p className="text-sm text-muted-foreground">{safe(content.positive_response)}</p>
             )}
           </CardContent>
         </Card>
@@ -645,9 +653,9 @@ export function SetterRenderer({ content, editMode, onEdit }: RenderProps) {
           <CardHeader className="pb-2"><CardTitle className="text-sm">Key Offer Details</CardTitle></CardHeader>
           <CardContent>
             {editMode ? (
-              <EditField value={content.key_offer_details} onChange={(v) => updateField('key_offer_details', v)} rows={3} />
+              <EditField value={safe(content.key_offer_details)} onChange={(v) => updateField('key_offer_details', v)} rows={3} />
             ) : (
-              <p className="text-sm text-muted-foreground">{content.key_offer_details}</p>
+              <p className="text-sm text-muted-foreground">{safe(content.key_offer_details)}</p>
             )}
           </CardContent>
         </Card>
@@ -718,9 +726,9 @@ export function SetterRenderer({ content, editMode, onEdit }: RenderProps) {
           <CardHeader className="pb-2"><CardTitle className="text-sm">Fund Details for AI</CardTitle></CardHeader>
           <CardContent>
             {editMode ? (
-              <EditField value={content.fund_details_summary} onChange={(v) => updateField('fund_details_summary', v)} rows={5} />
+              <EditField value={safe(content.fund_details_summary)} onChange={(v) => updateField('fund_details_summary', v)} rows={5} />
             ) : (
-              <p className="text-sm text-muted-foreground whitespace-pre-line">{content.fund_details_summary}</p>
+              <p className="text-sm text-muted-foreground whitespace-pre-line">{safe(content.fund_details_summary)}</p>
             )}
           </CardContent>
         </Card>
