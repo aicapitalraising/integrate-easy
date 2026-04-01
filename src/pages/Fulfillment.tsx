@@ -400,7 +400,16 @@ export default function Fulfillment() {
       <header className="border-b border-border bg-background sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <a href="/"><img src={logo} alt="AI Capital Raising Accelerator" className="h-8" /></a>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+              className="h-9 w-9 p-0"
+              title={viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'}
+            >
+              {viewMode === 'grid' ? <List className="w-3.5 h-3.5" /> : <LayoutGrid className="w-3.5 h-3.5" />}
+            </Button>
             <Button size="sm" variant="outline" onClick={loadClients} className="gap-1.5">
               <RefreshCw className="w-3.5 h-3.5" /> Refresh
             </Button>
