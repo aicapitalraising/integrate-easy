@@ -49,6 +49,7 @@ async function syncContact(payload: {
   name: string;
   email?: string;
   phone?: string;
+  company?: string;
   source?: string;
   tags?: string[];
   customFields?: Record<string, string>;
@@ -84,6 +85,7 @@ async function syncContact(payload: {
       lastName,
       email: payload.email || undefined,
       phone: payload.phone || undefined,
+      companyName: payload.company || undefined,
       source: payload.source || "AI Capital Raising",
       tags: payload.tags || [],
     };
@@ -98,6 +100,7 @@ async function syncContact(payload: {
       lastName,
       email: payload.email || undefined,
       phone: payload.phone || undefined,
+      companyName: payload.company || undefined,
       source: payload.source || "AI Capital Raising",
       tags: payload.tags || [],
     };
@@ -194,6 +197,7 @@ serve(async (req) => {
           name: params.name,
           email: params.email,
           phone: params.phone,
+          company: params.company,
           source: params.source,
           tags: params.tags || ["AI Capital Raising", "New Lead"],
         });
