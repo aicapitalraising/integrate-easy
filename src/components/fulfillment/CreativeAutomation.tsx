@@ -56,7 +56,8 @@ interface CreativeAutomationProps {
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-function computeNextRun(frequency: string, dayOfWeek: number): string {
+function computeNextRun(frequency: string, dayOfWeek: number | null): string {
+  const day = dayOfWeek ?? 1; // Default to Monday
   const now = new Date();
   const next = new Date(now);
 
@@ -65,12 +66,12 @@ function computeNextRun(frequency: string, dayOfWeek: number): string {
     next.setHours(9, 0, 0, 0);
   } else if (frequency === 'weekly') {
     const currentDay = now.getDay();
-    const daysUntil = (dayOfWeek - currentDay + 7) % 7 || 7;
+    const daysUntil = (day - currentDay + 7) % 7 || 7;
     next.setDate(next.getDate() + daysUntil);
     next.setHours(9, 0, 0, 0);
   } else if (frequency === 'biweekly') {
     const currentDay = now.getDay();
-    const daysUntil = (dayOfWeek - currentDay + 7) % 7 || 14;
+    const daysUntil = (day - currentDay + 7) % 7 || 14;
     next.setDate(next.getDate() + daysUntil);
     next.setHours(9, 0, 0, 0);
   } else {

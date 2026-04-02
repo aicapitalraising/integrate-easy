@@ -236,7 +236,7 @@ function ClientWorkspace({ client }: { client: Client }) {
           stallCount++;
           if (stallCount >= 12) {
             // 60 seconds with no progress
-            setGenStatus(`Still working on ${ASSET_LABELS[current || ''] || current}... (complex content takes longer)`);
+            setGenStatus(`Still working on ${current ? (ASSET_LABELS[current] || current) : 'remaining assets'}... (complex content takes longer)`);
           }
         } else {
           stallCount = 0;
